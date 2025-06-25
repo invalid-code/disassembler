@@ -99,8 +99,7 @@ func convMultiByteToSingleByte(data []byte, endianness bool) int {
 func main() {
 	data, err := os.ReadFile("hello")
 	if err != nil {
-		fmt.Println("Error: Couldn't read file")
-		os.Exit(1)
+		panic("Error: Couldn't read file")
 	}
 	isElf := false
 	if bytes.Equal(data[0:4], elfMagicNumber) {
@@ -118,23 +117,6 @@ func main() {
 	sectionHeaderLen := 0
 	sectionHeaderSize := 0
 	textSectionSize := 0
-	isPrefix := true
-	isOperandSizeOverride := false
-	isAddressSizeOverride := false
-	isCSSegmentSizeOverride := false
-	isDSSegmentSizeOverride := false
-	isESSegmentSizeOverride := false
-	isFSSegmentSizeOverride := false
-	isGSSegmentSizeOverride := false
-	isSSSegmentSizeOverride := false
-	isLock := false
-	isRep1 := false
-	isRep0 := false
-	isRexPrefix := false
-	isRexW := false
-	isRexR := false
-	isRexX := false
-	isRexB := false
 	if isElf {
 		bitFormat = data[4] == 2
 		endianness = data[5] == 2
@@ -423,7 +405,37 @@ func main() {
 		case StmeSt100:
 		case AdvLogCorp:
 		case Amdx8664:
-			fmt.Printf("hello world %v\n", textSectionSize)
+			isPrefix := true
+			legacePrefixCnt := 0
+			isOperandSizeOverride := false
+			isAddressSizeOverride := false
+			isCSSegmentSizeOverride := false
+			isDSSegmentSizeOverride := false
+			isESSegmentSizeOverride := false
+			isFSSegmentSizeOverride := false
+			isGSSegmentSizeOverride := false
+			isSSSegmentSizeOverride := false
+			isLock := false
+			isRep1 := false
+			isRep0 := false
+			isRexPrefix := false
+			isRexW := false
+			isRexR := false
+			isRexX := false
+			isRexB := false
+			isVex := false
+			isXop := false
+			isVex3Byte := false
+			isEscapeSequence := false
+			is3dNow := false
+			is38 := false
+			is3A := false
+			isSecondaryMap := false
+			fieldR := false
+			fieldVvvv := [4]bool{false, false, false, false}
+			fieldL := false
+			fieldPp := [2]bool{false, false}
+			isRXB := true
 			for curByte := range data[entryPoint:textSectionSize] {
 				// 1-15 bytes
 				// prefix(optional)
@@ -436,168 +448,450 @@ func main() {
 					switch curByte {
 					case 102:
 						// 0x66
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isOperandSizeOverride = true
+						legacePrefixCnt += 1
 					case 103:
 						// 0x67
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isAddressSizeOverride = true
+						legacePrefixCnt += 1
 					case 46:
 						// 0x2E
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isCSSegmentSizeOverride = true
+						legacePrefixCnt += 1
 					case 62:
 						// 0x3E
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isDSSegmentSizeOverride = true
+						legacePrefixCnt += 1
 					case 38:
 						// 0x26
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isESSegmentSizeOverride = true
+						legacePrefixCnt += 1
 					case 100:
 						// 0x64
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isFSSegmentSizeOverride = true
+						legacePrefixCnt += 1
 					case 101:
 						// 0x65
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isGSSegmentSizeOverride = true
+						legacePrefixCnt += 1
 					case 54:
 						// 0x36
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isSSSegmentSizeOverride = true
+						legacePrefixCnt += 1
 					case 240:
 						// 0xf0
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isLock = true
+						legacePrefixCnt += 1
 					case 243:
 						// 0xf3
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isRep1 = true
+						legacePrefixCnt += 1
 					case 242:
 						// 0xf2
+						if legacePrefixCnt == 4 {
+							panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+						}
 						isRep0 = true
+						legacePrefixCnt += 1
 					case 64:
 						// 0x40
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = false
 						isRexR = false
 						isRexX = false
 						isRexB = false
 					case 65:
 						// 0x41
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = false
 						isRexR = false
 						isRexX = false
 						isRexB = true
 					case 66:
 						// 0x42
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = false
 						isRexR = false
 						isRexX = true
 						isRexB = false
 					case 67:
 						// 0x43
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = false
 						isRexR = false
 						isRexX = true
 						isRexB = true
 					case 68:
 						// 0x44
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = false
 						isRexR = true
 						isRexX = false
 						isRexB = false
 					case 69:
 						// 0x45
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = false
 						isRexR = true
 						isRexX = false
 						isRexB = true
 					case 70:
 						// 0x46
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = false
 						isRexR = true
 						isRexX = true
 						isRexB = false
 					case 71:
 						// 0x47
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = false
 						isRexR = true
 						isRexX = true
 						isRexB = true
 					case 72:
 						// 0x48
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = true
 						isRexR = false
 						isRexX = false
 						isRexB = false
 					case 73:
 						// 0x49
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = true
 						isRexR = false
 						isRexX = false
 						isRexB = true
 					case 74:
 						// 0x4A
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = true
 						isRexR = false
 						isRexX = true
 						isRexB = false
 					case 75:
 						// 0x4B
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = true
 						isRexR = false
 						isRexX = true
 						isRexB = true
 					case 76:
 						// 0x4C
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = true
 						isRexR = true
 						isRexX = false
 						isRexB = false
 					case 77:
 						// 0x4D
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = true
 						isRexR = true
 						isRexX = false
 						isRexB = true
 					case 78:
 						// 0x4E
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = true
 						isRexR = true
 						isRexX = true
 						isRexB = false
 					case 79:
 						// 0x4F
+						if !bitFormat {
+							panic("Error: REX prefix are only allowed in 64-bit mode")
+						}
 						isRexPrefix = true
 						isPrefix = false
+						isEscapeSequence = true
 						isRexW = true
 						isRexR = true
 						isRexX = true
 						isRexB = true
+					case 197:
+						// 0xC5
+						isVex = true
+						isVex3Byte = false
+						isPrefix = false
+						isEscapeSequence = true
+					case 196:
+						// 0xC4
+						isVex = true
+						isVex3Byte = true
+						isPrefix = false
+						isEscapeSequence = true
+					case 143:
+						// 0x8F
+						isXop = true
+						isPrefix = false
+						isEscapeSequence = true
+					default:
+						isPrefix = false
+						isEscapeSequence = true
 					}
 				}
+				if isEscapeSequence {
+					field := curByte
+					if isVex {
+						if isVex3Byte {
+							if isRXB {
+								isRXB = false
+							} else {
+								fieldR = field/128 == 1
+								if fieldR {
+									field -= 128
+								}
+								fieldVvvv[0] = field/64 == 1
+								if fieldVvvv[0] {
+									field -= 64
+								}
+								fieldVvvv[1] = field/32 == 1
+								if fieldVvvv[1] {
+									field -= 32
+								}
+								fieldVvvv[2] = field/16 == 1
+								if fieldVvvv[2] {
+									field -= 16
+								}
+								fieldVvvv[3] = field/8 == 1
+								if fieldVvvv[3] {
+									field -= 8
+								}
+								fieldL = field/4 == 1
+								if fieldL {
+									field -= 4
+								}
+								fieldPp[0] = field/2 == 1
+								if fieldPp[0] {
+									field -= 2
+								}
+								fieldPp[1] = field == 1
+								if fieldPp[1] {
+									field -= 1
+								}
+							}
+						} else {
+							fieldR = field/128 == 1
+							if fieldR {
+								field -= 128
+							}
+							fieldVvvv[0] = field/64 == 1
+							if fieldVvvv[0] {
+								field -= 64
+							}
+							fieldVvvv[1] = field/32 == 1
+							if fieldVvvv[1] {
+								field -= 32
+							}
+							fieldVvvv[2] = field/16 == 1
+							if fieldVvvv[2] {
+								field -= 16
+							}
+							fieldVvvv[3] = field/8 == 1
+							if fieldVvvv[3] {
+								field -= 8
+							}
+							fieldL = field/4 == 1
+							if fieldL {
+								field -= 4
+							}
+							fieldPp[0] = field/2 == 1
+							if fieldPp[0] {
+								field -= 2
+							}
+							fieldPp[1] = field == 1
+							if fieldPp[1] {
+								field -= 1
+							}
+						}
+					} else if isXop {
+						if isRXB {
+
+						} else {
+							fieldR = field/128 == 1
+							if fieldR {
+								field -= 128
+							}
+							fieldVvvv[0] = field/64 == 1
+							if fieldVvvv[0] {
+								field -= 64
+							}
+							fieldVvvv[1] = field/32 == 1
+							if fieldVvvv[1] {
+								field -= 32
+							}
+							fieldVvvv[2] = field/16 == 1
+							if fieldVvvv[2] {
+								field -= 16
+							}
+							fieldVvvv[3] = field/8 == 1
+							if fieldVvvv[3] {
+								field -= 8
+							}
+							fieldL = field/4 == 1
+							if fieldL {
+								field -= 4
+							}
+							fieldPp[0] = field/2 == 1
+							if fieldPp[0] {
+								field -= 2
+							}
+							fieldPp[1] = field == 1
+							if fieldPp[1] {
+								field -= 1
+							}
+						}
+					} else {
+						switch curByte {
+						case 15:
+							// 0xF
+							if isSecondaryMap {
+								is3dNow = true
+								isSecondaryMap = false
+							} else {
+								isSecondaryMap = true
+							}
+						case 56:
+							// 0x38
+							if isSecondaryMap {
+								is38 = true
+							}
+						case 58:
+							// 0x3A
+							if isSecondaryMap {
+								is3A = true
+							}
+						}
+					}
+					isEscapeSequence = false
+				}
 				// opcode
+				if isVex {
+					if isVex3Byte {
+
+					} else {
+					}
+				} else if isXop {
+
+				} else if isSecondaryMap {
+					if is3dNow {
+
+					} else if is38 {
+
+					} else if is3A {
+
+					} else {
+					}
+				} else {
+
+				}
 				// modr/m
 				// sib
 				// immediate
@@ -631,3 +925,216 @@ func main() {
 		}
 	}
 }
+
+type Instruction int
+
+const (
+	AAA Instruction = iota
+	AAD
+	AAM
+	AAS
+	ADC
+	ADCX
+	ADD
+	ADOX
+	AND
+	ANDN
+	BEXTR
+	BLCI
+	BLCIC
+	BLCMSK
+	BLSR
+	BOUND
+	BSF
+	BSR
+	BSWAP
+	BT
+	BTC
+	BTR
+	BTS
+	BZHI
+	CALL
+	CBW // 16 bit, CWDE 32 bit, CDQE 64 bit
+	CWD // 16 bit, CDQ 32 bit, CQO 64 bit
+	CLC
+	CLD
+	CLFLUSH
+	CLFLUSHOPT
+	CLWB
+	CLZERO
+	CMC
+	CMOVcc
+	CMP
+	CMPS // 8 bit,  16 bit, CDQ 32 bit, CQO 64 bit
+	CMPXCHG
+	CMPXCHH8B // 16 - 32 bit, CMPXCHH16B 64 bit
+	CPUID
+	CRC32
+	DAA
+	DAS
+	DEC
+	DIV
+	ENTER
+	IDIV
+	IMUL
+	IN
+	INC
+	INS //
+	INT
+	INTO
+	Jcc
+	JCXZ // 16 bit, JECXZ 32 bit, JRCXZ 64 bit
+	JMP
+	LAHF
+	LDS //
+	LEA
+	LEAVE
+	LFENCE
+	LLWPCB
+	LODS
+	LOOP
+	LWPINS
+	LWPVAL
+	LZCNT
+	MCOMMIT
+	MFENCE
+	MONITORX
+	MOV
+	MOVBE
+	MOVD
+	MOVMSKPD
+	MOVMSKPS
+	MOVNTI
+	MOVS
+	MOVSX
+	MOVSXD
+	MOVZX
+	MUL
+	MULX
+	MWAITX
+	NEG
+	NOP
+	NOT
+	OR
+	OUT
+	OUTS
+	PAUSE
+	PDEP
+	PEXT
+	POP
+	POPA
+	POPCNT
+	POPF
+	PREFETCH
+	PUSH
+	PUSHA
+	PUSHF
+	RCL
+	RCR
+	RDFSBASE
+	RDPID
+	RDPRU
+	RDRAND
+	RDSEED
+	RET
+	ROL
+	ROR
+	RORX
+	SAHF
+	SAL
+	SAR
+	SARX
+	SBB
+	SCAS
+	SETcc
+	SFENCE
+	SHL
+	SHLD
+	SHLX
+	SHR
+	SHRD
+	SHRX
+	SLWPCB
+	STC
+	STD
+	STOS
+	SUB
+	T1MSKC
+	TEST
+	TZCNT
+	TZMSK
+	UD0
+	WRFSBASE
+	XADD
+	XCHG
+	XLAT
+	XLATB
+	XOR
+	ARPL
+	CLAC
+	CLGI
+	CLI
+	CLTS
+	CLRSSBSY
+	HLT
+	INCSSP
+	INT3
+	INVD
+	INVLPG
+	INVLPGA
+	INVLPGB
+	INVPCID
+	IRET
+	LAR
+	LGDT
+	LIDT
+	LLDT
+	LMSW
+	LSL
+	LTR
+	MONITOR
+	MWAIT
+	PSMASH
+	PVALIDATE
+	RDMSR
+	RDPKRU
+	RDPMC
+	RDSSP
+	RDTSC
+	RMPADJUST
+	RMPQUERY
+	RMPREAD
+	RMPUPDATE
+	RSM
+	RSTORSSP
+	SAVEPREVSSP
+	SETSSBY
+	SGDT
+	SIDT
+	SKINIT
+	SLDT
+	SMSW
+	STAC
+	STI
+	STGI
+	STR
+	SWAPGS
+	SYSCALL
+	SYSENTER
+	SYSEXIT
+	SYSRET
+	TLBSYNC
+	VERR
+	VERW
+	VMLOAD
+	VMMCALL
+	VMGEXIT
+	VMRUN
+	VMSAVE
+	WBINVD
+	WBNOINVD
+	WRMSR
+	WRPKRU
+	WRSS
+	WRUSS
+)
