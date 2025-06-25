@@ -440,6 +440,14 @@ func main() {
 			x3B := false
 			b3B := false
 			mapSelect := [5]bool{false, false, false, false, false}
+			isModRM := false
+			isOpcode := false
+			isSib := false
+			isImmediate := false
+			isDisplacement := false
+			modrmMod := [2]bool{false, false}
+			modrmReg := [4]bool{false, false, false}
+			modrmRM := [4]bool{false, false, false}
 			for curByte := range data[entryPoint:textSectionSize] {
 				// 1-15 bytes
 				// prefix(optional)
@@ -812,6 +820,8 @@ func main() {
 								if fieldPp[1] {
 									field -= 1
 								}
+								isEscapeSequence = false
+								isOpcode = true
 							}
 						} else {
 							fieldR = field/128 == 1
@@ -846,6 +856,8 @@ func main() {
 							if fieldPp[1] {
 								field -= 1
 							}
+							isEscapeSequence = false
+							isOpcode = true
 						}
 					} else if isXop {
 						if isRXB {
@@ -915,6 +927,8 @@ func main() {
 							if fieldPp[1] {
 								field -= 1
 							}
+							isEscapeSequence = false
+							isOpcode = true
 						}
 					} else {
 						switch curByte {
@@ -923,6 +937,8 @@ func main() {
 							if isSecondaryMap {
 								is3dNow = true
 								isSecondaryMap = false
+								isEscapeSequence = false
+								isOpcode = true
 							} else {
 								isSecondaryMap = true
 							}
@@ -930,52 +946,117 @@ func main() {
 							// 0x38
 							if isSecondaryMap {
 								is38 = true
+								isEscapeSequence = false
+								isOpcode = true
 							}
 						case 58:
 							// 0x3A
 							if isSecondaryMap {
 								is3A = true
+								isEscapeSequence = false
+								isOpcode = true
 							}
+						default:
+							isEscapeSequence = false
+							isOpcode = true
 						}
 					}
-					isEscapeSequence = false
 				}
 				// opcode
-				if isVex {
-					if isVex3Byte {
-						if mapSelect[3] == false && mapSelect[4] == true {
+				if isOpcode {
+					if isVex {
+						if isVex3Byte {
+							if mapSelect[3] == false && mapSelect[4] == true {
+								// 0x01
+							} else if mapSelect[3] == true && mapSelect[4] == false {
+								// 0x10
+							} else if mapSelect[3] == true && mapSelect[4] == true {
+								// 0x11
+							}
+						} else {
+						}
+					} else if isXop {
+						if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == false {
 							// 0x01
-						} else if mapSelect[3] == true && mapSelect[4] == false {
+						} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == true {
 							// 0x10
-						} else if mapSelect[3] == true && mapSelect[4] == true {
+						} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == true && mapSelect[4] == false {
 							// 0x11
 						}
+					} else if isSecondaryMap {
+						if is3dNow {
+						} else if is38 {
+						} else if is3A {
+						} else {
+						}
 					} else {
+						if isLock {
+						}
+						if bitFormat {
+							if isRexPrefix {
+							}
+						} else {
+						}
 					}
-				} else if isXop {
-					if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == false {
-						// 0x01
-					} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == true {
-						// 0x10
-					} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == true && mapSelect[4] == false {
-						// 0x11
-					}
-				} else if isSecondaryMap {
-					if is3dNow {
-
-					} else if is38 {
-
-					} else if is3A {
-
-					} else {
-					}
-				} else {
-
+					isOpcode = false
+					isModRM = true
 				}
 				// modr/m
+				if isModRM {
+					modRMByte := curByte
+					modrmMod[0] = modRMByte/128 == 1
+					if modrmMod[0] {
+						modRMByte -= 128
+					}
+					modrmMod[1] = modRMByte/64 == 1
+					if modrmMod[1] {
+						modRMByte -= 64
+					}
+					modrmReg[0] = modRMByte/32 == 1
+					if modrmReg[0] {
+						modRMByte -= 32
+					}
+					modrmReg[1] = modRMByte/16 == 1
+					if modrmReg[1] {
+						modRMByte -= 16
+					}
+					modrmReg[2] = modRMByte/8 == 1
+					if modrmReg[2] {
+						modRMByte -= 8
+					}
+					if isRexR && r3B {
+					}
+					if isRexB && b3B {
+					}
+					modrmRM[0] = modRMByte/4 == 1
+					if modrmRM[0] {
+						modRMByte -= 4
+					}
+					modrmRM[1] = modRMByte/2 == 1
+					if modrmRM[1] {
+						modRMByte -= 4
+					}
+					modrmRM[2] = modRMByte == 1
+					if modrmRM[2] {
+						modRMByte -= 1
+					}
+					isModRM = false
+					isSib = true
+				}
 				// sib
+				if isSib {
+					isSib = false
+					isImmediate = true
+				}
 				// immediate
+				if isImmediate {
+					isImmediate = false
+					isDisplacement = true
+				}
 				// displacemet
+				if isDisplacement {
+					isDisplacement = false
+				}
 			}
 		case SonyDsp:
 		case Pdp10:
