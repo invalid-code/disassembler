@@ -436,6 +436,10 @@ func main() {
 			fieldL := false
 			fieldPp := [2]bool{false, false}
 			isRXB := true
+			r3B := false
+			x3B := false
+			b3B := false
+			mapSelect := [5]bool{false, false, false, false, false}
 			for curByte := range data[entryPoint:textSectionSize] {
 				// 1-15 bytes
 				// prefix(optional)
@@ -742,6 +746,38 @@ func main() {
 					if isVex {
 						if isVex3Byte {
 							if isRXB {
+								r3B = field/128 == 1
+								if r3B {
+									field -= 128
+								}
+								x3B = field/64 == 1
+								if x3B {
+									field -= 64
+								}
+								b3B = field/32 == 1
+								if b3B {
+									field -= 32
+								}
+								mapSelect[0] = field/16 == 1
+								if mapSelect[0] {
+									field -= 16
+								}
+								mapSelect[1] = field/8 == 1
+								if mapSelect[1] {
+									field -= 8
+								}
+								mapSelect[2] = field/4 == 1
+								if mapSelect[2] {
+									field -= 4
+								}
+								mapSelect[3] = field/2 == 1
+								if mapSelect[3] {
+									field -= 2
+								}
+								mapSelect[4] = field == 1
+								if mapSelect[4] {
+									field -= 1
+								}
 								isRXB = false
 							} else {
 								fieldR = field/128 == 1
@@ -813,7 +849,39 @@ func main() {
 						}
 					} else if isXop {
 						if isRXB {
-
+							r3B = field/128 == 1
+							if r3B {
+								field -= 128
+							}
+							x3B = field/64 == 1
+							if x3B {
+								field -= 64
+							}
+							b3B = field/32 == 1
+							if b3B {
+								field -= 32
+							}
+							mapSelect[0] = field/16 == 1
+							if mapSelect[0] {
+								field -= 16
+							}
+							mapSelect[1] = field/8 == 1
+							if mapSelect[1] {
+								field -= 8
+							}
+							mapSelect[2] = field/4 == 1
+							if mapSelect[2] {
+								field -= 4
+							}
+							mapSelect[3] = field/2 == 1
+							if mapSelect[3] {
+								field -= 2
+							}
+							mapSelect[4] = field == 1
+							if mapSelect[4] {
+								field -= 1
+							}
+							isRXB = false
 						} else {
 							fieldR = field/128 == 1
 							if fieldR {
@@ -875,11 +943,23 @@ func main() {
 				// opcode
 				if isVex {
 					if isVex3Byte {
-
+						if mapSelect[3] == false && mapSelect[4] == true {
+							// 0x01
+						} else if mapSelect[3] == true && mapSelect[4] == false {
+							// 0x10
+						} else if mapSelect[3] == true && mapSelect[4] == true {
+							// 0x11
+						}
 					} else {
 					}
 				} else if isXop {
-
+					if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == false {
+						// 0x01
+					} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == true {
+						// 0x10
+					} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == true && mapSelect[4] == false {
+						// 0x11
+					}
 				} else if isSecondaryMap {
 					if is3dNow {
 
@@ -1137,4 +1217,15 @@ const (
 	WRPKRU
 	WRSS
 	WRUSS
+)
+
+type OpcodeMap3B int
+
+const (
+	VexOM1 OpcodeMap3B = iota
+	VexOM2
+	VexOM3
+	XopOM1
+	XopOm2
+	XopOm3
 )
