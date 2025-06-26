@@ -146,6 +146,7 @@ const (
 	PREFETCH
 	PUSH
 	PUSHA
+	PUSHD
 	PUSHF
 	RCL
 	RCR
