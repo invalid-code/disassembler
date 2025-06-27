@@ -106,19 +106,19 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				}
 				isSSSegmentSizeOverride = true
 				legacePrefixCnt += 1
-			case 0xf0:
+			case 0xF0:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
 				isLock = true
 				legacePrefixCnt += 1
-			case 0xf3:
+			case 0xF3:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
 				isRep1 = true
 				legacePrefixCnt += 1
-			case 0xf2:
+			case 0xF2:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
@@ -534,72 +534,72 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			if isVex {
 				if isVex3Byte {
 					if mapSelect[3] == false && mapSelect[4] == true {
-						vexOpcodeMap1(curByte)
+						instruction = vexOpcodeMap1(curByte)
 					} else if mapSelect[3] == true && mapSelect[4] == false {
-						vexOpcodeMap2(curByte)
+						instruction = vexOpcodeMap2(curByte)
 					} else if mapSelect[3] == true && mapSelect[4] == true {
-						vexOpcodeMap3(curByte)
+						instruction = vexOpcodeMap3(curByte)
 					}
 				} else {
 					vexOpcodeMap1(curByte)
 				}
 			} else if isXop {
 				if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == false {
-					xopOpcodeMap8(curByte)
+					instruction = xopOpcodeMap8(curByte)
 				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == true {
-					xopOpcodeMap9(curByte)
+					instruction = xopOpcodeMap9(curByte)
 				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == true && mapSelect[4] == false {
-					xopOpcodeMap10(curByte)
+					instruction = xopOpcodeMap10(curByte)
 				}
 			} else if is3dNow {
 				if isLock {
 				}
 				if bitFormat {
-					opcodeMap3dnow64(curByte)
+					instruction = opcodeMap3dnow64(curByte)
 					if isRexPrefix {
 					}
 				} else {
-					opcodeMap3dnow32(curByte)
+					instruction = opcodeMap3dnow32(curByte)
 				}
 			} else if is3A {
 				if isLock {
 				}
 				if bitFormat {
-					opcodeMap3A(curByte)
+					instruction = opcodeMap3A(curByte)
 					if isRexPrefix {
 					}
 				} else {
-					opcodeMap3A(curByte)
+					instruction = opcodeMap3A(curByte)
 				}
 			} else if is38 {
 				if isLock {
 				}
 				if bitFormat {
-					opcodeMap3864(curByte)
+					instruction = opcodeMap3864(curByte)
 					if isRexPrefix {
 					}
 				} else {
-					opcodeMap3832(curByte)
+					instruction = opcodeMap3832(curByte)
 				}
 			} else if isSecondaryMap {
 				if isLock {
 				}
 				if bitFormat {
-					secondaryOpcodeMap64(curByte)
+					instruction = secondaryOpcodeMap64(curByte)
 					if isRexPrefix {
 					}
 				} else {
-					secondaryOpcodeMap32(curByte)
+					instruction = secondaryOpcodeMap32(curByte, isRep0, isRep1, isOperandSizeOverride)
 				}
 			} else {
 				if isLock {
 				}
 				if bitFormat {
-					primaryOpcode64(curByte)
+					instruction = primaryOpcode64(curByte)
 					if isRexPrefix {
 					}
 				} else {
-					primaryOpcode32(curByte, isOperandSizeOverride)
+					instruction = primaryOpcode32(curByte, isOperandSizeOverride)
 				}
 			}
 			isOpcode = false

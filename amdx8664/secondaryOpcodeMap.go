@@ -1,179 +1,463 @@
 package amdx8664
 
-func secondaryOpcodeMap32(curByte int) Instruction {
+func secondaryOpcodeMap32(curByte int, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) Instruction {
 	switch curByte {
 	case 0x0:
-		return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
 	case 0x1:
-		return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
 	case 0x2:
-		return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
+		return LAR
 	case 0x3:
-		return ADD
-	case 0x4:
-		return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
+		return LSL
 	case 0x5:
-		return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
+		return SYSCALL
 	case 0x6:
-		return PUSH
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
+		return CLTS
 	case 0x7:
-		return POP
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
+		return SYSRET
 	case 0x8:
-		return OR
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
+		return INVD
 	case 0x9:
-		return OR
-	case 0xA:
-		return OR
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
 	case 0xB:
-		return OR
-	case 0xC:
-		return OR
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
+		return UD2
 	case 0xD:
-		return OR
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
 	case 0xE:
-		return PUSH
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
+		return FEMMS
 	case 0xF:
-		// escape to 2nd opcode map
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
+		}
+		// escape to 3dnow opcode map
 	case 0x10:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVUPD
+		} else if isRep1 {
+			// 0xF3
+			return MOVSS
+		} else if isRep0 {
+			// 0xF2
+			return MOVSD
+		} else {
+			return MOVUPS
+		}
 	case 0x11:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVUPD
+		} else if isRep1 {
+			// 0xF3
+			return MOVSS
+		} else if isRep0 {
+			// 0xF2
+			return MOVSD
+		} else {
+			return MOVUPS
+		}
 	case 0x12:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVLPD
+		} else if isRep1 {
+			// 0xF3
+			return MOVSLDUP
+		} else if isRep0 {
+			// 0xF2
+			return MOVDDUP
+		} else {
+			// todo
+			return NOP
+		}
 	case 0x13:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVLPS
+		} else {
+			return MOVLPD
+		}
 	case 0x14:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return UNPCKLPD
+		} else {
+			return UNPCKLPS
+		}
 	case 0x15:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return UNPCKHPD
+		} else {
+			return UNPCKHPS
+		}
 	case 0x16:
-		return PUSH
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVHPD
+		} else if isRep1 {
+			// 0xF3
+			return MOVSHDUP
+		} else {
+			// todo
+			return NOP
+		}
 	case 0x17:
-		return POP
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVHPD
+		} else {
+			return MOVHPS
+		}
 	case 0x18:
-		return SBB
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
+		}
+		// todo
+		return NOP
 	case 0x19:
-		return SBB
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
+		}
+		// todo
+		return NOP
 	case 0x1A:
-		return SBB
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
+		}
+		// todo
+		return NOP
 	case 0x1B:
-		return SBB
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
+		}
+		// todo
+		return NOP
 	case 0x1C:
-		return SBB
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
+		}
+		// todo
+		return NOP
 	case 0x1D:
-		return SBB
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
+		}
+		// todo
+		return NOP
 	case 0x1E:
-		return PUSH
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
+		}
+		// todo
+		return NOP
 	case 0x1F:
-		return POP
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
+		}
+		// todo
+		return NOP
 	case 0x20:
-		return AND
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x20 - 0x27")
+		}
+		return MOV
 	case 0x21:
-		return AND
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x20 - 0x27")
+		}
+		return MOV
 	case 0x22:
-		return AND
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x20 - 0x27")
+		}
+		return MOV
 	case 0x23:
-		return AND
-	case 0x24:
-		return AND
-	case 0x25:
-		return AND
-	case 0x26:
-		// return ADD
-	case 0x27:
-		return DAA
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x20 - 0x27")
+		}
+		return MOV
 	case 0x28:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVAPD
+		} else {
+			return MOVAPS
+		}
 	case 0x29:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVAPD
+		} else {
+			return MOVAPS
+		}
 	case 0x2A:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return CVTSI2SS
+		} else if isRep1 {
+			// 0xF3
+			return CVTPI2PD
+		} else if isRep0 {
+			// 0xF2
+			return CVTSI2SD
+		} else {
+			// todo
+			return CVTPI2PS
+		}
 	case 0x2B:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVNTPD
+		} else if isRep1 {
+			// 0xF3
+			return MOVNTSS
+		} else if isRep0 {
+			// 0xF2
+			return MOVNTSD
+		} else {
+			// todo
+			return MOVNTPS
+		}
 	case 0x2C:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return CVTTPD2PI
+		} else if isRep1 {
+			// 0xF3
+			return CVTTSS2SI
+		} else if isRep0 {
+			// 0xF2
+			return CVTTSD2SI
+		} else {
+			// todo
+			return CVTTPS2PI
+		}
 	case 0x2D:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return CVTPD2PI
+		} else if isRep1 {
+			// 0xF3
+			return CVTSS2SI
+		} else if isRep0 {
+			// 0xF2
+			return CVTSD2SI
+		} else {
+			// todo
+			return CVTPS2PI
+		}
 	case 0x2E:
-		// return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return UCOMISD
+		} else {
+			// todo
+			return UCOMISS
+		}
 	case 0x2F:
-		return DAS
+		if isOperandSizeOverride {
+			// 0x66
+			return COMISD
+		} else {
+			// todo
+			return COMISS
+		}
 	case 0x30:
-		return XOR
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x30 - 0x37")
+		}
+		return WRMSR
 	case 0x31:
-		return XOR
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x30 - 0x37")
+		}
+		return RDTSC
 	case 0x32:
-		return XOR
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x30 - 0x37")
+		}
+		return RDMSR
 	case 0x33:
-		return XOR
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x30 - 0x37")
+		}
+		return RDPMC
 	case 0x34:
-		return XOR
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x30 - 0x37")
+		}
+		return SYSENTER
 	case 0x35:
-		return XOR
-	case 0x36:
-		// return ADD
-	case 0x37:
-		return AAA
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x30 - 0x37")
+		}
+		return SYSEXIT
 	case 0x38:
-		return CMP
-	case 0x39:
-		return CMP
+		panic("Error: This is the 0x38 escape byte")
 	case 0x3A:
-		return CMP
-	case 0x3B:
-		return CMP
-	case 0x3C:
-		return CMP
-	case 0x3D:
-		return CMP
-	case 0x3E:
-		// return ADD
-	case 0x3F:
-		return AAS
+		panic("Error: This is the 0x3A escape byte")
 	case 0x40:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVO
 	case 0x41:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVNO
 	case 0x42:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVB
 	case 0x43:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVNB
 	case 0x44:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVZ
 	case 0x45:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVNZ
 	case 0x46:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVBE
 	case 0x47:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVNBE
 	case 0x48:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVS
 	case 0x49:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVNS
 	case 0x4A:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVP
 	case 0x4B:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVNP
 	case 0x4C:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVL
 	case 0x4D:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVNL
 	case 0x4E:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVLE
 	case 0x4F:
-		// return ADD
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0x40 - 0x4F")
+		}
+		return CMOVNLE
 	case 0x50:
-		return PUSH
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVMSKPD
+		} else {
+			return MOVMSKPS
+		}
 	case 0x51:
-		return PUSH
+		if isOperandSizeOverride {
+			// 0x66
+			return SQRTPD
+		} else if isRep1 {
+			// 0xF3
+			return SQRTSS
+		} else if isRep0 {
+			// 0xF2
+			return SQRTSD
+		} else {
+			return SQRTPS
+		}
 	case 0x52:
-		return PUSH
+		if isRep1 {
+			// 0xF3
+			return RSQRTSS
+		} else {
+			return RSQRTPS
+		}
 	case 0x53:
-		return PUSH
+		if isRep1 {
+			// 0xF3
+			return RCPSS
+		} else {
+			return RCPPS
+		}
 	case 0x54:
-		return PUSH
+		if isOperandSizeOverride {
+			// 0x66
+			return ANDPD
+		} else {
+			return ANDPS
+		}
 	case 0x55:
-		return PUSH
+		if isOperandSizeOverride {
+			// 0x66
+			return ANDNPD
+		} else {
+			return ANDNPS
+		}
 	case 0x56:
 		return PUSH
 	case 0x57:
