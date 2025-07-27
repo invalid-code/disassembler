@@ -1,1036 +1,796 @@
 package amdx8664
 
-func opcodeMap3832(curByte int) Instruction {
+func opcodeMap3832(curByte int, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) Instruction {
 	switch curByte {
 	case 0x0:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PSHUFB
+		} else {
+			return PSHUFB
+		}
 	case 0x1:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHADDW
+		} else {
+			return PHADDW
+		}
 	case 0x2:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHADDD
+		} else {
+			return PHADDD
+		}
 	case 0x3:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHADDSW
+		} else {
+			return PHADDSW
+		}
 	case 0x4:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PMADDUBSW
+		} else {
+			return PMADDUBSW
+		}
 	case 0x5:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHSUBW
+		} else {
+			return PHSUBW
+		}
 	case 0x6:
-		return PUSH
+		if isOperandSizeOverride {
+			// 0x66
+			return PHSUBD
+		} else {
+			return PHSUBD
+		}
 	case 0x7:
-		return POP
+		if isOperandSizeOverride {
+			// 0x66
+			return PHSUBSW
+		} else {
+			return PHSUBSW
+		}
 	case 0x8:
-		return OR
+		if isOperandSizeOverride {
+			// 0x66
+			return PSIGNB
+		} else {
+			return PSIGNB
+		}
 	case 0x9:
-		return OR
+		if isOperandSizeOverride {
+			// 0x66
+			return PSIGNW
+		} else {
+			return PSIGNW
+		}
 	case 0xA:
-		return OR
+		if isOperandSizeOverride {
+			// 0x66
+			return PSIGND
+		} else {
+			return PSIGND
+		}
 	case 0xB:
-		return OR
-	case 0xC:
-		return OR
-	case 0xD:
-		return OR
-	case 0xE:
-		return PUSH
-	case 0xF:
-		// escape to 2nd opcode map
+		if isOperandSizeOverride {
+			// 0x66
+			return PMULHRSW
+		} else {
+			return PMULHRSW
+		}
 	case 0x10:
-		return ADC
-	case 0x11:
-		return ADC
-	case 0x12:
-		return ADC
-	case 0x13:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return PBLENDVB
+		} else {
+			return NOP
+		}
 	case 0x14:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return BLENDVPS
+		} else {
+			return NOP
+		}
 	case 0x15:
-		return ADC
-	case 0x16:
-		return PUSH
+		if isOperandSizeOverride {
+			// 0x66
+			return PBLENDVB
+		} else {
+			return NOP
+		}
 	case 0x17:
-		return POP
-	case 0x18:
-		return SBB
-	case 0x19:
-		return SBB
-	case 0x1A:
-		return SBB
-	case 0x1B:
-		return SBB
+		if isOperandSizeOverride {
+			// 0x66
+			return PTEST
+		} else {
+			return NOP
+		}
 	case 0x1C:
-		return SBB
+		if isOperandSizeOverride {
+			// 0x66
+			return PABSB
+		} else {
+			return PABSB
+		}
 	case 0x1D:
-		return SBB
+		if isOperandSizeOverride {
+			// 0x66
+			return PABSW
+		} else {
+			return PABSW
+		}
 	case 0x1E:
-		return PUSH
-	case 0x1F:
-		return POP
+		if isOperandSizeOverride {
+			// 0x66
+			return PABSD
+		} else {
+			return PABSD
+		}
 	case 0x20:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXBW
+		} else {
+			return NOP
+		}
 	case 0x21:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXBD
+		} else {
+			return NOP
+		}
 	case 0x22:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXBQ
+		} else {
+			return NOP
+		}
 	case 0x23:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXWD
+		} else {
+			return NOP
+		}
 	case 0x24:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXWQ
+		} else {
+			return NOP
+		}
 	case 0x25:
-		return AND
-	case 0x26:
-		// return ADD
-	case 0x27:
-		return DAA
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXDQ
+		} else {
+			return NOP
+		}
 	case 0x28:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return PMULDQ
+		} else {
+			return NOP
+		}
 	case 0x29:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return PCMPEQQ
+		} else {
+			return NOP
+		}
 	case 0x2A:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVNTDQA
+		} else {
+			return NOP
+		}
 	case 0x2B:
-		return SUB
-	case 0x2C:
-		return SUB
-	case 0x2D:
-		return SUB
-	case 0x2E:
-		// return ADD
-	case 0x2F:
-		return DAS
+		if isOperandSizeOverride {
+			// 0x66
+			return PACKUSDW
+		} else {
+			return NOP
+		}
 	case 0x30:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXBW
+		} else {
+			return NOP
+		}
 	case 0x31:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXBD
+		} else {
+			return NOP
+		}
 	case 0x32:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXBQ
+		} else {
+			return NOP
+		}
 	case 0x33:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXWD
+		} else {
+			return NOP
+		}
 	case 0x34:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXWQ
+		} else {
+			return NOP
+		}
 	case 0x35:
-		return XOR
-	case 0x36:
-		// return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXDQ
+		} else {
+			return NOP
+		}
 	case 0x37:
-		return AAA
+		if isOperandSizeOverride {
+			// 0x66
+			return PCMPGTQ
+		} else {
+			return NOP
+		}
 	case 0x38:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMINSB
+		} else {
+			return NOP
+		}
 	case 0x39:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMINSD
+		} else {
+			return NOP
+		}
 	case 0x3A:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMINUW
+		} else {
+			return NOP
+		}
 	case 0x3B:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMINUD
+		} else {
+			return NOP
+		}
 	case 0x3C:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMAXSB
+		} else {
+			return NOP
+		}
 	case 0x3D:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMAXSD
+		} else {
+			return NOP
+		}
 	case 0x3E:
-		// return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PMAXUW
+		} else {
+			return NOP
+		}
 	case 0x3F:
-		return AAS
+		if isOperandSizeOverride {
+			// 0x66
+			return PMAXUD
+		} else {
+			return NOP
+		}
 	case 0x40:
-		// return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PMULLD
+		} else {
+			return NOP
+		}
 	case 0x41:
-		// return ADD
-	case 0x42:
-		// return ADD
-	case 0x43:
-		// return ADD
-	case 0x44:
-		// return ADD
-	case 0x45:
-		// return ADD
-	case 0x46:
-		// return ADD
-	case 0x47:
-		// return ADD
-	case 0x48:
-		// return ADD
-	case 0x49:
-		// return ADD
-	case 0x4A:
-		// return ADD
-	case 0x4B:
-		// return ADD
-	case 0x4C:
-		// return ADD
-	case 0x4D:
-		// return ADD
-	case 0x4E:
-		// return ADD
-	case 0x4F:
-		// return ADD
-	case 0x50:
-		return PUSH
-	case 0x51:
-		return PUSH
-	case 0x52:
-		return PUSH
-	case 0x53:
-		return PUSH
-	case 0x54:
-		return PUSH
-	case 0x55:
-		return PUSH
-	case 0x56:
-		return PUSH
-	case 0x57:
-		return PUSH
-	case 0x58:
-		return POP
-	case 0x59:
-		return POP
-	case 0x5A:
-		return POP
-	case 0x5B:
-		return POP
-	case 0x5C:
-		return POP
-	case 0x5D:
-		return POP
-	case 0x5E:
-		return POP
-	case 0x5F:
-		return POP
-	case 0x60:
-		// return ADD operand size override
-	case 0x61:
-		// return ADD operand size override
-	case 0x62:
-		return BOUND
-	case 0x63:
-		return ADD
-	case 0x64:
-		return ADD
-	case 0x65:
-		return ADD
-	case 0x66:
-		return ADD
-	case 0x67:
-		return ADD
-	case 0x68:
-		return ADD
-	case 0x69:
-		return ADD
-	case 0x6A:
-		return ADD
-	case 0x6B:
-		return ADD
-	case 0x6C:
-		return ADD
-	case 0x6D:
-		return ADD
-	case 0x6E:
-		return ADD
-	case 0x6F:
-		return ADD
-	case 0x70:
-		return ADD
-	case 0x71:
-		return ADD
-	case 0x72:
-		return ADD
-	case 0x73:
-		return ADD
-	case 0x74:
-		return ADD
-	case 0x75:
-		return ADD
-	case 0x76:
-		return ADD
-	case 0x77:
-		return ADD
-	case 0x78:
-		return ADD
-	case 0x79:
-		return ADD
-	case 0x7A:
-		return ADD
-	case 0x7B:
-		return ADD
-	case 0x7C:
-		return ADD
-	case 0x7D:
-		return ADD
-	case 0x7E:
-		return ADD
-	case 0x7F:
-		return ADD
-	case 0x80:
-		return ADD
-	case 0x81:
-		return ADD
-	case 0x82:
-		return ADD
-	case 0x83:
-		return ADD
-	case 0x84:
-		return ADD
-	case 0x85:
-		return ADD
-	case 0x86:
-		return ADD
-	case 0x87:
-		return ADD
-	case 0x88:
-		return ADD
-	case 0x89:
-		return ADD
-	case 0x8A:
-		return ADD
-	case 0x8B:
-		return ADD
-	case 0x8C:
-		return ADD
-	case 0x8D:
-		return ADD
-	case 0x8E:
-		return ADD
-	case 0x8F:
-		return ADD
-	case 0x90:
-		return ADD
-	case 0x91:
-		return ADD
-	case 0x92:
-		return ADD
-	case 0x93:
-		return ADD
-	case 0x94:
-		return ADD
-	case 0x95:
-		return ADD
-	case 0x96:
-		return ADD
-	case 0x97:
-		return ADD
-	case 0x98:
-		return ADD
-	case 0x99:
-		return ADD
-	case 0x9A:
-		return ADD
-	case 0x9B:
-		return ADD
-	case 0x9C:
-		return ADD
-	case 0x9D:
-		return ADD
-	case 0x9E:
-		return ADD
-	case 0x9F:
-		return ADD
-	case 0xA0:
-		return ADD
-	case 0xA1:
-		return ADD
-	case 0xA2:
-		return ADD
-	case 0xA3:
-		return ADD
-	case 0xA4:
-		return ADD
-	case 0xA5:
-		return ADD
-	case 0xA6:
-		return ADD
-	case 0xA7:
-		return ADD
-	case 0xA8:
-		return ADD
-	case 0xA9:
-		return ADD
-	case 0xAA:
-		return ADD
-	case 0xAB:
-		return ADD
-	case 0xAC:
-		return ADD
-	case 0xAD:
-		return ADD
-	case 0xAE:
-		return ADD
-	case 0xAF:
-		return ADD
-	case 0xB0:
-		return ADD
-	case 0xB1:
-		return ADD
-	case 0xB2:
-		return ADD
-	case 0xB3:
-		return ADD
-	case 0xB4:
-		return ADD
-	case 0xB5:
-		return ADD
-	case 0xB6:
-		return ADD
-	case 0xB7:
-		return ADD
-	case 0xB8:
-		return ADD
-	case 0xB9:
-		return ADD
-	case 0xBA:
-		return ADD
-	case 0xBB:
-		return ADD
-	case 0xBC:
-		return ADD
-	case 0xBD:
-		return ADD
-	case 0xBE:
-		return ADD
-	case 0xBF:
-		return ADD
-	case 0xC0:
-		return ADD
-	case 0xC1:
-		return ADD
-	case 0xC2:
-		return ADD
-	case 0xC3:
-		return ADD
-	case 0xC4:
-		return ADD
-	case 0xC5:
-		return ADD
-	case 0xC6:
-		return ADD
-	case 0xC7:
-		return ADD
-	case 0xC8:
-		return ADD
-	case 0xC9:
-		return ADD
-	case 0xCA:
-		return ADD
-	case 0xCB:
-		return ADD
-	case 0xCC:
-		return ADD
-	case 0xCD:
-		return ADD
-	case 0xCE:
-		return ADD
-	case 0xCF:
-		return ADD
-	case 0xD0:
-		return ADD
-	case 0xD1:
-		return ADD
-	case 0xD2:
-		return ADD
-	case 0xD3:
-		return ADD
-	case 0xD4:
-		return ADD
-	case 0xD5:
-		return ADD
-	case 0xD6:
-		return ADD
-	case 0xD7:
-		return ADD
-	case 0xD8:
-		return ADD
-	case 0xD9:
-		return ADD
-	case 0xDA:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHMINPOSUW
+		} else {
+			return NOP
+		}
 	case 0xDB:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESIMC
+		} else {
+			return NOP
+		}
 	case 0xDC:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESENC
+		} else {
+			return NOP
+		}
 	case 0xDD:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESENCLAST
+		} else {
+			return NOP
+		}
 	case 0xDE:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESDEC
+		} else {
+			return NOP
+		}
 	case 0xDF:
-		return ADD
-	case 0xE0:
-		return ADD
-	case 0xE1:
-		return ADD
-	case 0xE2:
-		return ADD
-	case 0xE3:
-		return ADD
-	case 0xE4:
-		return ADD
-	case 0xE5:
-		return ADD
-	case 0xE6:
-		return ADD
-	case 0xE7:
-		return ADD
-	case 0xE8:
-		return ADD
-	case 0xE9:
-		return ADD
-	case 0xEA:
-		return ADD
-	case 0xEB:
-		return ADD
-	case 0xEC:
-		return ADD
-	case 0xED:
-		return ADD
-	case 0xEE:
-		return ADD
-	case 0xEF:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESDECLAST
+		} else {
+			return NOP
+		}
 	case 0xF0:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVUPD
+		} else if isRep1 {
+			// 0xF3
+			return MOVSS
+		} else if isRep0 {
+			// 0xF2
+			return MOVSD
+		} else {
+			return MOVUPS
+		}
 	case 0xF1:
-		return ADD
-	case 0xF2:
-		return ADD
-	case 0xF3:
-		return ADD
-	case 0xF4:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVBE
+		} else if isRep1 {
+			// 0xF3
+			return CRC32
+		} else if isRep0 {
+			// 0xF2
+			return CRC32
+		} else {
+			return MOVBE
+		}
 	case 0xF5:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return WRUSS
+		} else {
+			return NOP
+		}
 	case 0xF6:
-		return ADD
-	case 0xF7:
-		return ADD
-	case 0xF8:
-		return ADD
-	case 0xF9:
-		return ADD
-	case 0xFA:
-		return ADD
-	case 0xFB:
-		return ADD
-	case 0xFC:
-		return ADD
-	case 0xFD:
-		return ADD
-	case 0xFE:
-		return ADD
-	case 0xFF:
 		return ADD
 	}
 	panic("Error: todo")
 }
 
-func opcodeMap3864(curByte int) Instruction {
+func opcodeMap3864(curByte int, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) Instruction {
 	switch curByte {
 	case 0x0:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PSHUFB
+		} else {
+			return PSHUFB
+		}
 	case 0x1:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHADDW
+		} else {
+			return PHADDW
+		}
 	case 0x2:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHADDD
+		} else {
+			return PHADDD
+		}
 	case 0x3:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHADDSW
+		} else {
+			return PHADDSW
+		}
 	case 0x4:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PMADDUBSW
+		} else {
+			return PMADDUBSW
+		}
 	case 0x5:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHSUBW
+		} else {
+			return PHSUBW
+		}
 	case 0x6:
-		return PUSH
+		if isOperandSizeOverride {
+			// 0x66
+			return PHSUBD
+		} else {
+			return PHSUBD
+		}
 	case 0x7:
-		return POP
+		if isOperandSizeOverride {
+			// 0x66
+			return PHSUBSW
+		} else {
+			return PHSUBSW
+		}
 	case 0x8:
-		return OR
+		if isOperandSizeOverride {
+			// 0x66
+			return PSIGNB
+		} else {
+			return PSIGNB
+		}
 	case 0x9:
-		return OR
+		if isOperandSizeOverride {
+			// 0x66
+			return PSIGNW
+		} else {
+			return PSIGNW
+		}
 	case 0xA:
-		return OR
+		if isOperandSizeOverride {
+			// 0x66
+			return PSIGND
+		} else {
+			return PSIGND
+		}
 	case 0xB:
-		return OR
-	case 0xC:
-		return OR
-	case 0xD:
-		return OR
-	case 0xE:
-		return PUSH
-	case 0xF:
-		// escape to 2nd opcode map
+		if isOperandSizeOverride {
+			// 0x66
+			return PMULHRSW
+		} else {
+			return PMULHRSW
+		}
 	case 0x10:
-		return ADC
-	case 0x11:
-		return ADC
-	case 0x12:
-		return ADC
-	case 0x13:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return PBLENDVB
+		} else {
+			return NOP
+		}
 	case 0x14:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return BLENDVPS
+		} else {
+			return NOP
+		}
 	case 0x15:
-		return ADC
-	case 0x16:
-		return PUSH
+		if isOperandSizeOverride {
+			// 0x66
+			return PBLENDVB
+		} else {
+			return NOP
+		}
 	case 0x17:
-		return POP
-	case 0x18:
-		return SBB
-	case 0x19:
-		return SBB
-	case 0x1A:
-		return SBB
-	case 0x1B:
-		return SBB
+		if isOperandSizeOverride {
+			// 0x66
+			return PTEST
+		} else {
+			return NOP
+		}
 	case 0x1C:
-		return SBB
+		if isOperandSizeOverride {
+			// 0x66
+			return PABSB
+		} else {
+			return PABSB
+		}
 	case 0x1D:
-		return SBB
+		if isOperandSizeOverride {
+			// 0x66
+			return PABSW
+		} else {
+			return PABSW
+		}
 	case 0x1E:
-		return PUSH
-	case 0x1F:
-		return POP
+		if isOperandSizeOverride {
+			// 0x66
+			return PABSD
+		} else {
+			return PABSD
+		}
 	case 0x20:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXBW
+		} else {
+			return NOP
+		}
 	case 0x21:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXBD
+		} else {
+			return NOP
+		}
 	case 0x22:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXBQ
+		} else {
+			return NOP
+		}
 	case 0x23:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXWD
+		} else {
+			return NOP
+		}
 	case 0x24:
-		return AND
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXWQ
+		} else {
+			return NOP
+		}
 	case 0x25:
-		return AND
-	case 0x26:
-		// return ADD
-	case 0x27:
-		return DAA
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVSXDQ
+		} else {
+			return NOP
+		}
 	case 0x28:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return PMULDQ
+		} else {
+			return NOP
+		}
 	case 0x29:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return PCMPEQQ
+		} else {
+			return NOP
+		}
 	case 0x2A:
-		return SUB
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVNTDQA
+		} else {
+			return NOP
+		}
 	case 0x2B:
-		return SUB
-	case 0x2C:
-		return SUB
-	case 0x2D:
-		return SUB
-	case 0x2E:
-		// return ADD
-	case 0x2F:
-		return DAS
+		if isOperandSizeOverride {
+			// 0x66
+			return PACKUSDW
+		} else {
+			return NOP
+		}
 	case 0x30:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXBW
+		} else {
+			return NOP
+		}
 	case 0x31:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXBD
+		} else {
+			return NOP
+		}
 	case 0x32:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXBQ
+		} else {
+			return NOP
+		}
 	case 0x33:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXWD
+		} else {
+			return NOP
+		}
 	case 0x34:
-		return XOR
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXWQ
+		} else {
+			return NOP
+		}
 	case 0x35:
-		return XOR
-	case 0x36:
-		// return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PMOVZXDQ
+		} else {
+			return NOP
+		}
 	case 0x37:
-		return AAA
+		if isOperandSizeOverride {
+			// 0x66
+			return PCMPGTQ
+		} else {
+			return NOP
+		}
 	case 0x38:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMINSB
+		} else {
+			return NOP
+		}
 	case 0x39:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMINSD
+		} else {
+			return NOP
+		}
 	case 0x3A:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMINUW
+		} else {
+			return NOP
+		}
 	case 0x3B:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMINUD
+		} else {
+			return NOP
+		}
 	case 0x3C:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMAXSB
+		} else {
+			return NOP
+		}
 	case 0x3D:
-		return CMP
+		if isOperandSizeOverride {
+			// 0x66
+			return PMAXSD
+		} else {
+			return NOP
+		}
 	case 0x3E:
-		// return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PMAXUW
+		} else {
+			return NOP
+		}
 	case 0x3F:
-		return AAS
+		if isOperandSizeOverride {
+			// 0x66
+			return PMAXUD
+		} else {
+			return NOP
+		}
 	case 0x40:
-		// return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PMULLD
+		} else {
+			return NOP
+		}
 	case 0x41:
-		// return ADD
-	case 0x42:
-		// return ADD
-	case 0x43:
-		// return ADD
-	case 0x44:
-		// return ADD
-	case 0x45:
-		// return ADD
-	case 0x46:
-		// return ADD
-	case 0x47:
-		// return ADD
-	case 0x48:
-		// return ADD
-	case 0x49:
-		// return ADD
-	case 0x4A:
-		// return ADD
-	case 0x4B:
-		// return ADD
-	case 0x4C:
-		// return ADD
-	case 0x4D:
-		// return ADD
-	case 0x4E:
-		// return ADD
-	case 0x4F:
-		// return ADD
-	case 0x50:
-		return PUSH
-	case 0x51:
-		return PUSH
-	case 0x52:
-		return PUSH
-	case 0x53:
-		return PUSH
-	case 0x54:
-		return PUSH
-	case 0x55:
-		return PUSH
-	case 0x56:
-		return PUSH
-	case 0x57:
-		return PUSH
-	case 0x58:
-		return POP
-	case 0x59:
-		return POP
-	case 0x5A:
-		return POP
-	case 0x5B:
-		return POP
-	case 0x5C:
-		return POP
-	case 0x5D:
-		return POP
-	case 0x5E:
-		return POP
-	case 0x5F:
-		return POP
-	case 0x60:
-		// return ADD operand size override
-	case 0x61:
-		// return ADD operand size override
-	case 0x62:
-		return BOUND
-	case 0x63:
-		return ADD
-	case 0x64:
-		return ADD
-	case 0x65:
-		return ADD
-	case 0x66:
-		return ADD
-	case 0x67:
-		return ADD
-	case 0x68:
-		return ADD
-	case 0x69:
-		return ADD
-	case 0x6A:
-		return ADD
-	case 0x6B:
-		return ADD
-	case 0x6C:
-		return ADD
-	case 0x6D:
-		return ADD
-	case 0x6E:
-		return ADD
-	case 0x6F:
-		return ADD
-	case 0x70:
-		return ADD
-	case 0x71:
-		return ADD
-	case 0x72:
-		return ADD
-	case 0x73:
-		return ADD
-	case 0x74:
-		return ADD
-	case 0x75:
-		return ADD
-	case 0x76:
-		return ADD
-	case 0x77:
-		return ADD
-	case 0x78:
-		return ADD
-	case 0x79:
-		return ADD
-	case 0x7A:
-		return ADD
-	case 0x7B:
-		return ADD
-	case 0x7C:
-		return ADD
-	case 0x7D:
-		return ADD
-	case 0x7E:
-		return ADD
-	case 0x7F:
-		return ADD
-	case 0x80:
-		return ADD
-	case 0x81:
-		return ADD
-	case 0x82:
-		return ADD
-	case 0x83:
-		return ADD
-	case 0x84:
-		return ADD
-	case 0x85:
-		return ADD
-	case 0x86:
-		return ADD
-	case 0x87:
-		return ADD
-	case 0x88:
-		return ADD
-	case 0x89:
-		return ADD
-	case 0x8A:
-		return ADD
-	case 0x8B:
-		return ADD
-	case 0x8C:
-		return ADD
-	case 0x8D:
-		return ADD
-	case 0x8E:
-		return ADD
-	case 0x8F:
-		return ADD
-	case 0x90:
-		return ADD
-	case 0x91:
-		return ADD
-	case 0x92:
-		return ADD
-	case 0x93:
-		return ADD
-	case 0x94:
-		return ADD
-	case 0x95:
-		return ADD
-	case 0x96:
-		return ADD
-	case 0x97:
-		return ADD
-	case 0x98:
-		return ADD
-	case 0x99:
-		return ADD
-	case 0x9A:
-		return ADD
-	case 0x9B:
-		return ADD
-	case 0x9C:
-		return ADD
-	case 0x9D:
-		return ADD
-	case 0x9E:
-		return ADD
-	case 0x9F:
-		return ADD
-	case 0xA0:
-		return ADD
-	case 0xA1:
-		return ADD
-	case 0xA2:
-		return ADD
-	case 0xA3:
-		return ADD
-	case 0xA4:
-		return ADD
-	case 0xA5:
-		return ADD
-	case 0xA6:
-		return ADD
-	case 0xA7:
-		return ADD
-	case 0xA8:
-		return ADD
-	case 0xA9:
-		return ADD
-	case 0xAA:
-		return ADD
-	case 0xAB:
-		return ADD
-	case 0xAC:
-		return ADD
-	case 0xAD:
-		return ADD
-	case 0xAE:
-		return ADD
-	case 0xAF:
-		return ADD
-	case 0xB0:
-		return ADD
-	case 0xB1:
-		return ADD
-	case 0xB2:
-		return ADD
-	case 0xB3:
-		return ADD
-	case 0xB4:
-		return ADD
-	case 0xB5:
-		return ADD
-	case 0xB6:
-		return ADD
-	case 0xB7:
-		return ADD
-	case 0xB8:
-		return ADD
-	case 0xB9:
-		return ADD
-	case 0xBA:
-		return ADD
-	case 0xBB:
-		return ADD
-	case 0xBC:
-		return ADD
-	case 0xBD:
-		return ADD
-	case 0xBE:
-		return ADD
-	case 0xBF:
-		return ADD
-	case 0xC0:
-		return ADD
-	case 0xC1:
-		return ADD
-	case 0xC2:
-		return ADD
-	case 0xC3:
-		return ADD
-	case 0xC4:
-		return ADD
-	case 0xC5:
-		return ADD
-	case 0xC6:
-		return ADD
-	case 0xC7:
-		return ADD
-	case 0xC8:
-		return ADD
-	case 0xC9:
-		return ADD
-	case 0xCA:
-		return ADD
-	case 0xCB:
-		return ADD
-	case 0xCC:
-		return ADD
-	case 0xCD:
-		return ADD
-	case 0xCE:
-		return ADD
-	case 0xCF:
-		return ADD
-	case 0xD0:
-		return ADD
-	case 0xD1:
-		return ADD
-	case 0xD2:
-		return ADD
-	case 0xD3:
-		return ADD
-	case 0xD4:
-		return ADD
-	case 0xD5:
-		return ADD
-	case 0xD6:
-		return ADD
-	case 0xD7:
-		return ADD
-	case 0xD8:
-		return ADD
-	case 0xD9:
-		return ADD
-	case 0xDA:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return PHMINPOSUW
+		} else {
+			return NOP
+		}
 	case 0xDB:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESIMC
+		} else {
+			return NOP
+		}
 	case 0xDC:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESENC
+		} else {
+			return NOP
+		}
 	case 0xDD:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESENCLAST
+		} else {
+			return NOP
+		}
 	case 0xDE:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESDEC
+		} else {
+			return NOP
+		}
 	case 0xDF:
-		return ADD
-	case 0xE0:
-		return ADD
-	case 0xE1:
-		return ADD
-	case 0xE2:
-		return ADD
-	case 0xE3:
-		return ADD
-	case 0xE4:
-		return ADD
-	case 0xE5:
-		return ADD
-	case 0xE6:
-		return ADD
-	case 0xE7:
-		return ADD
-	case 0xE8:
-		return ADD
-	case 0xE9:
-		return ADD
-	case 0xEA:
-		return ADD
-	case 0xEB:
-		return ADD
-	case 0xEC:
-		return ADD
-	case 0xED:
-		return ADD
-	case 0xEE:
-		return ADD
-	case 0xEF:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return AESDECLAST
+		} else {
+			return NOP
+		}
 	case 0xF0:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVUPD
+		} else if isRep1 {
+			// 0xF3
+			return MOVSS
+		} else if isRep0 {
+			// 0xF2
+			return MOVSD
+		} else {
+			return MOVUPS
+		}
 	case 0xF1:
-		return ADD
-	case 0xF2:
-		return ADD
-	case 0xF3:
-		return ADD
-	case 0xF4:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVBE
+		} else if isRep1 {
+			// 0xF3
+			return CRC32
+		} else if isRep0 {
+			// 0xF2
+			return CRC32
+		} else {
+			return MOVBE
+		}
 	case 0xF5:
-		return ADD
+		if isOperandSizeOverride {
+			// 0x66
+			return WRUSS
+		} else {
+			return NOP
+		}
 	case 0xF6:
-		return ADD
-	case 0xF7:
-		return ADD
-	case 0xF8:
-		return ADD
-	case 0xF9:
-		return ADD
-	case 0xFA:
-		return ADD
-	case 0xFB:
-		return ADD
-	case 0xFC:
-		return ADD
-	case 0xFD:
-		return ADD
-	case 0xFE:
-		return ADD
-	case 0xFF:
 		return ADD
 	}
 	panic("Error: todo")
