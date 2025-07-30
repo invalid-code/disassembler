@@ -1,6 +1,6 @@
 package amdx8664
 
-func vexOpcodeMap2(curByte int) Instruction {
+func vexOpcodeMap2(curByte byte) Instruction {
 	switch curByte {
 	case 0x0:
 		return ADD

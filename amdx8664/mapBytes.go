@@ -1,21 +1,23 @@
 package amdx8664
 
+import "fmt"
+
 func DisassembleBytes(data []byte, bitFormat bool) {
 	isPrefix := true
 	legacePrefixCnt := 0
 	isOperandSizeOverride := false
-	isAddressSizeOverride := false
-	isCSSegmentSizeOverride := false
-	isDSSegmentSizeOverride := false
-	isESSegmentSizeOverride := false
-	isFSSegmentSizeOverride := false
-	isGSSegmentSizeOverride := false
-	isSSSegmentSizeOverride := false
+//	isAddressSizeOverride := false
+//	isCSSegmentSizeOverride := false
+//	isDSSegmentSizeOverride := false
+//	isESSegmentSizeOverride := false
+//	isFSSegmentSizeOverride := false
+//	isGSSegmentSizeOverride := false
+//	isSSSegmentSizeOverride := false
 	isLock := false
 	isRep1 := false
 	isRep0 := false
 	isRexPrefix := false
-	isRexW := false
+//	isRexW := false
 	isRexR := false
 	isRexX := false
 	isRexB := false
@@ -48,7 +50,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 	sibIndex := [3]bool{false, false, false}
 	sibBase := [3]bool{false, false, false}
 	instruction := AAA
-	for curByte := range data {
+	for _, curByte := range data {
 		// 1-15 bytes
 		// prefix(optional)
 		if isPrefix {
@@ -68,43 +70,43 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				isAddressSizeOverride = true
+//				isAddressSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x2E:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				isCSSegmentSizeOverride = true
+//				isCSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x3E:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				isDSSegmentSizeOverride = true
+//				isDSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x26:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				isESSegmentSizeOverride = true
+//				isESSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x64:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				isFSSegmentSizeOverride = true
+//				isFSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x65:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				isGSSegmentSizeOverride = true
+//				isGSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x36:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				isSSSegmentSizeOverride = true
+//				isSSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0xF0:
 				if legacePrefixCnt == 4 {
@@ -131,7 +133,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = false
+//				isRexW = false
 				isRexR = false
 				isRexX = false
 				isRexB = false
@@ -142,7 +144,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = false
+//				isRexW = false
 				isRexR = false
 				isRexX = false
 				isRexB = true
@@ -153,7 +155,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = false
+//				isRexW = false
 				isRexR = false
 				isRexX = true
 				isRexB = false
@@ -164,7 +166,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = false
+//				isRexW = false
 				isRexR = false
 				isRexX = true
 				isRexB = true
@@ -175,7 +177,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = false
+//				isRexW = false
 				isRexR = true
 				isRexX = false
 				isRexB = false
@@ -186,7 +188,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = false
+//				isRexW = false
 				isRexR = true
 				isRexX = false
 				isRexB = true
@@ -197,7 +199,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = false
+//				isRexW = false
 				isRexR = true
 				isRexX = true
 				isRexB = false
@@ -208,7 +210,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = false
+//				isRexW = false
 				isRexR = true
 				isRexX = true
 				isRexB = true
@@ -219,7 +221,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = true
+//				isRexW = true
 				isRexR = false
 				isRexX = false
 				isRexB = false
@@ -230,7 +232,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = true
+//				isRexW = true
 				isRexR = false
 				isRexX = false
 				isRexB = true
@@ -241,7 +243,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = true
+//				isRexW = true
 				isRexR = false
 				isRexX = true
 				isRexB = false
@@ -252,7 +254,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = true
+//				isRexW = true
 				isRexR = false
 				isRexX = true
 				isRexB = true
@@ -263,7 +265,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = true
+//				isRexW = true
 				isRexR = true
 				isRexX = false
 				isRexB = false
@@ -274,7 +276,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = true
+//				isRexW = true
 				isRexR = true
 				isRexX = false
 				isRexB = true
@@ -285,7 +287,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = true
+//				isRexW = true
 				isRexR = true
 				isRexX = true
 				isRexB = false
@@ -296,7 +298,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				isRexW = true
+//				isRexW = true
 				isRexR = true
 				isRexX = true
 				isRexB = true
@@ -565,27 +567,27 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if isLock {
 				}
 				if bitFormat {
-					instruction = opcodeMap3A(curByte)
+					instruction = opcodeMap3A(curByte, isOperandSizeOverride)
 					if isRexPrefix {
 					}
 				} else {
-					instruction = opcodeMap3A(curByte)
+					instruction = opcodeMap3A(curByte, isOperandSizeOverride)
 				}
 			} else if is38 {
 				if isLock {
 				}
 				if bitFormat {
-					instruction = opcodeMap3864(curByte)
+					instruction = opcodeMap3864(curByte, isRep0, isRep1, isOperandSizeOverride)
 					if isRexPrefix {
 					}
 				} else {
-					instruction = opcodeMap3832(curByte)
+					instruction = opcodeMap3832(curByte, isRep0, isRep1, isOperandSizeOverride)
 				}
 			} else if isSecondaryMap {
 				if isLock {
 				}
 				if bitFormat {
-					instruction = secondaryOpcodeMap64(curByte)
+					instruction = secondaryOpcodeMap64(curByte, isRep0, isRep1, isOperandSizeOverride)
 					if isRexPrefix {
 					}
 				} else {
@@ -602,8 +604,11 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 					instruction = primaryOpcode32(curByte, isOperandSizeOverride)
 				}
 			}
-			isOpcode = false
+			switch instruction {
+			case AAA
+			}
 			isModRM = true
+			isOpcode = false
 		}
 		// modr/m
 		if isModRM {
@@ -699,6 +704,9 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			if curByte != 0 {
 				isDisplacement = false
 			}
+			isDisplacement = false
+			isPrefix = true
 		}
+		fmt.Println(instruction)
 	}
 }

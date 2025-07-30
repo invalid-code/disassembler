@@ -1,6 +1,6 @@
 package amdx8664
 
-func secondaryOpcodeMap32(curByte int, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) Instruction {
+func secondaryOpcodeMap32(curByte byte, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) Instruction {
 	switch curByte {
 	case 0x0:
 		if isRep0 || isRep1 || isOperandSizeOverride {
@@ -1577,7 +1577,7 @@ func secondaryOpcodeMap32(curByte int, isRep0 bool, isRep1 bool, isOperandSizeOv
 	panic("Error: todo")
 }
 
-func secondaryOpcodeMap64(curByte int) Instruction {
+func secondaryOpcodeMap64(curByte byte, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) Instruction {
 	switch curByte {
 	case 0x0:
 		if isRep0 || isRep1 || isOperandSizeOverride {

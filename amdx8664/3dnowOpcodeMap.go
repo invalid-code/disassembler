@@ -1,6 +1,6 @@
 package amdx8664
 
-func opcodeMap3dnow32(curByte int) Instruction {
+func opcodeMap3dnow32(curByte byte) Instruction {
 	switch curByte {
 	case 0xC:
 		return PI2FW
@@ -54,7 +54,7 @@ func opcodeMap3dnow32(curByte int) Instruction {
 	panic("Error: todo")
 }
 
-func opcodeMap3dnow64(curByte int) Instruction {
+func opcodeMap3dnow64(curByte byte) Instruction {
 	switch curByte {
 	case 0xC:
 		return PI2FW

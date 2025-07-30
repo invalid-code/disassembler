@@ -256,7 +256,7 @@ func Disassemble(data []byte) {
 	case StmeSt100:
 	case AdvLogCorp:
 	case Amdx8664:
-		amdx8664.DisassembleBytes(data[entryPoint:textSectionSize], bitFormat)
+		amdx8664.DisassembleBytes(data[entryPoint:entryPoint+textSectionSize], bitFormat)
 	case SonyDsp:
 	case Pdp10:
 	case Pdp11:
