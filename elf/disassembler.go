@@ -282,5 +282,6 @@ func Disassemble(data []byte) {
 	case BerkleyPacketFilter:
 	case WDC65C816:
 	case LoongArch:
+	default:
 	}
 }

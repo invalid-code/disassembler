@@ -11,27 +11,33 @@ func primaryOpcode32(curByte byte, isOperandSizeOverride bool) Instruction {
 	case 0x8, 0x9, 0xA, 0xB, 0xC, 0xD:
 		return OR
 	case 0xF:
+		panic("Error: This is the 2-byte opcode escape sequence")
 	case 0x10, 0x11, 0x12, 0x13, 0x14, 0x15:
 		return ADC
 	case 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D:
 		return SBB
 	case 0x20, 0x21, 0x22, 0x23, 0x24, 0x25:
 		return AND
+	case 0x26:
+		panic("Error: this is the ES segment")
 	case 0x27:
 		return DAA
 	case 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D:
 		return SUB
 	case 0x2E:
+		panic("Error: This is DS segment")
 	case 0x2F:
 		return DAS
 	case 0x30, 0x31, 0x32, 0x33, 0x34, 0x35:
 		return XOR
 	case 0x36:
+		panic("Error: This is the SS segment")
 	case 0x37:
 		return AAA
 	case 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D:
 		return CMP
 	case 0x3E:
+		panic("Error: This is the DS segment")
 	case 0x3F:
 		return AAS
 	case 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F:
@@ -45,21 +51,23 @@ func primaryOpcode32(curByte byte, isOperandSizeOverride bool) Instruction {
 	case 0x63:
 		return ARPL
 	case 0x64:
-		// segment FS
+		panic("Error: this is the FS segment")
 	case 0x65:
-		// segment GS
+		panic("Error: this is the GS segment")
 	case 0x66:
-		// operand size override byte
+		panic("Error: this is the operand size override prefix")
 	case 0x67:
-	case 0x69:
-		return IMUL
-	case 0x6B:
+		panic("Error: this is the address size override prefix")
+	case 0x69, 0x6B:
 		return IMUL
 	case 0x6C:
 		return INSB
 	case 0x6D:
+		panic("todo: ? INSW/D prob opperand size diff")
 	case 0x6E:
+		return OUTSB
 	case 0x6F:
+		panic("todo: ? OUTSW/D prob opperand size diff")
 	case 0x70:
 		return JO
 	case 0x71:
@@ -92,10 +100,8 @@ func primaryOpcode32(curByte byte, isOperandSizeOverride bool) Instruction {
 		return JLE
 	case 0x7F:
 		return JNLE
-	case 0x80:
-	case 0x81:
-	case 0x82:
-	case 0x83:
+	case 0x80, 0x81, 0x82, 0x83:
+		panic("todo modr/m opcode extension")
 	case 0x84, 0x85, 0xA8, 0xA9:
 		return TEST
 	case 0x86, 0x87, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97:
@@ -105,14 +111,21 @@ func primaryOpcode32(curByte byte, isOperandSizeOverride bool) Instruction {
 	case 0x8D:
 		return LEA
 	case 0x8F:
+		panic("todo: modrm opcode extension")
 	case 0x90:
+		panic("todo could be XCHG or NOP instruction")
 	case 0x98:
+		panic("todo multiple instructions in 1 byte")
 	case 0x99:
+		panic("todo multiple instructions in 1 byte")
 	case 0x9A:
 		return CALL
 	case 0x9B:
+		panic("todo multiple instructions in 1 byte")
 	case 0x9C:
+		panic("todo: ? PUSHF/D/Q prob opperand size diff")
 	case 0x9D:
+		panic("todo: ? PUSHF/D/Q prob opperand size diff")
 	case 0x9E:
 		return SAHF
 	case 0x9F:
@@ -120,33 +133,40 @@ func primaryOpcode32(curByte byte, isOperandSizeOverride bool) Instruction {
 	case 0xA4:
 		return MOVSB
 	case 0xA5:
+		panic("todo multiple instructions in 1 byte")
 	case 0xA6:
 		return CMPSB
 	case 0xA7:
+		panic("todo multiple instructions in 1 byte")
 	case 0xAA:
 		return STOSB
 	case 0xAB:
+		panic("todo multiple instructions in 1 byte")
 	case 0xAC:
 		return LODSB
 	case 0xAD:
+		panic("todo multiple instructions in 1 byte")
 	case 0xAE:
 		return SCASB
 	case 0xAF:
-	case 0xC0:
-	case 0xC1:
+		panic("todo multiple instructions in 1 byte")
+	case 0xC0, 0xC1:
+		panic("todo modr/m opcode extension")
 	case 0xC2, 0xC3:
 		return RET // near
 	case 0xC4:
+		return LES
 	case 0xC5:
+		return LDS
 	case 0xC6:
+		panic("todo modr/m opcode extension")
 	case 0xC7:
+		panic("todo modr/m opcode extension")
 	case 0xC8:
 		return ENTER
 	case 0xC9:
 		return LEAVE
-	case 0xCA:
-		return RET // far
-	case 0xCB:
+	case 0xCA, 0xCB:
 		return RET // far
 	case 0xCC:
 		return INT3
@@ -155,30 +175,24 @@ func primaryOpcode32(curByte byte, isOperandSizeOverride bool) Instruction {
 	case 0xCE:
 		return INTO
 	case 0xCF:
-	case 0xD0:
-	case 0xD1:
-	case 0xD2:
-	case 0xD3:
-	case 0xD4:
-		return AAM
-	case 0xD5:
-		return AAD
-	case 0xD6:
+		panic("todo multiple instructions in 1 byte")
+	case 0xD0, 0xD1, 0xD2, 0xD3:
+		panic("todo modr/m opcode extension")
+	case 0xD4, 0xD5, 0xD6:
+		panic("Error: valid only in 64-bit mode")
 	case 0xD7:
-	case 0xD8:
-	case 0xD9:
-	case 0xDA:
-	case 0xDB:
-	case 0xDC:
-	case 0xDD:
-	case 0xDE:
-	case 0xDF:
+		return XLAT
+	case 0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF:
+		panic("Error: this is x87 opcodes")
 	case 0xE0:
+		panic("todo: ? LOOPNE/NZ prob opperand size diff")
 	case 0xE1:
+		panic("todo: ? LOOPE/Z prob opperand size diff")
 	case 0xE2:
 		return LOOP
 	case 0xE3:
-	case 0xE4, 0xE5:
+		return JrCXZ
+	case 0xE4, 0xE5, 0xEC, 0xED:
 		return IN
 	case 0xE6, 0xE7, 0xEE, 0xEF:
 		return OUT
@@ -186,19 +200,20 @@ func primaryOpcode32(curByte byte, isOperandSizeOverride bool) Instruction {
 		return CALL
 	case 0xE9, 0xEA, 0xEB:
 		return JMP
-	case 0xEC, 0xED:
-		return IN
 	case 0xF0:
+		panic("Error: this is the lock prefix")
 	case 0xF1:
 		return INT1
 	case 0xF2:
+		panic("Error: this is repne prefix")
 	case 0xF3:
+		panic("Error: this is rep/e prefix")
 	case 0xF4:
 		return HLT
 	case 0xF5:
 		return CMC
-	case 0xF6:
-	case 0xF7:
+	case 0xF6, 0xF7:
+		panic("todo modr/m opcode extension")
 	case 0xF8:
 		return CLC
 	case 0xF9:
@@ -212,7 +227,9 @@ func primaryOpcode32(curByte byte, isOperandSizeOverride bool) Instruction {
 	case 0xFD:
 		return STD
 	case 0xFE:
+		panic("todo modr/m opcode extension")
 	case 0xFF:
+		panic("todo modr/m opcode extension")
 	}
 	panic("Error: todo")
 }
@@ -221,7 +238,7 @@ func primaryOpcode64(curByte byte) Instruction {
 	switch curByte {
 	case 0x0, 0x1, 0x2, 0x3, 0x4, 0x5:
 		return ADD
-	case 0x6, 0x7 ,0x16, 0x17, 0x27, 0x37, 0x62:
+	case 0x6, 0x7, 0x16, 0x17, 0x27, 0x37, 0x62, 0x9A, 0x9E, 0x9F, 0xC4, 0xC5, 0xCE:
 		panic("Error: Invalid in 64-bit mode")
 	case 0xE, 0x1E, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F, 0x68, 0x6A:
 		return PUSH
@@ -235,6 +252,7 @@ func primaryOpcode64(curByte byte) Instruction {
 	case 0x20, 0x21, 0x22, 0x23, 0x24, 0x25:
 		return AND
 	case 0x26:
+		panic("Error: this is the ES segmenent")
 	case 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D:
 		return SUB
 	case 0x2E:
@@ -305,9 +323,13 @@ func primaryOpcode64(curByte byte) Instruction {
 	case 0x7F:
 		return JNLE
 	case 0x80:
+		//		todo modrm byte to specify opcode
 	case 0x81:
+		//		todo modrm byte to specify opcode
 	case 0x82:
+		//		todo modrm byte to specify opcode
 	case 0x83:
+		//		todo modrm byte to specify opcode
 	case 0x84, 0x85, 0xA8, 0xA9:
 		return TEST
 	case 0x86, 0x87, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97:
@@ -320,38 +342,36 @@ func primaryOpcode64(curByte byte) Instruction {
 	case 0x90:
 	case 0x98:
 	case 0x99:
-	case 0x9A:
-		return CALL
 	case 0x9B:
 	case 0x9C:
 	case 0x9D:
-	case 0x9E:
-		return SAHF
-	case 0x9F:
-		return LAHF
 	case 0xA4:
 		return MOVSB
 	case 0xA5:
 	case 0xA6:
 		return CMPSB
 	case 0xA7:
+		panic("todo multiple instructions in 1 byte")
 	case 0xAA:
 		return STOSB
 	case 0xAB:
+		panic("todo multiple instructions in 1 byte")
 	case 0xAC:
 		return LODSB
 	case 0xAD:
+		panic("todo multiple instructions in 1 byte")
 	case 0xAE:
 		return SCASB
 	case 0xAF:
-	case 0xC0:
-	case 0xC1:
+		panic("todo multiple instructions in 1 byte")
+	case 0xC0, 0xC1:
+		panic("todo modr/m opcode extension")
 	case 0xC2, 0xC3:
 		return RET // near
-	case 0xC4:
-	case 0xC5:
 	case 0xC6:
+		panic("todo modr/m opcode extension")
 	case 0xC7:
+		panic("todo modr/m opcode extension")
 	case 0xC8:
 		return ENTER
 	case 0xC9:
@@ -364,32 +384,28 @@ func primaryOpcode64(curByte byte) Instruction {
 		return INT3
 	case 0xCD:
 		return INT
-	case 0xCE:
-		return INTO
 	case 0xCF:
-	case 0xD0:
-	case 0xD1:
-	case 0xD2:
-	case 0xD3:
+		panic("todo multiple instructions in 1 byte")
+	case 0xD0, 0xD1, 0xD2, 0xD3:
+		panic("todo modr/m opcode extension")
 	case 0xD4:
 		return AAM
 	case 0xD5:
 		return AAD
 	case 0xD6:
+		return SALC
 	case 0xD7:
-	case 0xD8:
-	case 0xD9:
-	case 0xDA:
-	case 0xDB:
-	case 0xDC:
-	case 0xDD:
-	case 0xDE:
-	case 0xDF:
+		return XLAT
+	case 0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF:
+		panic("Error: this is x87 opcodes")
 	case 0xE0:
+		panic("todo: ? LOOPNE/NZ prob opperand size diff")
 	case 0xE1:
+		panic("todo: ? LOOPE/Z prob opperand size diff")
 	case 0xE2:
 		return LOOP
 	case 0xE3:
+		return JrCXZ
 	case 0xE4, 0xE5:
 		return IN
 	case 0xE6, 0xE7, 0xEE, 0xEF:
@@ -401,16 +417,19 @@ func primaryOpcode64(curByte byte) Instruction {
 	case 0xEC, 0xED:
 		return IN
 	case 0xF0:
+		panic("Error: this is the lock prefix")
 	case 0xF1:
 		return INT1
 	case 0xF2:
+		panic("Error: this is repne prefix")
 	case 0xF3:
+		panic("Error: this is rep/e prefix")
 	case 0xF4:
 		return HLT
 	case 0xF5:
 		return CMC
-	case 0xF6:
-	case 0xF7:
+	case 0xF6, 0xF7:
+		panic("todo modr/m opcode extension")
 	case 0xF8:
 		return CLC
 	case 0xF9:
@@ -424,7 +443,9 @@ func primaryOpcode64(curByte byte) Instruction {
 	case 0xFD:
 		return STD
 	case 0xFE:
+		panic("todo modr/m opcode extension")
 	case 0xFF:
+		panic("todo modr/m opcode extension")
 	}
 	panic("Error: todo")
 }

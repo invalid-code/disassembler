@@ -604,9 +604,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 					instruction = primaryOpcode32(curByte, isOperandSizeOverride)
 				}
 			}
-			switch instruction {
-			case AAA
-			}
 			isModRM = true
 			isOpcode = false
 		}
@@ -707,6 +704,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			isDisplacement = false
 			isPrefix = true
 		}
-		fmt.Println(instruction)
+		fmt.Println(instruction.String())
 	}
 }
