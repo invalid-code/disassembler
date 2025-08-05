@@ -1,6 +1,6 @@
 package amdx8664
 
-func xopOpcodeMap8(curByte byte) Instruction {
+func xopOpcodeMap8(curByte byte) (Instruction, bool, bool) {
 	switch curByte {
 	case 0x0:
 		return ADD
