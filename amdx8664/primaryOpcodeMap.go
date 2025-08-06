@@ -1,6 +1,6 @@
 package amdx8664
 
-func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instruction, bool, bool, MemSegment, Register) {
+func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instruction, bool, bool, MemSegment, Register, Register) {
 	switch curByte {
 	case 0x0, 0x1, 0x2, 0x3:
 		return ADD, true, false, NoSegment, NoRegister
@@ -481,7 +481,7 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x90:
 		panic("todo could be XCHG or NOP instruction")
 	case 0x91:
-		panic("")
+		return XCHG, false, false, 
 	case 0x92:
 	case 0x93:
 	case 0x94:
