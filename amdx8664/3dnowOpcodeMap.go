@@ -1,6 +1,6 @@
 package amdx8664
 
-func opcodeMap3dnow(curByte byte, is64Bit bool) (Instruction, bool, bool) {
+func opcodeMap3dnow(curByte byte, is64Bit bool, isRexB bool) (Instruction, bool, bool) {
 	switch curByte {
 	case 0xC:
 		return PI2FW

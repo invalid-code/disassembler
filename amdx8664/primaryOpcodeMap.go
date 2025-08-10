@@ -1,6 +1,6 @@
 package amdx8664
 
-func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
+func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexB bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
 	switch curByte {
 	case 0x0, 0x1, 0x2, 0x3:
 		return ADD, true, false, NoSegment, NoRegister, NoRegister, 0

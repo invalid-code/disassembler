@@ -1,41 +1,52 @@
 package amdx8664
 
-func vexOpcodeMap1(curByte byte) (Instruction, bool, bool) {
+func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexB bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
 	switch curByte {
 	case 0x0:
-		return ADD
+		panic("Error: No opcode")
 	case 0x1:
-		return ADD
+		panic("Error: No opcode")
 	case 0x2:
-		return ADD
+		panic("Error: No opcode")
 	case 0x3:
-		return ADD
+		panic("Error: No opcode")
 	case 0x4:
-		return ADD
+		panic("Error: No opcode")
 	case 0x5:
-		return ADD
+		panic("Error: No opcode")
 	case 0x6:
-		return PUSH
+		panic("Error: No opcode")
 	case 0x7:
-		return POP
+		panic("Error: No opcode")
 	case 0x8:
-		return OR
+		panic("Error: No opcode")
 	case 0x9:
-		return OR
+		panic("Error: No opcode")
 	case 0xA:
-		return OR
+		panic("Error: No opcode")
 	case 0xB:
-		return OR
+		panic("Error: No opcode")
 	case 0xC:
-		return OR
+		panic("Error: No opcode")
 	case 0xD:
-		return OR
+		panic("Error: No opcode")
 	case 0xE:
-		return PUSH
+		panic("Error: No opcode")
 	case 0xF:
-		// escape to 2nd opcode map
+		panic("Error: No opcode")
 	case 0x10:
-		return ADC
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVUPD, true, false, NoSegment, NoRegister
+		} else if isRep1 {
+			// 0xF3
+			return MOVSS, true, false, NoSegment, NoRegister
+		} else if isRep0 {
+			// 0xF2
+			return MOVSD, true, false, NoSegment, NoRegister
+		} else {
+			return MOVUPS, true, false, NoSegment, NoRegister
+		}
 	case 0x11:
 		return ADC
 	case 0x12:
@@ -51,21 +62,21 @@ func vexOpcodeMap1(curByte byte) (Instruction, bool, bool) {
 	case 0x17:
 		return POP
 	case 0x18:
-		return SBB
+		panic("Error: No opcode")
 	case 0x19:
-		return SBB
+		panic("Error: No opcode")
 	case 0x1A:
-		return SBB
+		panic("Error: No opcode")
 	case 0x1B:
-		return SBB
+		panic("Error: No opcode")
 	case 0x1C:
-		return SBB
+		panic("Error: No opcode")
 	case 0x1D:
-		return SBB
+		panic("Error: No opcode")
 	case 0x1E:
-		return PUSH
+		panic("Error: No opcode")
 	case 0x1F:
-		return POP
+		panic("Error: No opcode")
 	case 0x20:
 		return AND
 	case 0x21:

@@ -1,81 +1,90 @@
 package amdx8664
 
-func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexB bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
 	switch curByte {
 	case 0x0:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return NoInstruction
+		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x1:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
+		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x2:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return LAR
+		return LAR, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x3:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return LSL
+		return LSL, true, false, NoSegment, NoRegister, NoRegister, 0
+	case 0x4:
+		panic("Error: No opcode")
 	case 0x5:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return SYSCALL
+		return SYSCALL, false, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x6:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return CLTS
+		return CLTS, false, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x7:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return SYSRET
+		return SYSRET, false, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x8:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return INVD
+		return INVD, false, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x9:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
+		panic("todo multiple instructions")
+	case 0xA:
+		panic("Error: No opcode")
 	case 0xB:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return UD2
+		return UD2, false, false, NoSegment, NoRegister, NoRegister, 0
+	case 0xC:
+		panic("Error: No opcode")
 	case 0xD:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
+		panic("todo multiple instructions")
 	case 0xE:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return FEMMS
+		return FEMMS, false, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xF:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		// escape to 3dnow opcode map
+		panic("Error: This is the 3dnow opcode map escape sequence")
 	case 0x10:
 		if isOperandSizeOverride {
 			// 0x66
-			return MOVUPD
+			return MOVUPD, true, false, NoSegment, NoRegister
 		} else if isRep1 {
 			// 0xF3
-			return MOVSS
+			return MOVSS, true, false, NoSegment, NoRegister
 		} else if isRep0 {
 			// 0xF2
-			return MOVSD
+			return MOVSD, true, false, NoSegment, NoRegister
 		} else {
-			return MOVUPS
+			return MOVUPS, true, false, NoSegment, NoRegister
 		}
 	case 0x11:
 		if isOperandSizeOverride {

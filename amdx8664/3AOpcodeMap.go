@@ -1,6 +1,6 @@
 package amdx8664
 
-func opcodeMap3A(curByte byte, isOperandSizeOverride bool) (Instruction, bool, bool) {
+func opcodeMap3A(curByte byte, isOperandSizeOverride bool, isRexB bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
 	switch curByte {
 	case 0x14:
 		if isOperandSizeOverride {

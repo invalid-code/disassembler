@@ -209,7 +209,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 	isRep1 := false
 	isRep0 := false
 	isRexPrefix := false
-	//	isRexW := false
+	isRexW := false
 	isRexR := false
 	isRexX := false
 	isRexB := false
@@ -243,7 +243,8 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 	sibBase := [3]bool{false, false, false}
 	instruction := AAA
 	memSegment := NoSegment
-	regOperand1, regOperand2 := []Register{NoRegister, NNoRegister}
+	regOperand1, regOperand2 := NoRegister, NoRegister
+	instructionEncodedRegOperand := 0
 	for _, curByte := range data {
 		// 1-15 bytes
 		// prefix(optional)
@@ -327,7 +328,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = false
+				isRexW = false
 				isRexR = false
 				isRexX = false
 				isRexB = false
@@ -338,7 +339,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = false
+				isRexW = false
 				isRexR = false
 				isRexX = false
 				isRexB = true
@@ -349,7 +350,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = false
+				isRexW = false
 				isRexR = false
 				isRexX = true
 				isRexB = false
@@ -360,7 +361,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = false
+				isRexW = false
 				isRexR = false
 				isRexX = true
 				isRexB = true
@@ -371,7 +372,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = false
+				isRexW = false
 				isRexR = true
 				isRexX = false
 				isRexB = false
@@ -382,7 +383,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = false
+				isRexW = false
 				isRexR = true
 				isRexX = false
 				isRexB = true
@@ -393,7 +394,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = false
+				isRexW = false
 				isRexR = true
 				isRexX = true
 				isRexB = false
@@ -404,7 +405,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = false
+				isRexW = false
 				isRexR = true
 				isRexX = true
 				isRexB = true
@@ -415,7 +416,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = true
+				isRexW = true
 				isRexR = false
 				isRexX = false
 				isRexB = false
@@ -426,7 +427,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = true
+				isRexW = true
 				isRexR = false
 				isRexX = false
 				isRexB = true
@@ -437,7 +438,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = true
+				isRexW = true
 				isRexR = false
 				isRexX = true
 				isRexB = false
@@ -448,7 +449,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = true
+				isRexW = true
 				isRexR = false
 				isRexX = true
 				isRexB = true
@@ -459,7 +460,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = true
+				isRexW = true
 				isRexR = true
 				isRexX = false
 				isRexB = false
@@ -470,7 +471,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = true
+				isRexW = true
 				isRexR = true
 				isRexX = false
 				isRexB = true
@@ -481,7 +482,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
-				//				isRexW = true
+				isRexW = true
 				isRexR = true
 				isRexX = true
 				isRexB = false
@@ -730,52 +731,52 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			if isVex {
 				if isVex3Byte {
 					if mapSelect[3] == false && mapSelect[4] == true {
-						instruction, _, _ = vexOpcodeMap1(curByte)
+						instruction, _, _, _, _, _, _ = vexOpcodeMap1(curByte, fieldPp, isRexW)
 					} else if mapSelect[3] == true && mapSelect[4] == false {
-						instruction, _, _ = vexOpcodeMap2(curByte)
+						instruction, _, _, _, _, _, _ = vexOpcodeMap2(curByte, fieldPp, isRexW)
 					} else if mapSelect[3] == true && mapSelect[4] == true {
-						instruction, _, _ = vexOpcodeMap3(curByte)
+						instruction, _, _, _, _, _, _ = vexOpcodeMap3(curByte, fieldPp, isRexW)
 					}
 				} else {
-					vexOpcodeMap1(curByte)
+					instruction, _, _, _, _, _, _ = vexOpcodeMap1(curByte, fieldPp, isRexW)
 				}
 			} else if isXop {
 				if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == false {
-					instruction, _, _ = xopOpcodeMap8(curByte)
+					instruction, _, _, _, _, _, _ = xopOpcodeMap8(curByte, fieldPp, isRexW)
 				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == true {
-					instruction, _, _ = xopOpcodeMap9(curByte)
+					instruction, _, _, _, _, _, _ = xopOpcodeMap9(curByte, fieldPp, isRexW)
 				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == true && mapSelect[4] == false {
-					instruction, _, _ = xopOpcodeMap10(curByte)
+					instruction, _, _, _, _, _, _ = xopOpcodeMap10(curByte, fieldPp, isRexW)
 				}
 			} else if is3dNow {
-				if isLock {
-				}
-				instruction, _, _ = opcodeMap3dnow(curByte, bitFormat)
+				// if isLock {
+				// }
+				instruction, _, _ = opcodeMap3dnow(curByte, bitFormat, isRexB)
 				if isRexPrefix {
 				}
 			} else if is3A {
 				if isLock {
 				}
-				instruction, _, _ = opcodeMap3A(curByte, isOperandSizeOverride)
+				instruction, _, _, _, _, _, _ = opcodeMap3A(curByte, isOperandSizeOverride, isRexB)
 				if isRexPrefix {
 				}
 			} else if is38 {
 				if isLock {
 				}
-				instruction, _, _ = opcodeMap38(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride)
+				instruction, _, _, _, _, _, _ = opcodeMap38(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexB)
 				if isRexPrefix {
 				}
 			} else if isSecondaryMap {
 				if isLock {
 				}
-				instruction, _, _ = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride)
-				if isRexPrefix {
-				}
+				instruction, _, _, _, _, _, _ = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexB)
+				// if isRexPrefix {
+				// }
 			} else {
 				if isLock {
 				}
 				isDispImm := false
-				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2 = primaryOpcode(curByte, bitFormat, isOperandSizeOverride)
+				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride)
 				if isDispImm {
 					isImmediate = true
 					continue
@@ -885,6 +886,18 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			isDisplacement = false
 			isPrefix = true
 		}
-		fmt.Println(instruction.String())
+		fmt.Print(instruction.String())
+		if memSegment != NoSegment {
+			fmt.Print(memSegment)
+		}
+		if regOperand1 != NoRegister {
+			fmt.Print(regOperand1)
+		}
+		if regOperand2 != NoRegister {
+			fmt.Print(regOperand2)
+		}
+		if instructionEncodedRegOperand != 0 {
+			fmt.Print(instructionEncodedRegOperand)
+		}
 	}
 }
