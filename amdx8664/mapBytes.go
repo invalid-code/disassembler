@@ -242,6 +242,8 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 	sibIndex := [3]bool{false, false, false}
 	sibBase := [3]bool{false, false, false}
 	instruction := AAA
+	memSegment := NoSegment
+	regOperand1, regOperand2 := []Register{NoRegister, NNoRegister}
 	for _, curByte := range data {
 		// 1-15 bytes
 		// prefix(optional)
@@ -772,11 +774,18 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			} else {
 				if isLock {
 				}
-				instruction, _, _, _ = primaryOpcode(curByte, bitFormat)
-				if isRexPrefix {
+				isDispImm := false
+				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2 = primaryOpcode(curByte, bitFormat, isOperandSizeOverride)
+				if isDispImm {
+					isImmediate = true
+					continue
+				} else {
+					isDisplacement = true
+					continue
 				}
+				// if isRexPrefix {
+				// }
 			}
-			isModRM = true
 			isOpcode = false
 		}
 		// modr/m

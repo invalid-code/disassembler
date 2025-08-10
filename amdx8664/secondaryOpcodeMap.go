@@ -1,11 +1,12 @@
 package amdx8664
 
-func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, bool) {
+func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
 	switch curByte {
 	case 0x0:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
+		return NoInstruction
 	case 0x1:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
@@ -1573,6 +1574,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 		}
 	case 0xFF:
 		return UD0
+	default:
+		panic("Error: Unknown Opcode")
 	}
-	panic("Error: todo")
 }

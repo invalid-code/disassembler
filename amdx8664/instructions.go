@@ -433,6 +433,7 @@ const (
 	XOR
 	XORPD
 	XORPS
+	NoInstruction
 )
 
 func (instruction Instruction) String() string {
