@@ -829,7 +829,11 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				modRMByte -= 1
 			}
 			isModRM = false
-			isSib = true
+			if !(modrmMod[0] && modrmMod[1]) {
+				if modrmRM[0] && !modrmRM[1] && !modrmRM[2] {
+					isSib = true
+				}
+			}
 		}
 		// sib
 		if isSib {

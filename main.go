@@ -15,14 +15,3 @@ func main() {
 		elf.Disassemble(data)
 	}
 }
-
-type OpcodeMap3B int
-
-const (
-	VexOM1 OpcodeMap3B = iota
-	VexOM2
-	VexOM3
-	XopOM1
-	XopOm2
-	XopOm3
-)
