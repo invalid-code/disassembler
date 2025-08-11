@@ -763,443 +763,447 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return MOVDQA, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0x70:
-		if isOperandSizeOverride {
-			// 0x66
-			return PSHUFD
-		} else if isRep1 {
-			// 0xF3
-			return PSHUFHW
-		} else if isRep0 {
-			// 0xF2
-			return PSHUFLW
-		} else {
-			return PSHUFW
-		}
-	case 0x71:
-		// todo modrm byte
-		if isOperandSizeOverride {
-			// 0x66
-			return NOP
-		} else if isRep1 {
-			// 0xF3
-			return NOP
-		} else if isRep0 {
-			// 0xF2
-			return NOP
-		} else {
-			return NOP
-		}
-	case 0x72:
-		// todo modrm byte
-		if isOperandSizeOverride {
-			// 0x66
-			return NOP
-		} else if isRep1 {
-			// 0xF3
-			return NOP
-		} else if isRep0 {
-			// 0xF2
-			return NOP
-		} else {
-			return NOP
-		}
-	case 0x73:
-		// todo modrm byte
-		if isOperandSizeOverride {
-			// 0x66
-			return NOP
-		} else if isRep1 {
-			// 0xF3
-			return NOP
-		} else if isRep0 {
-			// 0xF2
-			return NOP
-		} else {
-			return NOP
-		}
+		panic("todo 3 operand types")
+		// if isOperandSizeOverride {
+		// 	// 0x66
+		// 	return PSHUFD
+		// } else if isRep1 {
+		// 	// 0xF3
+		// 	return PSHUFHW
+		// } else if isRep0 {
+		// 	// 0xF2
+		// 	return PSHUFLW
+		// } else {
+		// 	return PSHUFW
+		// }
+	case 0x71, 0x72, 0x73:
+		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x74:
 		if isOperandSizeOverride {
 			// 0x66
-			return PCMPEQB
+			return PCMPEQB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3
+			// 0xF2
+			panic("Error: Unkown opcode")
 		} else {
-			return PCMPEQB
+			return PCMPEQB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0x75:
 		if isOperandSizeOverride {
 			// 0x66
-			return PCMPEQW
+			return PCMPEQW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3
+			// 0xF2
+			panic("Error: Unkown opcode")
 		} else {
-			return PCMPEQW
+			return PCMPEQW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0x76:
 		if isOperandSizeOverride {
 			// 0x66
-			return PCMPEQD
+			return PCMPEQD, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3
+			// 0xF2
+			panic("Error: Unkown opcode")
 		} else {
-			return PCMPEQD
+			return PCMPEQD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0x77:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x77")
 		}
-		return EMMS
+		return EMMS, false, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x78:
 		if isOperandSizeOverride {
 			// 0x66
-			// todo modrm byte
-			return NOP
+			return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep0 {
 			// 0xF2
-			return INSERTQ
+			// return INSERTQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			panic("todo multiple operands")
+		} else if isRep1 {
+			// 0xF3
+			panic("Error: Unkown opcode")
 		} else {
-			panic("Error: No prefix was chosen")
+			panic("Error: Unkown opcode")
 		}
 	case 0x79:
 		if isOperandSizeOverride {
 			// 0x66
-			return EXTRQ
+			return EXTRQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep0 {
 			// 0xF2
-			return INSERTQ
+			return INSERTQ, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 {
+			// 0xF3
+			panic("Error: Unkown opcode")
 		} else {
-			panic("Error: No prefix was chosen")
+			panic("Error: Unkown opcode")
 		}
+	case 0x7A, 0x7B:
+		panic("Error: Unkown opcode")
 	case 0x7C:
 		if isOperandSizeOverride {
 			// 0x66
-			return HADDPD
+			return HADDPD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep0 {
 			// 0xF2
-			return HADDPS
+			return HADDPS, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 {
+			// 0xF3
+			panic("Error: Unkown opcode")
 		} else {
-			panic("Error: No prefix was chosen")
+			panic("Error: Unkown opcode")
 		}
 	case 0x7D:
 		if isOperandSizeOverride {
 			// 0x66
-			return HSUBPD
+			return HSUBPD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep0 {
 			// 0xF2
-			return HSUBPS
+			return HSUBPS, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 {
+			// 0xF3
+			panic("Error: Unkown opcode")
 		} else {
-			panic("Error: No prefix was chosen")
+			panic("Error: Unkown opcode")
 		}
 	case 0x7E:
 		if isOperandSizeOverride {
 			// 0x66
-			return MOVD
+			return MOVD, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep0 {
+			// 0xF2
+			panic("Error: Unkown opcode")
 		} else if isRep1 {
 			// 0xF3
-			return MOVQ
+			return MOVQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			return MOVD
+			return MOVD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0x7F:
 		if isOperandSizeOverride {
 			// 0x66
-			return MOVDQA
+			return MOVDQA, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep0 {
+			// 0xF2
+			panic("Error: Unkown opcode")
 		} else if isRep1 {
 			// 0xF3
-			return MOVDQU
+			return MOVDQU, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			return MOVQ
+			return MOVQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0x80:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JO
+		panic("todo dont know how to deal with rip addressing")
 	case 0x81:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JNO
+		panic("todo dont know how to deal with rip addressing")
 	case 0x82:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JB
+		panic("todo dont know how to deal with rip addressing")
 	case 0x83:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JNB
+		panic("todo dont know how to deal with rip addressing")
 	case 0x84:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JZ
+		panic("todo dont know how to deal with rip addressing")
 	case 0x85:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JNZ
+		panic("todo dont know how to deal with rip addressing")
 	case 0x86:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JBE
+		panic("todo dont know how to deal with rip addressing")
 	case 0x87:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JNBE
+		panic("todo dont know how to deal with rip addressing")
 	case 0x88:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JS
+		panic("todo dont know how to deal with rip addressing")
 	case 0x89:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JNS
+		panic("todo dont know how to deal with rip addressing")
 	case 0x8A:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JP
+		panic("todo dont know how to deal with rip addressing")
 	case 0x8B:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JNP
+		panic("todo dont know how to deal with rip addressing")
 	case 0x8C:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JL
+		panic("todo dont know how to deal with rip addressing")
 	case 0x8D:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JNL
+		panic("todo dont know how to deal with rip addressing")
 	case 0x8E:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JLE
+		panic("todo dont know how to deal with rip addressing")
 	case 0x8F:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x80-8F")
 		}
-		return JNLE
+		panic("todo dont know how to deal with rip addressing")
 	case 0x90:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETO
+		return SETO, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x91:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETNO
+		return SETNO, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x92:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETB
+		return SETB, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x93:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETNB
+		return SETNB, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x94:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETZ
+		return SETZ, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x95:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETNZ
+		return SETNZ, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x96:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETBE
+		return SETBE, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x97:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETNBE
+		return SETNBE, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x98:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETS
+		return SETS, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x99:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETNS
+		return SETNS, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x9A:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETP
+		return SETP, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x9B:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETNP
+		return SETNP, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x9C:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETL
+		return SETL, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x9D:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETNL
+		return SETNL, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x9E:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETLE
+		return SETLE, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x9F:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x90-9F")
 		}
-		return SETNLE
+		return SETNLE, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xA0:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return PUSH
+		return PUSH, false, false, FS, NoRegister, NoRegister, 0
 	case 0xA1:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return POP
+		return POP, false, false, FS, NoRegister, NoRegister, 0
 	case 0xA2:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return CPUID
+		return CPUID, false, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xA3:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return BT
+		return BT, false, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xA4:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return SHLD
+		panic("todo 3 operands")
 	case 0xA5:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return SHLD
+		panic("todo 3 operands")
+	case 0xA6, 0xA7:
+		panic("Error: Unkown opcode")
 	case 0xA8:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return PUSH
+		return PUSH, false, false, GS, NoRegister, NoRegister, 0
 	case 0xA9:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return POP
+		return POP, false, false, GS, NoRegister, NoRegister, 0
 	case 0xAA:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return RSM
+		return RSM, false, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xAB:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return BTS
+		return BTS, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xAC:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return SHRD
+		panic("todo 3 opcodes")
 	case 0xAD:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return SHRD
+		panic("todo 3 opcodes")
 	case 0xAE:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		// todo modrm
-		return NOP
+		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xAF:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xA0-A5..A8-AF")
 		}
-		return IMUL
+		return IMUL, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xB0:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return CMPXCHG
+		return CMPXCHG, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xB1:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return CMPXCHG
+		return CMPXCHG, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xB2:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return LSS
+		return LSS, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xB3:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return BTR
+		return BTR, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xB4:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return LFS
+		return LFS, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xB5:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return LGS
+		return LGS, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xB6:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return MOVZX
+		return MOVZX, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xB7:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return MOVZX
+		return MOVZX, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xB8:
 		if isRep1 {
 			// 0xF3
-			return POPCNT
+			return POPCNT, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
 			panic("Error: 0xF3 prefix only allowed")
 		}
 	case 0xB9:
 		if !(isRep0 || isRep1 || isOperandSizeOverride) {
-			// todo modrm
-			return NOP
+			panic("Error: prefix not allowed for the secondary map opcode 0xB9-BB")
 		}
-		return NOP
+		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xBA:
 		if !(isRep0 || isRep1 || isOperandSizeOverride) {
-			// todo modrm
-			return NOP
+			panic("Error: prefix not allowed for the secondary map opcode 0xB9-BB")
 		}
-		return NOP
+		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xBB:
 		if !(isRep0 || isRep1 || isOperandSizeOverride) {
-			return BTC
+			panic("Error: prefix not allowed for the secondary map opcode 0xB9-BB")
 		}
-		return NOP
+		return BTC, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xBC:
+		if isOperandSizeOverride {
+			// 0x66
+			return MOVDQA, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep0 {
+			// 0xF2
+			panic("Error: Unkown opcode")
+		} else if isRep1 {
+			// 0xF3
+			return MOVDQU, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else {
+			return MOVQ, true, false, NoSegment, NoRegister, NoRegister, 0
+		}
 		if isRep1 {
 			// 0xF3
 			return TZCNT
