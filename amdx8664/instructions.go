@@ -4,6 +4,7 @@ type Instruction int
 
 const (
 	AAA Instruction = iota
+
 	AAD
 	AAM
 	AAS
@@ -22,6 +23,7 @@ const (
 	AESENC
 	AESENCLAST
 	AESIMC
+	AESKEYGENASSIST
 	AND
 	ANDNPD
 	ANDNPS
@@ -29,6 +31,8 @@ const (
 	ANDPS
 	ARPL
 	BLENDVPS
+	BLENDPD
+	BLENDPS
 	BOUND
 	BSF
 	BSR
@@ -241,10 +245,14 @@ const (
 	PCMPEQD
 	PCMPEQQ
 	PCMPEQW
+	PCMPESTRI
+	PCMPESTRM
 	PCMPGTB
 	PCMPGTD
 	PCMPGTQ
 	PCMPGTW
+	PCMPISTRM
+	PCMPISTRI
 	PEXTRB
 	PEXTRD
 	PEXTRW
@@ -371,6 +379,10 @@ const (
 	RDPMC
 	RDTSC
 	RET
+	ROUNDPD
+	ROUNDPS
+	ROUNDSD
+	ROUNDSS
 	RSM
 	RSQRTPS
 	RSQRTSS
@@ -426,6 +438,7 @@ const (
 	UNPCKLPD
 	UNPCKLPS
 	WRMSR
+	WRSS
 	WRUSS
 	XADD
 	XCHG
@@ -476,6 +489,8 @@ func (instruction Instruction) String() string {
 		return "AESENCLAST"
 	case AESIMC:
 		return "AESIMC"
+	case AESKEYGENASSIST:
+		return "AESKEYGENASSIST"
 	case AND:
 		return "AND"
 	case ANDNPD:
@@ -490,6 +505,10 @@ func (instruction Instruction) String() string {
 		return "ARPL"
 	case BLENDVPS:
 		return "BLENDVPS"
+	case BLENDPD:
+		return "BLENDPD"
+	case BLENDPS:
+		return "BLENDPS"
 	case BOUND:
 		return "BOUND"
 	case BSF:
@@ -912,6 +931,10 @@ func (instruction Instruction) String() string {
 		return "PCMPEQQ"
 	case PCMPEQW:
 		return "PCMPEQW"
+	case PCMPESTRI:
+		return "PCMPESTRI"
+	case PCMPESTRM:
+		return "PCMPESTRM"
 	case PCMPGTB:
 		return "PCMPGTB"
 	case PCMPGTD:
@@ -920,6 +943,10 @@ func (instruction Instruction) String() string {
 		return "PCMPGTQ"
 	case PCMPGTW:
 		return "PCMPGTW"
+	case PCMPISTRM:
+		return "PCMPISTRM"
+	case PCMPISTRI:
+		return "PCMPISTRI"
 	case PEXTRB:
 		return "PEXTRB"
 	case PEXTRD:
@@ -1172,6 +1199,14 @@ func (instruction Instruction) String() string {
 		return "RDTSC"
 	case RET:
 		return "RET"
+	case ROUNDPD:
+		return "ROUNDPD"
+	case ROUNDPS:
+		return "ROUNDPS"
+	case ROUNDSD:
+		return "ROUNDSD"
+	case ROUNDSS:
+		return "ROUNDSS"
 	case RSM:
 		return "RSM"
 	case RSQRTPS:
@@ -1282,6 +1317,8 @@ func (instruction Instruction) String() string {
 		return "UNPCKLPS"
 	case WRMSR:
 		return "WRMSR"
+	case WRSS:
+		return "WRUSS"
 	case WRUSS:
 		return "WRUSS"
 	case XADD:

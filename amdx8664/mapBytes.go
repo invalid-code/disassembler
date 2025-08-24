@@ -769,14 +769,14 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			} else if isSecondaryMap {
 				if isLock {
 				}
-				instruction, _, _, _, _, _, _ = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexB)
+				instruction, _, _, _, _, _, _ = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 				// if isRexPrefix {
 				// }
 			} else {
 				if isLock {
 				}
 				isDispImm := false
-				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride)
+				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
 				if isDispImm {
 					isImmediate = true
 					continue

@@ -1,6 +1,6 @@
 package amdx8664
 
-func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexB bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexW bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
 	switch curByte {
 	case 0x0:
 		if isRep0 || isRep1 || isOperandSizeOverride {
@@ -1192,473 +1192,678 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 		}
 		return BTC, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xBC:
-		if isOperandSizeOverride {
-			// 0x66
-			return MOVDQA, true, false, NoSegment, NoRegister, NoRegister, 0
-		} else if isRep0 {
+		if isRep0 {
 			// 0xF2
 			panic("Error: Unkown opcode")
 		} else if isRep1 {
 			// 0xF3
-			return MOVDQU, true, false, NoSegment, NoRegister, NoRegister, 0
+			return TZCNT, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			return MOVQ, true, false, NoSegment, NoRegister, NoRegister, 0
-		}
-		if isRep1 {
-			// 0xF3
-			return TZCNT
-		} else {
-			return BSF
+			return BSF, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xBD:
-		if isRep1 {
+		if isRep0 {
+			// 0xF2
+			panic("Error: Unkown opcode")
+		} else if isRep1 {
 			// 0xF3
-			return LZCNT
+			return LZCNT, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			return BSR
+			return BSR, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xBE:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return MOVSX
+		return MOVSX, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xBF:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return MOVSX
+		return MOVSX, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xC0:
-		return XADD
+		return XADD, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xC1:
-		return XADD
+		return XADD, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xC2:
 		if isOperandSizeOverride {
 			// 0x66
-			return CMPPD
+			return CMPPD, true, true, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 {
 			// 0xF3
-			return CMPPS
+			return CMPPS, true, true, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep0 {
 			// 0xF2
-			return CMPSD
+			return CMPSD, true, true, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			return CMPPS
+			return CMPPS, true, true, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xC3:
 		if isRep0 || isRep1 || isOperandSizeOverride {
-			return NOP
+			panic("Error: Unkown opcode")
 		}
-		return MOVNTI
+		return MOVNTI, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xC4:
 		if isOperandSizeOverride {
 			// 0x66
-			return PINSRW
+			// return PINSRW, true, true, NoSegment, NoRegister, NoRegister, 0
+			panic("todo multiple operands")
+		} else if isRep1 {
+			// 0xF3
+			panic("Error: Unkown opcode")
+		} else if isRep0 {
+			// 0xF2
+			panic("Error: Unkown opcode")
 		} else {
-			return PINSRW
+			// return PINSRW, true, true, NoSegment, NoRegister, NoRegister, 0
+			panic("todo multiple operands")
 		}
 	case 0xC5:
 		if isOperandSizeOverride {
 			// 0x66
-			return PEXTRW
+			return PEXTRW, true, true, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 {
+			// 0xF3
+			panic("Error: Unkown opcode")
+		} else if isRep0 {
+			// 0xF2
+			panic("Error: Unkown opcode")
 		} else {
-			return PEXTRW
+			return PEXTRW, true, true, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xC6:
 		if isOperandSizeOverride {
 			// 0x66
-			return SHUFPD
+			return SHUFPD, true, true, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 {
+			// 0xF3
+			panic("Error: Unkown opcode")
+		} else if isRep0 {
+			// 0xF2
+			panic("Error: Unkown opcode")
 		} else {
-			return SHUFPS
+			return SHUFPS, true, true, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xC7:
 		// todo modrm byte
-		return NOP
+		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xC8:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return BSWAP
+		if is64Bit {
+			if isRexW {
+				return BSWAP, false, false, NoSegment, R8, NoRegister, 0
+			} else {
+				return BSWAP, false, false, NoSegment, RAX, NoRegister, 0
+			}
+		} else {
+			return BSWAP, false, false, NoSegment, EAX, NoRegister, 0
+		}
 	case 0xC9:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return BSWAP
+		if is64Bit {
+			if isRexW {
+				return BSWAP, false, false, NoSegment, R9, NoRegister, 0
+			} else {
+				return BSWAP, false, false, NoSegment, RCX, NoRegister, 0
+			}
+		} else {
+			return BSWAP, false, false, NoSegment, ECX, NoRegister, 0
+		}
 	case 0xCA:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return BSWAP
+		if is64Bit {
+			if isRexW {
+				return BSWAP, false, false, NoSegment, R10, NoRegister, 0
+			} else {
+				return BSWAP, false, false, NoSegment, RDX, NoRegister, 0
+			}
+		} else {
+			return BSWAP, false, false, NoSegment, EDX, NoRegister, 0
+		}
 	case 0xCB:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return BSWAP
+		if is64Bit {
+			if isRexW {
+				return BSWAP, false, false, NoSegment, R11, NoRegister, 0
+			} else {
+				return BSWAP, false, false, NoSegment, RBX, NoRegister, 0
+			}
+		} else {
+			return BSWAP, false, false, NoSegment, EBX, NoRegister, 0
+		}
 	case 0xCC:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return BSWAP
+		if is64Bit {
+			if isRexW {
+				return BSWAP, false, false, NoSegment, R12, NoRegister, 0
+			} else {
+				return BSWAP, false, false, NoSegment, RSP, NoRegister, 0
+			}
+		} else {
+			return BSWAP, false, false, NoSegment, ESP, NoRegister, 0
+		}
 	case 0xCD:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return BSWAP
+		if is64Bit {
+			if isRexW {
+				return BSWAP, false, false, NoSegment, R13, NoRegister, 0
+			} else {
+				return BSWAP, false, false, NoSegment, RBP, NoRegister, 0
+			}
+		} else {
+			return BSWAP, false, false, NoSegment, EBP, NoRegister, 0
+		}
 	case 0xCE:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return BSWAP
+		if is64Bit {
+			if isRexW {
+				return BSWAP, false, false, NoSegment, R14, NoRegister, 0
+			} else {
+				return BSWAP, false, false, NoSegment, RSI, NoRegister, 0
+			}
+		} else {
+			return BSWAP, false, false, NoSegment, ESI, NoRegister, 0
+		}
 	case 0xCF:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0xB0-B7")
 		}
-		return BSWAP
+		if is64Bit {
+			if isRexW {
+				return BSWAP, false, false, NoSegment, R15, NoRegister, 0
+			} else {
+				return BSWAP, false, false, NoSegment, RDI, NoRegister, 0
+			}
+		} else {
+			return BSWAP, false, false, NoSegment, EDI, NoRegister, 0
+		}
 	case 0xD0:
 		if isOperandSizeOverride {
 			// 0x66
-			return ADDSUBPD
+			return ADDSUBPD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep0 {
 			// 0xF2
-			return ADDSUBPS
+			return ADDSUBPS, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			return NOP
+			panic("Error: Unknown Opcode")
 		}
 	case 0xD1:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSRLW
+			return PSRLW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSRLW
+			return PSRLW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xD2:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSRLD
+			return PSRLD, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSRLD
+			return PSRLD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xD3:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSRLQ
+			return PSRLQ, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSRLQ
+			return PSRLQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xD4:
 		if isOperandSizeOverride {
 			// 0x66
-			return PADDQ
+			return PADDQ, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PADDQ
+			return PADDQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xD5:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMULLW
+			return PMULLW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMULLW
+			return PMULLW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xD6:
 		if isOperandSizeOverride {
 			// 0x66
-			return MOVQ
+			return MOVQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 {
 			// 0xF3
-			return MOVQ2DQ
+			return MOVQ2DQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep0 {
 			// 0xF2
-			return MOVDQ2Q
+			return MOVDQ2Q, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			return NOP
+			panic("Error: Unknown Opcode")
 		}
 	case 0xD7:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVMSKB
+			return PMOVMSKB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMOVMSKB
+			return PMOVMSKB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xD8:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSUBUSB
+			return PSUBUSB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSUBUSB
+			return PSUBUSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xD9:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSUBUSW
+			return PSUBUSW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSUBUSW
+			return PSUBUSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xDA:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMINUB
+			return PMINUB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMINUB
+			return PMINUB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xDB:
 		if isOperandSizeOverride {
 			// 0x66
-			return PAND
+			return PAND, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PAND
+			return PAND, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xDC:
 		if isOperandSizeOverride {
 			// 0x66
-			return PADDUSB
+			return PADDUSB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PADDUSB
+			return PADDUSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xDD:
 		if isOperandSizeOverride {
 			// 0x66
-			return PADDUSW
+			return PADDUSW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PADDUSW
+			return PADDUSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xDE:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMAXUB
+			return PMAXUB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMAXUB
+			return PMAXUB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xDF:
 		if isOperandSizeOverride {
 			// 0x66
-			return PANDN
+			return PANDN, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PANDN
+			return PANDN, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xE0:
 		if isOperandSizeOverride {
 			// 0x66
-			return PAVGB
+			return PAVGB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PAVGB
+			return PAVGB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xE1:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSRAW
+			return PSRAW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSRAW
+			return PSRAW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xE2:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSRAD
+			return PSRAD, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSRAD
+			return PSRAD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xE3:
 		if isOperandSizeOverride {
 			// 0x66
-			return PAVGW
+			return PAVGW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PAVGW
+			return PAVGW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xE4:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMULHUW
+			return PMULHUW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMULHUW
+			return PMULHUW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xE5:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMULHW
+			return PMULHW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMULHW
+			return PMULHW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xE6:
 		if isOperandSizeOverride {
 			// 0x66
-			return CVTTPD2DQ
+			return CVTTPD2DQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 {
 			// 0xF3
-			return CVTDQ2PD
+			return CVTDQ2PD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep0 {
 			// 0xF2
-			return CVTPD2DQ
+			return CVTPD2DQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			return NOP
+			panic("Error: Unknown Opcode")
 		}
 	case 0xE7:
 		if isOperandSizeOverride {
 			// 0x66
-			return MOVNTDQ
+			return MOVNTDQ, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return MOVNTQ
+			return MOVNTQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xE8:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSUBSB
+			return PSUBSB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSUBSB
+			return PSUBSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xE9:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSUBSW
+			return PSUBSW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSUBSW
+			return PSUBSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xEA:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMINSW
+			return PMINSW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMINSW
+			return PMINSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xEB:
 		if isOperandSizeOverride {
 			// 0x66
-			return POR
+			return POR, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return POR
+			return POR, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xEC:
 		if isOperandSizeOverride {
 			// 0x66
-			return PADDSB
+			return PADDSB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PADDSB
+			return PADDSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xED:
 		if isOperandSizeOverride {
 			// 0x66
-			return PADDSW
+			return PADDSW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PADDSW
+			return PADDSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xEE:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMAXSW
+			return PMAXSW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMAXSW
+			return PMAXSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xEF:
 		if isOperandSizeOverride {
 			// 0x66
-			return PXOR
+			return PXOR, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PXOR
+			return PXOR, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xF0:
-		if isRep0 {
-			// 0xF2
-			return LDDQU
-		} else {
-			return NOP
+		if isRep0 || isRep1 || isOperandSizeOverride {
+			panic("Error: prefix not allowed for the secondary map opcode 0xF0")
 		}
+		return LDDQU, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0xF1:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSLLW
+			return PSLLW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSLLW
+			return PSLLW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xF2:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSLLD
+			return PSLLD, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSLLD
+			return PSLLD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xF3:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSLLQ
+			return PSLLQ, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSLLQ
+			return PSLLQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xF4:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMULUDQ
+			return PMULUDQ, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMULUDQ
+			return PMULUDQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xF5:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMADDWD
+			return PMADDWD, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PMADDWD
+			return PMADDWD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xF6:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSADBW
+			return PSADBW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSADBW
+			return PSADBW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xF7:
 		if isOperandSizeOverride {
 			// 0x66
-			return MASKMOVDQU
+			return MASKMOVDQU, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return MASKMOVQ
+			return MASKMOVQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xF8:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSUBB
+			return PSUBB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSUBB
+			return PSUBB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xF9:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSUBW
+			return PSUBW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSUBW
+			return PSUBW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xFA:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSUBD
+			return PSUBD, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSUBD
+			return PSUBD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xFB:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSUBQ
+			return PSUBQ, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PSUBQ
+			return PSUBQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xFC:
 		if isOperandSizeOverride {
 			// 0x66
-			return PADDB
+			return PADDB, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PADDB
+			return PADDB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xFD:
 		if isOperandSizeOverride {
 			// 0x66
-			return PADDW
+			return PADDW, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PADDW
+			return PADDW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xFE:
 		if isOperandSizeOverride {
 			// 0x66
-			return PADDD
+			return PADDD, true, false, NoSegment, NoRegister, NoRegister, 0
+		} else if isRep1 || isRep0 {
+			// 0xF3 0xF2
+			panic("Error: Unknown Opcode")
 		} else {
-			return PADDD
+			return PADDD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xFF:
-		return UD0
+		return UD0, false, false, NoSegment, NoRegister, NoRegister, 0
 	default:
 		panic("Error: Unknown Opcode")
 	}
