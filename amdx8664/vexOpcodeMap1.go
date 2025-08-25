@@ -1,530 +1,1084 @@
 package amdx8664
 
-func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexB bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
+func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, bool, bool, MemSegment, Register, Register, Register, int) {
 	switch curByte {
-	case 0x0:
-		panic("Error: No opcode")
-	case 0x1:
-		panic("Error: No opcode")
-	case 0x2:
-		panic("Error: No opcode")
-	case 0x3:
-		panic("Error: No opcode")
-	case 0x4:
-		panic("Error: No opcode")
-	case 0x5:
-		panic("Error: No opcode")
-	case 0x6:
-		panic("Error: No opcode")
-	case 0x7:
-		panic("Error: No opcode")
-	case 0x8:
-		panic("Error: No opcode")
-	case 0x9:
-		panic("Error: No opcode")
-	case 0xA:
-		panic("Error: No opcode")
-	case 0xB:
-		panic("Error: No opcode")
-	case 0xC:
-		panic("Error: No opcode")
-	case 0xD:
-		panic("Error: No opcode")
-	case 0xE:
-		panic("Error: No opcode")
-	case 0xF:
-		panic("Error: No opcode")
 	case 0x10:
-		if isOperandSizeOverride {
-			// 0x66
-			return MOVUPD, true, false, NoSegment, NoRegister
-		} else if isRep1 {
-			// 0xF3
-			return MOVSS, true, false, NoSegment, NoRegister
-		} else if isRep0 {
-			// 0xF2
-			return MOVSD, true, false, NoSegment, NoRegister
-		} else {
-			return MOVUPS, true, false, NoSegment, NoRegister
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMOVUPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMOVUPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("todo")
+		case [2]bool{true, true}:
+			panic("todo")
 		}
 	case 0x11:
-		return ADC
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMOVUPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMOVUPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("todo")
+		case [2]bool{true, true}:
+			panic("todo")
+		}
 	case 0x12:
-		return ADC
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			return VMOVLPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VMOVSLDUP, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VMOVDDUP, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x13:
-		return ADC
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMOVLPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMOVLPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x14:
-		return ADC
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VUNPCKLPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VUNPCKLPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x15:
-		return ADC
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VUNPCKHPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VUNPCKHPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x16:
-		return PUSH
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			return VMOVHPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VMOVSHDUP, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x17:
-		return POP
-	case 0x18:
-		panic("Error: No opcode")
-	case 0x19:
-		panic("Error: No opcode")
-	case 0x1A:
-		panic("Error: No opcode")
-	case 0x1B:
-		panic("Error: No opcode")
-	case 0x1C:
-		panic("Error: No opcode")
-	case 0x1D:
-		panic("Error: No opcode")
-	case 0x1E:
-		panic("Error: No opcode")
-	case 0x1F:
-		panic("Error: No opcode")
-	case 0x20:
-		return AND
-	case 0x21:
-		return AND
-	case 0x22:
-		return AND
-	case 0x23:
-		return AND
-	case 0x24:
-		return AND
-	case 0x25:
-		return AND
-	case 0x26:
-		// return ADD
-	case 0x27:
-		return DAA
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMOVHPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMOVHPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x28:
-		return SUB
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMOVAPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMOVAPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x29:
-		return SUB
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMOVAPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMOVAPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x2A:
-		return SUB
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{false, true}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, false}:
+			return VCVTSI2SS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VCVTSI2SD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x2B:
-		return SUB
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMOVNTPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMOVNTPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x2C:
-		return SUB
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{false, true}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, false}:
+			panic("todo")
+		case [2]bool{true, true}:
+			panic("todo")
+		}
 	case 0x2D:
-		return SUB
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{false, true}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, false}:
+			panic("todo")
+		case [2]bool{true, true}:
+			panic("todo")
+		}
 	case 0x2E:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VUCOMISS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VUCOMISD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x2F:
-		return DAS
-	case 0x30:
-		return XOR
-	case 0x31:
-		return XOR
-	case 0x32:
-		return XOR
-	case 0x33:
-		return XOR
-	case 0x34:
-		return XOR
-	case 0x35:
-		return XOR
-	case 0x36:
-		// return ADD
-	case 0x37:
-		return AAA
-	case 0x38:
-		return CMP
-	case 0x39:
-		return CMP
-	case 0x3A:
-		return CMP
-	case 0x3B:
-		return CMP
-	case 0x3C:
-		return CMP
-	case 0x3D:
-		return CMP
-	case 0x3E:
-		// return ADD
-	case 0x3F:
-		return AAS
-	case 0x40:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VCOMISS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VCOMISD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x41:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x42:
-		// return ADD
-	case 0x43:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x44:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x45:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x46:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x47:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x48:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x49:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x4A:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x4B:
-		// return ADD
-	case 0x4C:
-		// return ADD
-	case 0x4D:
-		// return ADD
-	case 0x4E:
-		// return ADD
-	case 0x4F:
-		// return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			return KUNPCKBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x50:
-		return PUSH
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMOVMSKPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMOVMSKPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x51:
-		return PUSH
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VSQRTPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VSQRTPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VSQRTSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VSQRTSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x52:
-		return PUSH
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VRSQRTPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, false}:
+			return VRSQRTSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x53:
-		return PUSH
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VRCPPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, false}:
+			return VRCPPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x54:
-		return PUSH
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VANDPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VANDPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x55:
-		return PUSH
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VANDNPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VANDNPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x56:
-		return PUSH
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VORPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VORPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x57:
-		return PUSH
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VXORPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VXORPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			panic("Error: Unknown opcode")
+		case [2]bool{true, true}:
+			panic("Error: Unknown opcode")
+		}
 	case 0x58:
-		return POP
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VADDPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VADDPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VADDSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VADDSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x59:
-		return POP
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMULPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMULPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VMULSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VMULSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x5A:
-		return POP
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VCVTPS2PD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VCVTPD2PS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VCVTSS2SD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VCVTSD2SS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x5B:
-		return POP
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VCVTPS2PD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VCVTPD2PS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VCVTSS2SD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			panic("Error: Unknown instruction")
+		}
 	case 0x5C:
-		return POP
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VSUBPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VSUBPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VSUBSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VSUBSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x5D:
-		return POP
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMINPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMINPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VMINSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VMINSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x5E:
-		return POP
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VDIVPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VDIVPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VDIVSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VDIVSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x5F:
-		return POP
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VMAXPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VMAXPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VMAXSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VMAXSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0x60:
-		// return ADD operand size override
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPUNPCKLBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x61:
-		// return ADD operand size override
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPUNPCKLWD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x62:
-		return BOUND
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPUNPCKLDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x63:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPACKSSWB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x64:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPCMPGTB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x65:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPCMPGTW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x66:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPCMPGTD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x67:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPACKUSWB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x68:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPUNPCKHBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x69:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPUNPCKHWD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x6A:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPUNPCKHDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x6B:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPACKSSDW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x6C:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPUNPCKLQDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x6D:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPUNPCKHQDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x6E:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x6F:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VMOVDQA, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VMOVDQU, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x70:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSHUFD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VPSHUFHW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VPSHUFLW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x71:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return NoInstruction, false, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x72:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return NoInstruction, false, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x73:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return NoInstruction, false, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x74:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPCMPEQB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x75:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPCMPEQW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x76:
-		return ADD
-	case 0x77:
-		return ADD
-	case 0x78:
-		return ADD
-	case 0x79:
-		return ADD
-	case 0x7A:
-		return ADD
-	case 0x7B:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPCMPEQD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x7C:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VHADDPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VHADDPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x7D:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VHSUBPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VHSUBPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x7E:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x7F:
-		return ADD
-	case 0x80:
-		return ADD
-	case 0x81:
-		return ADD
-	case 0x82:
-		return ADD
-	case 0x83:
-		return ADD
-	case 0x84:
-		return ADD
-	case 0x85:
-		return ADD
-	case 0x86:
-		return ADD
-	case 0x87:
-		return ADD
-	case 0x88:
-		return ADD
-	case 0x89:
-		return ADD
-	case 0x8A:
-		return ADD
-	case 0x8B:
-		return ADD
-	case 0x8C:
-		return ADD
-	case 0x8D:
-		return ADD
-	case 0x8E:
-		return ADD
-	case 0x8F:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VMOVDQA, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VMOVDQU, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x90:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x91:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x92:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return KMOVW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return KMOVB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknonw instruction")
+		}
 	case 0x93:
-		return ADD
-	case 0x94:
-		return ADD
-	case 0x95:
-		return ADD
-	case 0x96:
-		return ADD
-	case 0x97:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return KMOVW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return KMOVB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknonw instruction")
+		}
 	case 0x98:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknonw instruction")
+		}
 	case 0x99:
-		return ADD
-	case 0x9A:
-		return ADD
-	case 0x9B:
-		return ADD
-	case 0x9C:
-		return ADD
-	case 0x9D:
-		return ADD
-	case 0x9E:
-		return ADD
-	case 0x9F:
-		return ADD
-	case 0xA0:
-		return ADD
-	case 0xA1:
-		return ADD
-	case 0xA2:
-		return ADD
-	case 0xA3:
-		return ADD
-	case 0xA4:
-		return ADD
-	case 0xA5:
-		return ADD
-	case 0xA6:
-		return ADD
-	case 0xA7:
-		return ADD
-	case 0xA8:
-		return ADD
-	case 0xA9:
-		return ADD
-	case 0xAA:
-		return ADD
-	case 0xAB:
-		return ADD
-	case 0xAC:
-		return ADD
-	case 0xAD:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			panic("todo")
+		case [2]bool{false, true}:
+			panic("todo")
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xAE:
-		return ADD
-	case 0xAF:
-		return ADD
-	case 0xB0:
-		return ADD
-	case 0xB1:
-		return ADD
-	case 0xB2:
-		return ADD
-	case 0xB3:
-		return ADD
-	case 0xB4:
-		return ADD
-	case 0xB5:
-		return ADD
-	case 0xB6:
-		return ADD
-	case 0xB7:
-		return ADD
-	case 0xB8:
-		return ADD
-	case 0xB9:
-		return ADD
-	case 0xBA:
-		return ADD
-	case 0xBB:
-		return ADD
-	case 0xBC:
-		return ADD
-	case 0xBD:
-		return ADD
-	case 0xBE:
-		return ADD
-	case 0xBF:
-		return ADD
-	case 0xC0:
-		return ADD
-	case 0xC1:
-		return ADD
+		if opcodeExt == [2]bool{false, false} {
+			panic("todo")
+		} else {
+			panic("Error: Unknown instruction")
+		}
 	case 0xC2:
-		return ADD
-	case 0xC3:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VCMPPS, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VCMPPD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VCMPSS, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VCMPSD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		}
 	case 0xC4:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPINSRW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xC5:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPEXTRW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xC6:
-		return ADD
-	case 0xC7:
-		return ADD
-	case 0xC8:
-		return ADD
-	case 0xC9:
-		return ADD
-	case 0xCA:
-		return ADD
-	case 0xCB:
-		return ADD
-	case 0xCC:
-		return ADD
-	case 0xCD:
-		return ADD
-	case 0xCE:
-		return ADD
-	case 0xCF:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			return VSHUFPS, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{false, true}:
+			return VSHUFPD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD0:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VADDSUBPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VADDSUBPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD1:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSRLW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD2:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSRLD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD3:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSRLQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD4:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPADDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD5:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMULLW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD6:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VMOVQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD7:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMOVMSKB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD8:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMOVMSKB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD9:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSUBUSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xDA:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMINUB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xDB:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPAND, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xDC:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPADDUSB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xDD:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPADDUSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xDE:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMAXUB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xDF:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPANDN, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE0:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPAVGB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE1:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSRAW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE2:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSRAD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE3:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPAVGW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE4:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMULHUW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE5:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMULHW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE6:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VCVTTPD2DQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VCVTDQ2PD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, true}:
+			return VCVTPD2DQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE7:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VMOVNTDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE8:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSUBSB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xE9:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSUBSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xEA:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMINSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xEB:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPOR, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xEC:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPADDSB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xED:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPADDSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xEE:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMAXSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xEF:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPXOR, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF0:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{true, true}:
+			return VLDDQU, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF1:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSLLW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF2:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSLLD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF3:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSLLQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF4:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMULUDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF5:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPMADDWD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF6:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSADBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF7:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VMASKMOVDQU, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF8:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSUBB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF9:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSUBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xFA:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSUBD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xFB:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPSUBQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xFC:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPADDB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xFD:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPADDW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xFE:
-		return ADD
-	case 0xFF:
-		return ADD
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			return VPADDD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
 	}
-	panic("Error: todo")
 }

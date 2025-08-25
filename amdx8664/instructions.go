@@ -4,7 +4,6 @@ type Instruction int
 
 const (
 	AAA Instruction = iota
-
 	AAD
 	AAM
 	AAS
@@ -30,16 +29,16 @@ const (
 	ANDPD
 	ANDPS
 	ARPL
-	BLENDVPS
 	BLENDPD
 	BLENDPS
+	BLENDVPS
 	BOUND
 	BSF
 	BSR
 	BSWAP
-	BTR
 	BT
 	BTC
+	BTR
 	BTS
 	CALL
 	CLC
@@ -127,11 +126,11 @@ const (
 	INT3
 	INTO
 	INVD
-	JMP
 	JB
 	JBE
 	JL
 	JLE
+	JMP
 	JNB
 	JNBE
 	JNL
@@ -191,8 +190,8 @@ const (
 	MOVNTPD
 	MOVNTPS
 	MOVNTQ
-	MOVNTSS
 	MOVNTSD
+	MOVNTSS
 	MOVQ
 	MOVQ2DQ
 	MOVSB
@@ -237,6 +236,7 @@ const (
 	PANDN
 	PAUSE
 	PAVGB
+	PAVGUSB
 	PAVGW
 	PBLENDVB
 	PBLENDW
@@ -251,11 +251,30 @@ const (
 	PCMPGTD
 	PCMPGTQ
 	PCMPGTW
-	PCMPISTRM
 	PCMPISTRI
+	PCMPISTRM
 	PEXTRB
 	PEXTRD
 	PEXTRW
+	PF2ID
+	PF2IW
+	PFACC
+	PFADD
+	PFCMPEQ
+	PFCMPGE
+	PFCMPGT
+	PFMAX
+	PFMIN
+	PFMUL
+	PFNACC
+	PFPNACC
+	PFRCP
+	PFRCPIT1
+	PFRCPIT2
+	PFRSQIT1
+	PFRSQRT
+	PFSUB
+	PFSUBR
 	PHADDD
 	PHADDSW
 	PHADDW
@@ -263,12 +282,12 @@ const (
 	PHSUBD
 	PHSUBSW
 	PHSUBW
+	PI2FD
+	PI2FW
 	PINSRB
 	PINSRW
-	PI2FD
-	PFRSQIT1
-	PMADDWD
 	PMADDUBSW
+	PMADDWD
 	PMAXSB
 	PMAXSD
 	PMAXSW
@@ -282,43 +301,21 @@ const (
 	PMINUD
 	PMINUW
 	PMOVMSKB
-	PMOVSXBW
 	PMOVSXBD
 	PMOVSXBQ
+	PMOVSXBW
+	PMOVSXDQ
 	PMOVSXWD
 	PMOVSXWQ
-	PMOVSXDQ
 	PMOVZXBD
 	PMOVZXBQ
-	PI2FW
-	PF2IW
-	PF2ID
-	PFNACC
-	PFPNACC
-	PFCMPGE
-	PFMIN
-	PFRCP
-	PFRSQRT
-	PFSUB
-	PFADD
-	PFCMPGT
-	PFMAX
-	PFRCPIT1
-	PFSUBR
-	PFACC
-	PFCMPEQ
-	PFMUL
-	PFRCPIT2
-	PSWAPD
-	PAVGUSB
-	POPD
-	PMULHRW
 	PMOVZXBW
 	PMOVZXDQ
 	PMOVZXWD
 	PMOVZXWQ
 	PMULDQ
 	PMULHRSW
+	PMULHRW
 	PMULHUW
 	PMULHW
 	PMULLD
@@ -329,6 +326,7 @@ const (
 	POPA
 	POPAD
 	POPCNT
+	POPD
 	POR
 	PSADBW
 	PSHUFB
@@ -358,6 +356,7 @@ const (
 	PSUBUSB
 	PSUBUSW
 	PSUBW
+	PSWAPD
 	PTEST
 	PTWRITE
 	PUNPCKHBW
@@ -390,25 +389,25 @@ const (
 	SALC
 	SBB
 	SCASB
+	SETB
+	SETBE
+	SETL
+	SETLE
+	SETNB
+	SETNBE
+	SETNL
+	SETNLE
+	SETNO
+	SETNP
+	SETNS
+	SETNZ
+	SETO
+	SETP
+	SETS
+	SETZ
 	SHLD
 	SHRD
 	SHUFPD
-	SETO
-	SETB
-	SETNB
-	SETZ
-	SETBE
-	SETNBE
-	SETS
-	SETNS
-	SETP
-	SETNP
-	SETL
-	SETNL
-	SETLE
-	SETNLE
-	SETNZ
-	SETNO
 	SHUFPS
 	SQRTPD
 	SQRTPS
@@ -430,13 +429,236 @@ const (
 	TEST
 	TZCNT
 	UCOMISD
+	UCOMISS
 	UD0
 	UD2
-	UCOMISS
 	UNPCKHPD
 	UNPCKHPS
 	UNPCKLPD
 	UNPCKLPS
+	KMOVB
+	KMOVW
+	VADDPD
+	VADDPS
+	VADDSD
+	VADDSS
+	VADDSUBPD
+	VADDSUBPS
+	VAESDEC
+	VAESDECLAST
+	VAESENC
+	VAESENCLAST
+	VAESIMC
+	VANDNPD
+	VANDNPS
+	VANDPD
+	VANDPS
+	VBROADCASTF128
+	VBROADCASTI128
+	VBROADCASTSD
+	VBROADCASTSS
+	VCMPPD
+	VCMPPS
+	VCMPSD
+	VCMPSS
+	VCOMISD
+	VCOMISS
+	VCVTDQ2PD
+	VCVTPD2DQ
+	VCVTPD2PS
+	VCVTPH2PS
+	VCVTPS2PD
+	VCVTSD2SS
+	VCVTSI2SD
+	VCVTSI2SS
+	VCVTSS2SD
+	VCVTTPD2DQ
+	VDIVPD
+	VDIVPS
+	VDIVSD
+	VDIVSS
+	VGF2P8MULB
+	VHADDPD
+	VHADDPS
+	VHSUBPD
+	VHSUBPS
+	VLDDQU
+	VMASKMOVDQU
+	VMASKMOVPD
+	VMASKMOVPS
+	VMAXPD
+	VMAXPS
+	VMAXSD
+	VMAXSS
+	VMINPD
+	VMINPS
+	VMINSD
+	VMINSS
+	VMOVAPD
+	VMOVAPS
+	VMOVDDUP
+	VMOVDQA
+	VMOVDQU
+	VMOVHPD
+	VMOVHPS
+	VMOVLPD
+	VMOVLPS
+	VMOVMSKPD
+	VMOVMSKPS
+	VMOVNTDQ
+	VMOVNTDQA
+	VMOVNTPD
+	VMOVNTPS
+	VMOVQ
+	VMOVSHDUP
+	VMOVSLDUP
+	VMOVUPD
+	VMOVUPS
+	VMULPD
+	VMULPS
+	VMULSD
+	VMULSS
+	VORPD
+	VORPS
+	VPABSB
+	VPABSD
+	VPABSW
+	VPACKSSDW
+	VPACKSSWB
+	VPACKUSDW
+	VPACKUSWB
+	VPADDB
+	VPADDD
+	VPADDQ
+	VPADDSB
+	VPADDSW
+	VPADDUSB
+	VPADDUSW
+	VPADDW
+	VPAND
+	VPANDN
+	VPAVGB
+	VPAVGW
+	VPBROADCASTB
+	VPBROADCASTD
+	VPBROADCASTQ
+	VPBROADCASTW
+	VPCMPEQB
+	VPCMPEQD
+	VPCMPEQQ
+	VPCMPEQW
+	VPCMPGTB
+	VPCMPGTD
+	VPCMPGTQ
+	VPCMPGTW
+	VPDPBUSD
+	VPDPBUSDS
+	VPDPWSSD
+	VPDPWSSDS
+	VPERMD
+	VPERMILPD
+	VPERMILPS
+	VPERMPS
+	VPEXTRW
+	VPHADDD
+	VPHADDSW
+	VPHADDW
+	VPHMINPOSUW
+	VPHSUBD
+	VPHSUBSW
+	VPHSUBW
+	VPINSRW
+	VPMADDUBSW
+	VPMADDWD
+	VPMAXSB
+	VPMAXSD
+	VPMAXSW
+	VPMAXUB
+	VPMAXUD
+	VPMAXUW
+	VPMINSB
+	VPMINSD
+	VPMINSW
+	VPMINUB
+	VPMINUD
+	VPMINUW
+	VPMOVMSKB
+	VPMOVSXBD
+	VPMOVSXBQ
+	VPMOVSXBW
+	VPMOVSXDQ
+	VPMOVSXWD
+	VPMOVSXWQ
+	VPMOVZXBD
+	VPMOVZXBQ
+	VPMOVZXBW
+	VPMOVZXDQ
+	VPMOVZXWD
+	VPMOVZXWQ
+	VPMULDQ
+	VPMULHUW
+	VPMULHW
+	VPMULLD
+	VPMULLW
+	VPMULUDQ
+	VPOR
+	VPSADBW
+	VPSHUFB
+	VPSHUFD
+	VPSHUFHW
+	VPSHUFLW
+	VPSIGNB
+	VPSIGND
+	VPSIGNW
+	VPSLLD
+	VPSLLQ
+	VPSLLW
+	VPSRAD
+	VPSRAVD
+	VPSRAW
+	VPSRLD
+	VPSRLQ
+	VPSRLW
+	VPSUBB
+	VPSUBD
+	VPSUBQ
+	VPSUBSB
+	VPSUBSW
+	VPSUBUSW
+	VPSUBW
+	VPTEST
+	VPUNPCKHBW
+	VPUNPCKHDQ
+	VPUNPCKHQDQ
+	VPUNPCKHWD
+	VPUNPCKLBW
+	VPUNPCKLDQ
+	VPUNPCKLQDQ
+	VPUNPCKLWD
+	VPXOR
+	VRCPPS
+	VRSQRTPS
+	VRSQRTSS
+	VSHUFPD
+	VSHUFPS
+	VSQRTPD
+	VSQRTPS
+	VSQRTSD
+	VSQRTSS
+	VSUBPD
+	VSUBPS
+	VSUBSD
+	VSUBSS
+	VTESTPD
+	VTESTPS
+	VUCOMISD
+	VUCOMISS
+	VUNPCKHPD
+	VUNPCKHPS
+	VUNPCKLPD
+	VUNPCKLPS
+	VXORPD
+	VXORPS
 	WRMSR
 	WRSS
 	WRUSS
@@ -459,10 +681,10 @@ func (instruction Instruction) String() string {
 		return "AAM"
 	case AAS:
 		return "AAS"
-	case ADCX:
-		return "ADCX"
 	case ADC:
 		return "ADC"
+	case ADCX:
+		return "ADCX"
 	case ADD:
 		return "ADD"
 	case ADDPD:
@@ -494,7 +716,7 @@ func (instruction Instruction) String() string {
 	case AND:
 		return "AND"
 	case ANDNPD:
-		return "ANDPD"
+		return "ANDNPD"
 	case ANDNPS:
 		return "ANDNPS"
 	case ANDPD:
@@ -503,12 +725,12 @@ func (instruction Instruction) String() string {
 		return "ANDPS"
 	case ARPL:
 		return "ARPL"
-	case BLENDVPS:
-		return "BLENDVPS"
 	case BLENDPD:
 		return "BLENDPD"
 	case BLENDPS:
 		return "BLENDPS"
+	case BLENDVPS:
+		return "BLENDVPS"
 	case BOUND:
 		return "BOUND"
 	case BSF:
@@ -517,12 +739,12 @@ func (instruction Instruction) String() string {
 		return "BSR"
 	case BSWAP:
 		return "BSWAP"
-	case BTR:
-		return "BTR"
 	case BT:
 		return "BT"
 	case BTC:
 		return "BTC"
+	case BTR:
+		return "BTR"
 	case BTS:
 		return "BTS"
 	case CALL:
@@ -674,9 +896,9 @@ func (instruction Instruction) String() string {
 	case HSUBPD:
 		return "HSUBPD"
 	case HSUBPS:
-		return "HSUBPD"
+		return "HSUBPS"
 	case IMUL:
-		return "HSUBPD"
+		return "IMUL"
 	case IN:
 		return "IN"
 	case INC:
@@ -697,8 +919,6 @@ func (instruction Instruction) String() string {
 		return "INTO"
 	case INVD:
 		return "INVD"
-	case JMP:
-		return "JMP"
 	case JB:
 		return "JB"
 	case JBE:
@@ -707,6 +927,8 @@ func (instruction Instruction) String() string {
 		return "JL"
 	case JLE:
 		return "JLE"
+	case JMP:
+		return "JMP"
 	case JNB:
 		return "JNB"
 	case JNBE:
@@ -768,23 +990,23 @@ func (instruction Instruction) String() string {
 	case MASKMOVQ:
 		return "MASKMOVQ"
 	case MAXPD:
-		return "MASKMOVQ"
+		return "MAXPD"
 	case MAXPS:
-		return "MASKMOVQ"
+		return "MAXPS"
 	case MAXSD:
-		return "MASKMOVQ"
+		return "MAXSD"
 	case MAXSS:
 		return "MAXSS"
 	case MINPD:
-		return "MAXSS"
+		return "MINPD"
 	case MINPS:
-		return "MAXSS"
+		return "MINPS"
 	case MINSD:
 		return "MINSD"
 	case MINSS:
-		return "MINSD"
+		return "MINSS"
 	case MOV:
-		return "MINSD"
+		return "MOV"
 	case MOVAPD:
 		return "MOVAPD"
 	case MOVAPS:
@@ -794,21 +1016,21 @@ func (instruction Instruction) String() string {
 	case MOVD:
 		return "MOVD"
 	case MOVDDUP:
-		return "MOVDUP"
+		return "MOVDDUP"
 	case MOVDQ2Q:
 		return "MOVDQ2Q"
 	case MOVDQA:
-		return "MOVDQ2Q"
+		return "MOVDQA"
 	case MOVDQU:
-		return "MOVDQ2Q"
+		return "MOVDQU"
 	case MOVHPD:
-		return "MOVDQ2Q"
+		return "MOVHPD"
 	case MOVHPS:
 		return "MOVHPS"
 	case MOVLPD:
 		return "MOVLPD"
 	case MOVLPS:
-		return "MOVLPD"
+		return "MOVLPS"
 	case MOVMSKPD:
 		return "MOVMSKPD"
 	case MOVMSKPS:
@@ -818,17 +1040,17 @@ func (instruction Instruction) String() string {
 	case MOVNTDQA:
 		return "MOVNTDQA"
 	case MOVNTI:
-		return "MOVNTDQA"
+		return "MOVNTI"
 	case MOVNTPD:
 		return "MOVNTPD"
 	case MOVNTPS:
 		return "MOVNTPS"
 	case MOVNTQ:
 		return "MOVNTQ"
-	case MOVNTSS:
-		return "MOVNTSS"
 	case MOVNTSD:
 		return "MOVNTSD"
+	case MOVNTSS:
+		return "MOVNTSS"
 	case MOVQ:
 		return "MOVQ"
 	case MOVQ2DQ:
@@ -845,6 +1067,8 @@ func (instruction Instruction) String() string {
 		return "MOVSS"
 	case MOVSX:
 		return "MOVSX"
+	case MOVSXD:
+		return "MOVSXD"
 	case MOVUPD:
 		return "MOVUPD"
 	case MOVUPS:
@@ -915,6 +1139,8 @@ func (instruction Instruction) String() string {
 		return "PAUSE"
 	case PAVGB:
 		return "PAVGB"
+	case PAVGUSB:
+		return "PAVGUSB"
 	case PAVGW:
 		return "PAVGW"
 	case PBLENDVB:
@@ -943,16 +1169,54 @@ func (instruction Instruction) String() string {
 		return "PCMPGTQ"
 	case PCMPGTW:
 		return "PCMPGTW"
-	case PCMPISTRM:
-		return "PCMPISTRM"
 	case PCMPISTRI:
 		return "PCMPISTRI"
+	case PCMPISTRM:
+		return "PCMPISTRM"
 	case PEXTRB:
 		return "PEXTRB"
 	case PEXTRD:
 		return "PEXTRD"
 	case PEXTRW:
 		return "PEXTRW"
+	case PF2ID:
+		return "PF2ID"
+	case PF2IW:
+		return "PF2IW"
+	case PFACC:
+		return "PFACC"
+	case PFADD:
+		return "PFADD"
+	case PFCMPEQ:
+		return "PFCMPEQ"
+	case PFCMPGE:
+		return "PFCMPGE"
+	case PFCMPGT:
+		return "PFCMPGT"
+	case PFMAX:
+		return "PFMAX"
+	case PFMIN:
+		return "PFMIN"
+	case PFMUL:
+		return "PFMUL"
+	case PFNACC:
+		return "PFNACC"
+	case PFPNACC:
+		return "PFPNACC"
+	case PFRCP:
+		return "PFRCP"
+	case PFRCPIT1:
+		return "PFRCPIT1"
+	case PFRCPIT2:
+		return "PFRCPIT2"
+	case PFRSQIT1:
+		return "PFRSQIT1"
+	case PFRSQRT:
+		return "PFRSQRT"
+	case PFSUB:
+		return "PFSUB"
+	case PFSUBR:
+		return "PFSUBR"
 	case PHADDD:
 		return "PHADDD"
 	case PHADDSW:
@@ -967,18 +1231,18 @@ func (instruction Instruction) String() string {
 		return "PHSUBSW"
 	case PHSUBW:
 		return "PHSUBW"
+	case PI2FD:
+		return "PI2FD"
+	case PI2FW:
+		return "PI2FW"
 	case PINSRB:
 		return "PINSRB"
 	case PINSRW:
 		return "PINSRW"
-	case PI2FD:
-		return "PI2FD"
-	case PFRSQIT1:
-		return "PFRSQIT1"
-	case PMADDWD:
-		return "PMADDWD"
 	case PMADDUBSW:
 		return "PMADDUBSW"
+	case PMADDWD:
+		return "PMADDWD"
 	case PMAXSB:
 		return "PMAXSB"
 	case PMAXSD:
@@ -1005,68 +1269,22 @@ func (instruction Instruction) String() string {
 		return "PMINUW"
 	case PMOVMSKB:
 		return "PMOVMSKB"
-	case PMOVSXBW:
-		return "PMOVSXBW"
 	case PMOVSXBD:
 		return "PMOVSXBD"
 	case PMOVSXBQ:
 		return "PMOVSXBQ"
+	case PMOVSXBW:
+		return "PMOVSXBW"
+	case PMOVSXDQ:
+		return "PMOVSXDQ"
 	case PMOVSXWD:
 		return "PMOVSXWD"
 	case PMOVSXWQ:
 		return "PMOVSXWQ"
-	case PMOVSXDQ:
-		return "PMOVSXDQ"
 	case PMOVZXBD:
 		return "PMOVZXBD"
 	case PMOVZXBQ:
 		return "PMOVZXBQ"
-	case PI2FW:
-		return "PI2FW"
-	case PF2IW:
-		return "PF2IW"
-	case PF2ID:
-		return "PF2ID"
-	case PFNACC:
-		return "PFNACC"
-	case PFPNACC:
-		return "PFPNACC"
-	case PFCMPGE:
-		return "PFCMPGE"
-	case PFMIN:
-		return "PFMIN"
-	case PFRCP:
-		return "PFRCP"
-	case PFRSQRT:
-		return "PFRSQRT"
-	case PFSUB:
-		return "PFSUB"
-	case PFADD:
-		return "PFADD"
-	case PFCMPGT:
-		return "PFCMPGT"
-	case PFMAX:
-		return "PFMAX"
-	case PFRCPIT1:
-		return "PFRCPIT1"
-	case PFSUBR:
-		return "PFSUBR"
-	case PFACC:
-		return "PFACC"
-	case PFCMPEQ:
-		return "PFCMPEQ"
-	case PFMUL:
-		return "PFMUL"
-	case PFRCPIT2:
-		return "PFRCPIT2"
-	case PSWAPD:
-		return "PSWAPD"
-	case PAVGUSB:
-		return "PAVGUSB"
-	case POPD:
-		return "POPD"
-	case PMULHRW:
-		return "PMULHRW"
 	case PMOVZXBW:
 		return "PMOVZXBW"
 	case PMOVZXDQ:
@@ -1079,6 +1297,8 @@ func (instruction Instruction) String() string {
 		return "PMULDQ"
 	case PMULHRSW:
 		return "PMULHRSW"
+	case PMULHRW:
+		return "PMULHRW"
 	case PMULHUW:
 		return "PMULHUW"
 	case PMULHW:
@@ -1099,6 +1319,8 @@ func (instruction Instruction) String() string {
 		return "POPAD"
 	case POPCNT:
 		return "POPCNT"
+	case POPD:
+		return "POPD"
 	case POR:
 		return "POR"
 	case PSADBW:
@@ -1124,7 +1346,7 @@ func (instruction Instruction) String() string {
 	case PSLLDQ:
 		return "PSLLDQ"
 	case PSLLQ:
-		return "PSLLQ	"
+		return "PSLLQ"
 	case PSLLW:
 		return "PSLLW"
 	case PSRAD:
@@ -1157,6 +1379,8 @@ func (instruction Instruction) String() string {
 		return "PSUBUSW"
 	case PSUBW:
 		return "PSUBW"
+	case PSWAPD:
+		return "PSWAPD"
 	case PTEST:
 		return "PTEST"
 	case PTWRITE:
@@ -1221,44 +1445,44 @@ func (instruction Instruction) String() string {
 		return "SBB"
 	case SCASB:
 		return "SCASB"
+	case SETB:
+		return "SETB"
+	case SETBE:
+		return "SETBE"
+	case SETL:
+		return "SETL"
+	case SETLE:
+		return "SETLE"
+	case SETNB:
+		return "SETNB"
+	case SETNBE:
+		return "SETNBE"
+	case SETNL:
+		return "SETNL"
+	case SETNLE:
+		return "SETNLE"
+	case SETNO:
+		return "SETNO"
+	case SETNP:
+		return "SETNP"
+	case SETNS:
+		return "SETNS"
+	case SETNZ:
+		return "SETNZ"
+	case SETO:
+		return "SETO"
+	case SETP:
+		return "SETP"
+	case SETS:
+		return "SETS"
+	case SETZ:
+		return "SETZ"
 	case SHLD:
 		return "SHLD"
 	case SHRD:
 		return "SHRD"
 	case SHUFPD:
 		return "SHUFPD"
-	case SETO:
-		return "SETO"
-	case SETB:
-		return "SETB"
-	case SETNB:
-		return "SETNB"
-	case SETZ:
-		return "SETZ"
-	case SETBE:
-		return "SETBE"
-	case SETNBE:
-		return "SETNBE"
-	case SETS:
-		return "SETS"
-	case SETNS:
-		return "SETNS"
-	case SETP:
-		return "SETP"
-	case SETNP:
-		return "SETNP"
-	case SETL:
-		return "SETL"
-	case SETNL:
-		return "SETNL"
-	case SETLE:
-		return "SETLE"
-	case SETNLE:
-		return "SETNLE"
-	case SETNZ:
-		return "SETNZ"
-	case SETNO:
-		return "SETNO"
 	case SHUFPS:
 		return "SHUFPS"
 	case SQRTPD:
@@ -1301,12 +1525,12 @@ func (instruction Instruction) String() string {
 		return "TZCNT"
 	case UCOMISD:
 		return "UCOMISD"
+	case UCOMISS:
+		return "UCOMISS"
 	case UD0:
 		return "UD0"
 	case UD2:
 		return "UD2"
-	case UCOMISS:
-		return "UCOMISS"
 	case UNPCKHPD:
 		return "UNPCKHPD"
 	case UNPCKHPS:
@@ -1315,10 +1539,452 @@ func (instruction Instruction) String() string {
 		return "UNPCKLPD"
 	case UNPCKLPS:
 		return "UNPCKLPS"
+	case VADDPD:
+		return "VADDPD"
+	case VADDPS:
+		return "VADDPS"
+	case VADDSD:
+		return "VADDSD"
+	case VADDSS:
+		return "VADDSS"
+	case VADDSUBPD:
+		return "VADDSUBPD"
+	case VADDSUBPS:
+		return "VADDSUBPS"
+	case VAESDEC:
+		return "VAESDEC"
+	case VAESDECLAST:
+		return "VAESDECLAST"
+	case VAESENC:
+		return "VAESENC"
+	case VAESENCLAST:
+		return "VAESENCLAST"
+	case VAESIMC:
+		return "VAESIMC"
+	case VANDNPD:
+		return "VANDNPD"
+	case VANDNPS:
+		return "VANDNPS"
+	case VANDPD:
+		return "VANDPD"
+	case VANDPS:
+		return "VANDPS"
+	case VBROADCASTF128:
+		return "VBROADCASTF128"
+	case VBROADCASTI128:
+		return "VBROADCASTI128"
+	case VBROADCASTSD:
+		return "VBROADCASTSD"
+	case VBROADCASTSS:
+		return "VBROADCASTSS"
+	case VCMPPD:
+		return "VCMPPD"
+	case VCMPPS:
+		return "VCMPPS"
+	case VCMPSD:
+		return "VCMPSD"
+	case VCMPSS:
+		return "VCMPSS"
+	case VCOMISD:
+		return "VCOMISD"
+	case VCOMISS:
+		return "VCOMISS"
+	case VCVTDQ2PD:
+		return "VCVTDQ2PD"
+	case VCVTPD2DQ:
+		return "VCVTPD2DQ"
+	case VCVTPD2PS:
+		return "VCVTPD2PS"
+	case VCVTPH2PS:
+		return "VCVTPH2PS"
+	case VCVTPS2PD:
+		return "VCVTPS2PD"
+	case VCVTSD2SS:
+		return "VCVTSD2SS"
+	case VCVTSI2SD:
+		return "VCVTSI2SD"
+	case VCVTSI2SS:
+		return "VCVTSI2SS"
+	case VCVTSS2SD:
+		return "VCVTSS2SD"
+	case VCVTTPD2DQ:
+		return "VCVTTPD2DQ"
+	case VDIVPD:
+		return "VDIVPD"
+	case VDIVPS:
+		return "VDIVPS"
+	case VDIVSD:
+		return "VDIVSD"
+	case VDIVSS:
+		return "VDIVSS"
+	case VGF2P8MULB:
+		return "VGF2P8MULB"
+	case VHADDPD:
+		return "VHADDPD"
+	case VHADDPS:
+		return "VHADDPS"
+	case VHSUBPD:
+		return "VHSUBPD"
+	case VHSUBPS:
+		return "VHSUBPS"
+	case VLDDQU:
+		return "VLDDQU"
+	case VMASKMOVDQU:
+		return "VMASKMOVDQU"
+	case VMASKMOVPD:
+		return "VMASKMOVPD"
+	case VMASKMOVPS:
+		return "VMASKMOVPS"
+	case VMAXPD:
+		return "VMAXPD"
+	case VMAXPS:
+		return "VMAXPS"
+	case VMAXSD:
+		return "VMAXSD"
+	case VMAXSS:
+		return "VMAXSS"
+	case VMINPD:
+		return "VMINPD"
+	case VMINPS:
+		return "VMINPS"
+	case VMINSD:
+		return "VMINSD"
+	case VMINSS:
+		return "VMINSS"
+	case VMOVAPD:
+		return "VMOVAPD"
+	case VMOVAPS:
+		return "VMOVAPS"
+	case VMOVDDUP:
+		return "VMOVDDUP"
+	case VMOVDQA:
+		return "VMOVDQA"
+	case VMOVDQU:
+		return "VMOVDQU"
+	case VMOVHPD:
+		return "VMOVHPD"
+	case VMOVHPS:
+		return "VMOVHPS"
+	case VMOVLPD:
+		return "VMOVLPD"
+	case VMOVLPS:
+		return "VMOVLPS"
+	case VMOVMSKPD:
+		return "VMOVMSKPD"
+	case VMOVMSKPS:
+		return "VMOVMSKPS"
+	case VMOVNTDQ:
+		return "VMOVNTDQ"
+	case VMOVNTDQA:
+		return "VMOVNTDQA"
+	case VMOVNTPD:
+		return "VMOVNTPD"
+	case VMOVNTPS:
+		return "VMOVNTPS"
+	case VMOVQ:
+		return "VMOVQ"
+	case VMOVSHDUP:
+		return "VMOVSHDUP"
+	case VMOVSLDUP:
+		return "VMOVSLDUP"
+	case VMOVUPD:
+		return "VMOVUPD"
+	case VMOVUPS:
+		return "VMOVUPS"
+	case VMULPD:
+		return "VMULPD"
+	case VMULPS:
+		return "VMULPS"
+	case VMULSD:
+		return "VMULSD"
+	case VMULSS:
+		return "VMULSS"
+	case VORPD:
+		return "VORPD"
+	case VORPS:
+		return "VORPS"
+	case VPABSB:
+		return "VPABSB"
+	case VPABSD:
+		return "VPABSD"
+	case VPABSW:
+		return "VPABSW"
+	case VPACKSSDW:
+		return "VPACKSSDW"
+	case VPACKSSWB:
+		return "VPACKSSWB"
+	case VPACKUSDW:
+		return "VPACKUSDW"
+	case VPACKUSWB:
+		return "VPACKUSWB"
+	case VPADDB:
+		return "VPADDB"
+	case VPADDD:
+		return "VPADDD"
+	case VPADDQ:
+		return "VPADDQ"
+	case VPADDSB:
+		return "VPADDSB"
+	case VPADDSW:
+		return "VPADDSW"
+	case VPADDUSB:
+		return "VPADDUSB"
+	case VPADDUSW:
+		return "VPADDUSW"
+	case VPADDW:
+		return "VPADDW"
+	case VPAND:
+		return "VPAND"
+	case VPANDN:
+		return "VPANDN"
+	case VPAVGB:
+		return "VPAVGB"
+	case VPAVGW:
+		return "VPAVGW"
+	case VPBROADCASTB:
+		return "VPBROADCASTB"
+	case VPBROADCASTD:
+		return "VPBROADCASTD"
+	case VPBROADCASTQ:
+		return "VPBROADCASTQ"
+	case VPBROADCASTW:
+		return "VPBROADCASTW"
+	case VPCMPEQB:
+		return "VPCMPEQB"
+	case VPCMPEQD:
+		return "VPCMPEQD"
+	case VPCMPEQQ:
+		return "VPCMPEQQ"
+	case VPCMPEQW:
+		return "VPCMPEQW"
+	case VPCMPGTB:
+		return "VPCMPGTB"
+	case VPCMPGTD:
+		return "VPCMPGTD"
+	case VPCMPGTQ:
+		return "VPCMPGTQ"
+	case VPCMPGTW:
+		return "VPCMPGTW"
+	case VPDPBUSD:
+		return "VPDPBUSD"
+	case VPDPBUSDS:
+		return "VPDPBUSDS"
+	case VPDPWSSD:
+		return "VPDPWSSD"
+	case VPDPWSSDS:
+		return "VPDPWSSDS"
+	case VPERMD:
+		return "VPERMD"
+	case VPERMILPD:
+		return "VPERMILPD"
+	case VPERMILPS:
+		return "VPERMILPS"
+	case VPERMPS:
+		return "VPERMPS"
+	case VPEXTRW:
+		return "VPEXTRW"
+	case VPHADDD:
+		return "VPHADDD"
+	case VPHADDSW:
+		return "VPHADDSW"
+	case VPHADDW:
+		return "VPHADDW"
+	case VPHMINPOSUW:
+		return "VPHMINPOSUW"
+	case VPHSUBD:
+		return "VPHSUBD"
+	case VPHSUBSW:
+		return "VPHSUBSW"
+	case VPHSUBW:
+		return "VPHSUBW"
+	case VPINSRW:
+		return "VPINSRW"
+	case VPMADDUBSW:
+		return "VPMADDUBSW"
+	case VPMADDWD:
+		return "VPMADDWD"
+	case VPMAXSB:
+		return "VPMAXSB"
+	case VPMAXSD:
+		return "VPMAXSD"
+	case VPMAXSW:
+		return "VPMAXSW"
+	case VPMAXUB:
+		return "VPMAXUB"
+	case VPMAXUD:
+		return "VPMAXUD"
+	case VPMAXUW:
+		return "VPMAXUW"
+	case VPMINSB:
+		return "VPMINSB"
+	case VPMINSD:
+		return "VPMINSD"
+	case VPMINSW:
+		return "VPMINSW"
+	case VPMINUB:
+		return "VPMINUB"
+	case VPMINUD:
+		return "VPMINUD"
+	case VPMINUW:
+		return "VPMINUW"
+	case VPMOVMSKB:
+		return "VPMOVMSKB"
+	case VPMOVSXBD:
+		return "VPMOVSXBD"
+	case VPMOVSXBQ:
+		return "VPMOVSXBQ"
+	case VPMOVSXBW:
+		return "VPMOVSXBW"
+	case VPMOVSXDQ:
+		return "VPMOVSXDQ"
+	case VPMOVSXWD:
+		return "VPMOVSXWD"
+	case VPMOVSXWQ:
+		return "VPMOVSXWQ"
+	case VPMOVZXBD:
+		return "VPMOVZXBD"
+	case VPMOVZXBQ:
+		return "VPMOVZXBQ"
+	case VPMOVZXBW:
+		return "VPMOVZXBW"
+	case VPMOVZXDQ:
+		return "VPMOVZXDQ"
+	case VPMOVZXWD:
+		return "VPMOVZXWD"
+	case VPMOVZXWQ:
+		return "VPMOVZXWQ"
+	case VPMULDQ:
+		return "VPMULDQ"
+	case VPMULHUW:
+		return "VPMULHUW"
+	case VPMULHW:
+		return "VPMULHW"
+	case VPMULLD:
+		return "VPMULLD"
+	case VPMULLW:
+		return "VPMULLW"
+	case VPMULUDQ:
+		return "VPMULUDQ"
+	case VPOR:
+		return "VPOR"
+	case VPSADBW:
+		return "VPSADBW"
+	case VPSHUFB:
+		return "VPSHUFB"
+	case VPSHUFD:
+		return "VPSHUFD"
+	case VPSHUFHW:
+		return "VPSHUFHW"
+	case VPSHUFLW:
+		return "VPSHUFLW"
+	case VPSIGNB:
+		return "VPSIGNB"
+	case VPSIGND:
+		return "VPSIGND"
+	case VPSIGNW:
+		return "VPSIGNW"
+	case VPSLLD:
+		return "VPSLLD"
+	case VPSLLQ:
+		return "VPSLLQ"
+	case VPSLLW:
+		return "VPSLLW"
+	case VPSRAD:
+		return "VPSRAD"
+	case VPSRAVD:
+		return "VPSRAVD"
+	case VPSRAW:
+		return "VPSRAW"
+	case VPSRLD:
+		return "VPSRLD"
+	case VPSRLQ:
+		return "VPSRLQ"
+	case VPSRLW:
+		return "VPSRLW"
+	case VPSUBB:
+		return "VPSUBB"
+	case VPSUBD:
+		return "VPSUBD"
+	case VPSUBQ:
+		return "VPSUBQ"
+	case VPSUBSB:
+		return "VPSUBSB"
+	case VPSUBSW:
+		return "VPSUBSW"
+	case VPSUBUSW:
+		return "VPSUBUSW"
+	case VPSUBW:
+		return "VPSUBW"
+	case VPTEST:
+		return "VPTEST"
+	case VPUNPCKHBW:
+		return "VPUNPCKHBW"
+	case VPUNPCKHDQ:
+		return "VPUNPCKHDQ"
+	case VPUNPCKHQDQ:
+		return "VPUNPCKHQDQ"
+	case VPUNPCKHWD:
+		return "VPUNPCKHWD"
+	case VPUNPCKLBW:
+		return "VPUNPCKLBW"
+	case VPUNPCKLDQ:
+		return "VPUNPCKLDQ"
+	case VPUNPCKLQDQ:
+		return "VPUNPCKLQDQ"
+	case VPUNPCKLWD:
+		return "VPUNPCKLWD"
+	case VPXOR:
+		return "VPXOR"
+	case VRCPPS:
+		return "VRCPPS"
+	case VRSQRTPS:
+		return "VRSQRTPS"
+	case VRSQRTSS:
+		return "VRSQRTSS"
+	case VSHUFPD:
+		return "VSHUFPD"
+	case VSHUFPS:
+		return "VSHUFPS"
+	case VSQRTPD:
+		return "VSQRTPD"
+	case VSQRTPS:
+		return "VSQRTPS"
+	case VSQRTSD:
+		return "VSQRTSD"
+	case VSQRTSS:
+		return "VSQRTSS"
+	case VSUBPD:
+		return "VSUBPD"
+	case VSUBPS:
+		return "VSUBPS"
+	case VSUBSD:
+		return "VSUBSD"
+	case VSUBSS:
+		return "VSUBSS"
+	case VTESTPD:
+		return "VTESTPD"
+	case VTESTPS:
+		return "VTESTPS"
+	case VUCOMISD:
+		return "VUCOMISD"
+	case VUCOMISS:
+		return "VUCOMISS"
+	case VUNPCKHPD:
+		return "VUNPCKHPD"
+	case VUNPCKHPS:
+		return "VUNPCKHPS"
+	case VUNPCKLPD:
+		return "VUNPCKLPD"
+	case VUNPCKLPS:
+		return "VUNPCKLPS"
+	case VXORPD:
+		return "VXORPD"
+	case VXORPS:
+		return "VXORPS"
 	case WRMSR:
 		return "WRMSR"
 	case WRSS:
-		return "WRUSS"
+		return "WRSS"
 	case WRUSS:
 		return "WRUSS"
 	case XADD:
@@ -1333,6 +1999,8 @@ func (instruction Instruction) String() string {
 		return "XORPD"
 	case XORPS:
 		return "XORPS"
+	case NoInstruction:
+		return "NoInstruction"
 	default:
 		return "Unknown instruction"
 	}

@@ -731,14 +731,14 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			if isVex {
 				if isVex3Byte {
 					if mapSelect[3] == false && mapSelect[4] == true {
-						instruction, _, _, _, _, _, _ = vexOpcodeMap1(curByte, fieldPp, isRexW)
+						instruction, _, _, _, _, _, _, _ = vexOpcodeMap1(curByte, fieldPp, isRexW)
 					} else if mapSelect[3] == true && mapSelect[4] == false {
 						instruction, _, _, _, _, _, _ = vexOpcodeMap2(curByte, fieldPp, isRexW)
 					} else if mapSelect[3] == true && mapSelect[4] == true {
 						instruction, _, _, _, _, _, _ = vexOpcodeMap3(curByte, fieldPp, isRexW)
 					}
 				} else {
-					instruction, _, _, _, _, _, _ = vexOpcodeMap1(curByte, fieldPp, isRexW)
+					instruction, _, _, _, _, _, _, _ = vexOpcodeMap1(curByte, fieldPp, isRexW)
 				}
 			} else if isXop {
 				if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == false {
@@ -749,27 +749,28 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 					instruction, _, _, _, _, _, _ = xopOpcodeMap10(curByte, fieldPp, isRexW)
 				}
 			} else if is3dNow {
+				panic("todo handle 3dnow opcode map differently")
 				// if isLock {
 				// }
-				instruction, _, _ = opcodeMap3dnow(curByte, bitFormat, isRexB)
-				if isRexPrefix {
-				}
+				// instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap3dnow(curByte, bitFormat, isRexB)
+				// if isRexPrefix {
+				// }
 			} else if is3A {
 				if isLock {
 				}
-				instruction, _, _, _, _, _, _ = opcodeMap3A(curByte, isOperandSizeOverride, isRexB)
+				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap3A(curByte, isOperandSizeOverride, isRexB)
 				if isRexPrefix {
 				}
 			} else if is38 {
 				if isLock {
 				}
-				instruction, _, _, _, _, _, _ = opcodeMap38(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexB)
+				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap38(curByte, bitFormat, isRep0, isOperandSizeOverride, isRexB)
 				if isRexPrefix {
 				}
 			} else if isSecondaryMap {
 				if isLock {
 				}
-				instruction, _, _, _, _, _, _ = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
+				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 				// if isRexPrefix {
 				// }
 			} else {
