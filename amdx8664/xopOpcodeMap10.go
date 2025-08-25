@@ -1,6 +1,6 @@
 package amdx8664
 
-func xopOpcodeMap10(curByte byte, opcodeExt [2]bool, isRexB bool) (Instruction, bool, bool, MemSegment, Register, Register, int) {
+func xopOpcodeMap10(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, bool, bool, MemSegment, Register, Register, Register, int) {
 	switch curByte {
 	case 0x0:
 		return ADD

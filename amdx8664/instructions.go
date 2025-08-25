@@ -449,10 +449,13 @@ const (
 	VAESENC
 	VAESENCLAST
 	VAESIMC
+	VAESKEYGENASSIST
 	VANDNPD
 	VANDNPS
 	VANDPD
 	VANDPS
+	VBLENDPD
+	VBLENDPS
 	VBROADCASTF128
 	VBROADCASTI128
 	VBROADCASTSD
@@ -468,6 +471,7 @@ const (
 	VCVTPD2PS
 	VCVTPH2PS
 	VCVTPS2PD
+	VCVTPS2PH
 	VCVTSD2SS
 	VCVTSI2SD
 	VCVTSI2SS
@@ -477,11 +481,41 @@ const (
 	VDIVPS
 	VDIVSD
 	VDIVSS
+	VDPPD
+	VDPPS
+	VEXTRACTF128
+	VEXTRACTI128
+	VEXTRACTPS
+	VFMADDPD
+	VFMADDPS
+	VFMADDSD
+	VFMADDSS
+	VFMADDSUBPD
+	VFMADDSUBPS
+	VFMSUBADDPD
+	VFMSUBADDPS
+	VFMSUBPD
+	VFMSUBPS
+	VFMSUBSD
+	VFMSUBSS
+	VFNMADDPD
+	VFNMADDPS
+	VFNMADDSD
+	VFNMADDSS
+	VFNMSUBPD
+	VFNMSUBPS
+	VFNMSUBSD
+	VFNMSUBSS
+	VGF2P8AFFINEINVQB
+	VGF2P8AFFINEQB
 	VGF2P8MULB
 	VHADDPD
 	VHADDPS
 	VHSUBPD
 	VHSUBPS
+	VINSERTF128
+	VINSERTI128
+	VINSERTPS
 	VLDDQU
 	VMASKMOVDQU
 	VMASKMOVPD
@@ -514,6 +548,7 @@ const (
 	VMOVSLDUP
 	VMOVUPD
 	VMOVUPS
+	VMPSADBW
 	VMULPD
 	VMULPS
 	VMULSD
@@ -535,30 +570,43 @@ const (
 	VPADDUSB
 	VPADDUSW
 	VPADDW
+	VPALIGNR
 	VPAND
 	VPANDN
 	VPAVGB
 	VPAVGW
+	VPBLENDD
+	VPBLENDW
 	VPBROADCASTB
 	VPBROADCASTD
 	VPBROADCASTQ
 	VPBROADCASTW
+	VPCLMULQDQ
 	VPCMPEQB
 	VPCMPEQD
 	VPCMPEQQ
 	VPCMPEQW
+	VPCMPESTRI
+	VPCMPESTRM
 	VPCMPGTB
 	VPCMPGTD
 	VPCMPGTQ
 	VPCMPGTW
+	VPCMPISTRI
+	VPCMPISTRM
 	VPDPBUSD
 	VPDPBUSDS
 	VPDPWSSD
 	VPDPWSSDS
+	VPERM2F128
+	VPERM2I128
 	VPERMD
 	VPERMILPD
 	VPERMILPS
+	VPERMPD
 	VPERMPS
+	VPERMQ
+	VPEXTRB
 	VPEXTRW
 	VPHADDD
 	VPHADDSW
@@ -567,6 +615,7 @@ const (
 	VPHSUBD
 	VPHSUBSW
 	VPHSUBW
+	VPINSRB
 	VPINSRW
 	VPMADDUBSW
 	VPMADDWD
@@ -637,6 +686,10 @@ const (
 	VPUNPCKLWD
 	VPXOR
 	VRCPPS
+	VROUNDPD
+	VROUNDPS
+	VROUNDSD
+	VROUNDSS
 	VRSQRTPS
 	VRSQRTSS
 	VSHUFPD
@@ -1561,6 +1614,8 @@ func (instruction Instruction) String() string {
 		return "VAESENCLAST"
 	case VAESIMC:
 		return "VAESIMC"
+	case VAESKEYGENASSIST:
+		return "VAESKEYGENASSIST"
 	case VANDNPD:
 		return "VANDNPD"
 	case VANDNPS:
@@ -1569,6 +1624,10 @@ func (instruction Instruction) String() string {
 		return "VANDPD"
 	case VANDPS:
 		return "VANDPS"
+	case VBLENDPD:
+		return "VBLENDPD"
+	case VBLENDPS:
+		return "VBLENDPS"
 	case VBROADCASTF128:
 		return "VBROADCASTF128"
 	case VBROADCASTI128:
@@ -1599,6 +1658,8 @@ func (instruction Instruction) String() string {
 		return "VCVTPH2PS"
 	case VCVTPS2PD:
 		return "VCVTPS2PD"
+	case VCVTPS2PH:
+		return "VCVTPS2PH"
 	case VCVTSD2SS:
 		return "VCVTSD2SS"
 	case VCVTSI2SD:
@@ -1617,6 +1678,60 @@ func (instruction Instruction) String() string {
 		return "VDIVSD"
 	case VDIVSS:
 		return "VDIVSS"
+	case VDPPD:
+		return "VDPPD"
+	case VDPPS:
+		return "VDPPS"
+	case VEXTRACTF128:
+		return "VEXTRACTF128"
+	case VEXTRACTI128:
+		return "VEXTRACTI128"
+	case VEXTRACTPS:
+		return "VEXTRACTPS"
+	case VFMADDPD:
+		return "VFMADDPD"
+	case VFMADDPS:
+		return "VFMADDPS"
+	case VFMADDSD:
+		return "VFMADDSD"
+	case VFMADDSS:
+		return "VFMADDSS"
+	case VFMADDSUBPD:
+		return "VFMADDSUBPD"
+	case VFMADDSUBPS:
+		return "VFMADDSUBPS"
+	case VFMSUBADDPD:
+		return "VFMSUBADDPD"
+	case VFMSUBADDPS:
+		return "VFMSUBADDPS"
+	case VFMSUBPD:
+		return "VFMSUBPD"
+	case VFMSUBPS:
+		return "VFMSUBPS"
+	case VFMSUBSD:
+		return "VFMSUBSD"
+	case VFMSUBSS:
+		return "VFMSUBSS"
+	case VFNMADDPD:
+		return "VFNMADDPD"
+	case VFNMADDPS:
+		return "VFNMADDPS"
+	case VFNMADDSD:
+		return "VFNMADDSD"
+	case VFNMADDSS:
+		return "VFNMADDSS"
+	case VFNMSUBPD:
+		return "VFNMSUBPD"
+	case VFNMSUBPS:
+		return "VFNMSUBPS"
+	case VFNMSUBSD:
+		return "VFNMSUBSD"
+	case VFNMSUBSS:
+		return "VFNMSUBSS"
+	case VGF2P8AFFINEINVQB:
+		return "VGF2P8AFFINEINVQB"
+	case VGF2P8AFFINEQB:
+		return "VGF2P8AFFINEQB"
 	case VGF2P8MULB:
 		return "VGF2P8MULB"
 	case VHADDPD:
@@ -1627,6 +1742,12 @@ func (instruction Instruction) String() string {
 		return "VHSUBPD"
 	case VHSUBPS:
 		return "VHSUBPS"
+	case VINSERTF128:
+		return "VINSERTF128"
+	case VINSERTI128:
+		return "VINSERTI128"
+	case VINSERTPS:
+		return "VINSERTPS"
 	case VLDDQU:
 		return "VLDDQU"
 	case VMASKMOVDQU:
@@ -1691,6 +1812,8 @@ func (instruction Instruction) String() string {
 		return "VMOVUPD"
 	case VMOVUPS:
 		return "VMOVUPS"
+	case VMPSADBW:
+		return "VMPSADBW"
 	case VMULPD:
 		return "VMULPD"
 	case VMULPS:
@@ -1733,6 +1856,8 @@ func (instruction Instruction) String() string {
 		return "VPADDUSW"
 	case VPADDW:
 		return "VPADDW"
+	case VPALIGNR:
+		return "VPALIGNR"
 	case VPAND:
 		return "VPAND"
 	case VPANDN:
@@ -1741,6 +1866,10 @@ func (instruction Instruction) String() string {
 		return "VPAVGB"
 	case VPAVGW:
 		return "VPAVGW"
+	case VPBLENDD:
+		return "VPBLENDD"
+	case VPBLENDW:
+		return "VPBLENDW"
 	case VPBROADCASTB:
 		return "VPBROADCASTB"
 	case VPBROADCASTD:
@@ -1749,6 +1878,8 @@ func (instruction Instruction) String() string {
 		return "VPBROADCASTQ"
 	case VPBROADCASTW:
 		return "VPBROADCASTW"
+	case VPCLMULQDQ:
+		return "VPCLMULQDQ"
 	case VPCMPEQB:
 		return "VPCMPEQB"
 	case VPCMPEQD:
@@ -1757,6 +1888,10 @@ func (instruction Instruction) String() string {
 		return "VPCMPEQQ"
 	case VPCMPEQW:
 		return "VPCMPEQW"
+	case VPCMPESTRI:
+		return "VPCMPESTRI"
+	case VPCMPESTRM:
+		return "VPCMPESTRM"
 	case VPCMPGTB:
 		return "VPCMPGTB"
 	case VPCMPGTD:
@@ -1765,6 +1900,10 @@ func (instruction Instruction) String() string {
 		return "VPCMPGTQ"
 	case VPCMPGTW:
 		return "VPCMPGTW"
+	case VPCMPISTRI:
+		return "VPCMPISTRI"
+	case VPCMPISTRM:
+		return "VPCMPISTRM"
 	case VPDPBUSD:
 		return "VPDPBUSD"
 	case VPDPBUSDS:
@@ -1773,14 +1912,24 @@ func (instruction Instruction) String() string {
 		return "VPDPWSSD"
 	case VPDPWSSDS:
 		return "VPDPWSSDS"
+	case VPERM2F128:
+		return "VPERM2F128"
+	case VPERM2I128:
+		return "VPERM2I128"
 	case VPERMD:
 		return "VPERMD"
 	case VPERMILPD:
 		return "VPERMILPD"
 	case VPERMILPS:
 		return "VPERMILPS"
+	case VPERMPD:
+		return "VPERMPD"
 	case VPERMPS:
 		return "VPERMPS"
+	case VPERMQ:
+		return "VPERMQ"
+	case VPEXTRB:
+		return "VPEXTRB"
 	case VPEXTRW:
 		return "VPEXTRW"
 	case VPHADDD:
@@ -1797,6 +1946,8 @@ func (instruction Instruction) String() string {
 		return "VPHSUBSW"
 	case VPHSUBW:
 		return "VPHSUBW"
+	case VPINSRB:
+		return "VPINSRB"
 	case VPINSRW:
 		return "VPINSRW"
 	case VPMADDUBSW:
@@ -1937,6 +2088,14 @@ func (instruction Instruction) String() string {
 		return "VPXOR"
 	case VRCPPS:
 		return "VRCPPS"
+	case VROUNDPD:
+		return "VROUNDPD"
+	case VROUNDPS:
+		return "VROUNDPS"
+	case VROUNDSD:
+		return "VROUNDSD"
+	case VROUNDSS:
+		return "VROUNDSS"
 	case VRSQRTPS:
 		return "VRSQRTPS"
 	case VRSQRTSS:
