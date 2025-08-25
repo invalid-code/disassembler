@@ -1081,4 +1081,5 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, b
 	default:
 		panic("Error: Unknown instruction")
 	}
+	panic("")
 }

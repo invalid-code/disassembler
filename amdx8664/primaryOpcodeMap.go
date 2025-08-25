@@ -730,6 +730,7 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexB
 		panic("todo modr/m opcode extension")
 	case 0xFF:
 		panic("todo modr/m opcode extension")
+	default:
+		panic("Error: Unknown instruction")
 	}
-	panic("Error: todo")
 }

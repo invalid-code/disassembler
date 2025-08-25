@@ -243,9 +243,10 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 	sibBase := [3]bool{false, false, false}
 	instruction := AAA
 	memSegment := NoSegment
-	regOperand1, regOperand2 := NoRegister, NoRegister
+	regOperand1, regOperand2, regOperand3 := NoRegister, NoRegister, NoRegister
 	instructionEncodedRegOperand := 0
 	for _, curByte := range data {
+		fmt.Println(curByte)
 		// 1-15 bytes
 		// prefix(optional)
 		if isPrefix {
@@ -731,22 +732,22 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			if isVex {
 				if isVex3Byte {
 					if mapSelect[3] == false && mapSelect[4] == true {
-						instruction, _, _, _, _, _, _, _ = vexOpcodeMap1(curByte, fieldPp, isRexW)
+						instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1(curByte, fieldPp, isRexW)
 					} else if mapSelect[3] == true && mapSelect[4] == false {
-						instruction, _, _, _, _, _, _ = vexOpcodeMap2(curByte, fieldPp, isRexW)
+						instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap2(curByte, fieldPp, isRexW)
 					} else if mapSelect[3] == true && mapSelect[4] == true {
-						instruction, _, _, _, _, _, _ = vexOpcodeMap3(curByte, fieldPp, isRexW)
+						instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap3(curByte, fieldPp, isRexW)
 					}
 				} else {
-					instruction, _, _, _, _, _, _, _ = vexOpcodeMap1(curByte, fieldPp, isRexW)
+					instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1(curByte, fieldPp, isRexW)
 				}
 			} else if isXop {
 				if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == false {
-					instruction, _, _, _, _, _, _ = xopOpcodeMap8(curByte, fieldPp, isRexW)
+					instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap8(curByte, fieldPp, isRexW)
 				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == true {
-					instruction, _, _, _, _, _, _ = xopOpcodeMap9(curByte, fieldPp, isRexW)
+					instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9(curByte, fieldPp, isRexW)
 				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == true && mapSelect[4] == false {
-					instruction, _, _, _, _, _, _ = xopOpcodeMap10(curByte, fieldPp, isRexW)
+					instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap10(curByte, fieldPp, isRexW)
 				}
 			} else if is3dNow {
 				panic("todo handle 3dnow opcode map differently")
@@ -890,19 +891,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			}
 			isDisplacement = false
 			isPrefix = true
-		}
-		fmt.Print(instruction.String())
-		if memSegment != NoSegment {
-			fmt.Print(memSegment)
-		}
-		if regOperand1 != NoRegister {
-			fmt.Print(regOperand1)
-		}
-		if regOperand2 != NoRegister {
-			fmt.Print(regOperand2)
-		}
-		if instructionEncodedRegOperand != 0 {
-			fmt.Print(instructionEncodedRegOperand)
 		}
 	}
 }
