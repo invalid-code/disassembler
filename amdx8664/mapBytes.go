@@ -777,15 +777,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			} else {
 				if isLock {
 				}
-				isDispImm := false
 				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
-				if isDispImm {
-					isImmediate = true
-					continue
-				} else {
-					isDisplacement = true
-					continue
-				}
 				// if isRexPrefix {
 				// }
 			}
