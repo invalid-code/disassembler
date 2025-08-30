@@ -780,25 +780,6 @@ func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64bit bool) (Instruct
 			panic("Error: Unknown instruction")
 		}
 	case 0x82:
-		// switch modrmReg {
-		// case [3]bool{false, false, false}:
-		// 	return ADD, true, NoSegment, NoRegister, NoRegister, 0
-		// case [3]bool{false, false, true}:
-		// 	return OR, true, NoSegment, NoRegister, NoRegister, 0
-		// case [3]bool{false, true, false}:
-		// 	return ADC, true, NoSegment, NoRegister, NoRegister, 0
-		// case [3]bool{false, true, true}:
-		// 	return SBB, true, NoSegment, NoRegister, NoRegister, 0
-		// case [3]bool{true, false, false}:
-		// 	return AND, true, NoSegment, NoRegister, NoRegister, 0
-		// case [3]bool{true, false, true}:
-		// 	return SUB, true, NoSegment, NoRegister, NoRegister, 0
-		// case [3]bool{true, true, false}:
-		// 	return XOR, true, NoSegment, NoRegister, NoRegister, 0
-		// case [3]bool{true, true, true}:
-		// 	return CMP, true, NoSegment, NoRegister, NoRegister, 0
-		// default:
-		// 	panic("Error: Unknown instruction")
 		panic("todo")
 	case 0x83:
 		switch modrmReg {

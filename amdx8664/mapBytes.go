@@ -735,7 +735,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				}
 			} else if is3dNow {
 				panic("todo handle 3dnow opcode map differently")
-				// instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap3dnow(curByte, bitFormat, isRexB)
 			} else if is3A {
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap3A(curByte, isOperandSizeOverride, isRexB)
 			} else if is38 {
@@ -793,13 +792,29 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if isSecondaryMap {
 					switch opcode {
 					case 0x0:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG6(opcode, modrmReg)
 					case 0x1:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG7(opcode, modrmReg)
 					case 0xBA:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG8(opcode, modrmReg)
 					case 0xC7:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG9(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
 					case 0xB9:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG10(opcode, modrmReg)
 					case 0x71:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG12(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
 					case 0x72:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG13(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
 					case 0x73:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG14(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+					case 0xAE:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG15(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+					case 0x18:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG16(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+					case 0x78:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG17(opcode, modrmReg, isOperandSizeOverride)
+					case 0x0D:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMGP(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
 					default:
 						panic("Error: Unknown opcode modrm extension group")
 					}
@@ -808,9 +823,9 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 					case 0x80, 0x81, 0x82, 0x83:
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG1(opcode, modrmReg, bitFormat)
 					case 0x8F:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG1a(opcode, modrmReg, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG1a(opcode, modrmReg)
 					case 0xC0, 0xC1, 0xD0, 0xD1, 0xD2, 0xD3:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG2(opcode, modrmReg, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG2(opcode, modrmReg)
 					case 0xF6, 0xF7:
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG3(opcode, modrmReg, bitFormat)
 					case 0xFE:

@@ -1083,3 +1083,14 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, b
 	}
 	panic("")
 }
+
+func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+	switch opcode {
+	case 0x71:
+	case 0x72:
+	case 0x73:
+	case 0xAE:
+	case 0xF3:
+	default:
+	}
+}

@@ -1399,7 +1399,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			// 0xF2
 			return ADDSUBPS, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		}
 	case 0xD1:
 		if isOperandSizeOverride {
@@ -1407,7 +1407,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSRLW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSRLW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1417,7 +1417,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSRLD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSRLD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1427,7 +1427,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSRLQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSRLQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1437,7 +1437,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PADDQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PADDQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1447,7 +1447,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMULLW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMULLW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1462,7 +1462,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			// 0xF2
 			return MOVDQ2Q, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		}
 	case 0xD7:
 		if isOperandSizeOverride {
@@ -1470,7 +1470,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMOVMSKB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMOVMSKB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1480,7 +1480,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSUBUSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSUBUSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1490,7 +1490,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSUBUSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSUBUSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1500,7 +1500,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMINUB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMINUB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1510,7 +1510,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PAND, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PAND, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1520,7 +1520,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PADDUSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PADDUSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1530,7 +1530,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PADDUSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PADDUSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1540,7 +1540,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMAXUB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMAXUB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1550,7 +1550,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PANDN, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PANDN, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1560,7 +1560,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PAVGB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PAVGB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1570,7 +1570,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSRAW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSRAW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1580,7 +1580,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSRAD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSRAD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1590,7 +1590,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PAVGW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PAVGW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1600,7 +1600,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMULHUW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMULHUW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1610,7 +1610,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMULHW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMULHW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1625,7 +1625,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			// 0xF2
 			return CVTPD2DQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else {
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		}
 	case 0xE7:
 		if isOperandSizeOverride {
@@ -1633,7 +1633,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return MOVNTDQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return MOVNTQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1643,7 +1643,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSUBSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSUBSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1653,7 +1653,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSUBSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSUBSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1663,7 +1663,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMINSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMINSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1673,7 +1673,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return POR, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return POR, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1683,7 +1683,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PADDSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PADDSB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1693,7 +1693,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PADDSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PADDSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1703,7 +1703,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMAXSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMAXSW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1713,7 +1713,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PXOR, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PXOR, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1728,7 +1728,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSLLW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSLLW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1738,7 +1738,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSLLD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSLLD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1748,7 +1748,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSLLQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSLLQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1758,7 +1758,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMULUDQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMULUDQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1768,7 +1768,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PMADDWD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PMADDWD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1778,7 +1778,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSADBW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSADBW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1788,7 +1788,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return MASKMOVDQU, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return MASKMOVQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1798,7 +1798,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSUBB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSUBB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1808,7 +1808,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSUBW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSUBW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1818,7 +1818,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSUBD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSUBD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1828,7 +1828,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PSUBQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PSUBQ, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1838,7 +1838,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PADDB, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PADDB, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1848,7 +1848,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PADDW, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PADDW, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
@@ -1858,14 +1858,14 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			return PADDD, true, false, NoSegment, NoRegister, NoRegister, 0
 		} else if isRep1 || isRep0 {
 			// 0xF3 0xF2
-			panic("Error: Unknown Opcode")
+			panic("Error: Unknown instruction")
 		} else {
 			return PADDD, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
 	case 0xFF:
 		return UD0, false, false, NoSegment, NoRegister, NoRegister, 0
 	default:
-		panic("Error: Unknown Opcode")
+		panic("Error: Unknown instruction")
 	}
 }
 
@@ -1922,7 +1922,7 @@ func secondaryOpcodeModRMG7(opcode byte, modrmReg [3]bool) (Instruction, bool, M
 	}
 }
 
-func secondaryOpcodeModRMGB8(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG8(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
 	switch opcode {
 	case 0xBA:
 		switch modrmReg {
@@ -2130,4 +2130,164 @@ func secondaryOpcodeModRMG14(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 
 	default:
 		panic("Error: Unknown instruction")
 	}
+}
+
+func secondaryOpcodeModRMG15(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0xAE:
+		switch modrmReg {
+		case [3]bool{false, false, false}:
+			if isOperandSizeOverride || isRep0 {
+				// 0x66 0xF2
+				panic("Error: Unkown opcode")
+			} else if isRep1 {
+				// 0xF3
+				return RDFSBASE, false, NoSegment, NoRegister, NoRegister, 0
+			} else {
+				return FXSAVE, false, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{false, false, true}:
+			if isOperandSizeOverride || isRep0 {
+				// 0x66 0xF2
+				panic("Error: Unkown opcode")
+			} else if isRep1 {
+				// 0xF3
+				return RDGSBASE, false, NoSegment, NoRegister, NoRegister, 0
+			} else {
+				return FXRSTOR, false, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{false, true, false}:
+			if isOperandSizeOverride || isRep0 {
+				// 0x66 0xF2
+				panic("Error: Unkown opcode")
+			} else if isRep1 {
+				// 0xF3
+				return WRFSBASE, false, NoSegment, NoRegister, NoRegister, 0
+			} else {
+				return LDMXCSR, false, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{false, true, true}:
+			if isOperandSizeOverride || isRep0 {
+				// 0x66 0xF2
+				panic("Error: Unkown opcode")
+			} else if isRep1 {
+				// 0xF3
+				return WRFSBASE, false, NoSegment, NoRegister, NoRegister, 0
+			} else {
+				return STMXCSR, false, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{true, false, false}:
+			if isOperandSizeOverride || isRep0 || isRep1 {
+				// 0x66 0xF2 0xF3
+				panic("Error: Unkown opcode")
+			} else {
+				return XSAVE, false, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{true, false, true}:
+			if isOperandSizeOverride || isRep0 {
+				// 0x66 0xF2
+				panic("Error: Unkown opcode")
+			} else if isRep1 {
+				// 0xF3
+				return INCSSP, false, NoSegment, NoRegister, NoRegister, 0
+			} else {
+				panic("todo")
+			}
+		case [3]bool{true, true, false}:
+			if isOperandSizeOverride {
+				return CLWB, false, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 {
+				// 0x66 0xF2
+				panic("Error: Unkown opcode")
+			} else if isRep1 {
+				// 0xF3
+				return CLRSSBSY, false, NoSegment, NoRegister, NoRegister, 0
+			} else {
+				panic("todo")
+			}
+		case [3]bool{true, true, true}:
+			if isOperandSizeOverride || isRep0 || isRep1 {
+				// 0x66 0xF2 0xF3
+				panic("Error: Unkown opcode")
+			} else {
+				panic("todo")
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func secondaryOpcodeModRMG16(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0xAE:
+		switch modrmReg {
+		case [3]bool{false, false, false}:
+			return PREFETCH, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{false, false, true}:
+			return PREFETCH, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{false, true, false}:
+			return PREFETCH, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{false, true, true}:
+			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, false, false}:
+			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, false, true}:
+			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, true, false}:
+			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, true, true}:
+			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func secondaryOpcodeModRMG17(opcode byte, modrmReg [3]bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0x78:
+		switch modrmReg {
+		case [3]bool{false, false, false}:
+			if isOperandSizeOverride {
+				return EXTRQ, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+	panic("")
+}
+
+func secondaryOpcodeModRMGP(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0x0D:
+		switch modrmReg {
+		case [3]bool{false, false, false}:
+			panic("todo")
+		case [3]bool{false, false, true}:
+			panic("todo")
+		case [3]bool{false, true, false}:
+			panic("todo")
+		case [3]bool{false, true, true}:
+			panic("todo")
+		case [3]bool{true, false, false}:
+			panic("todo")
+		case [3]bool{true, false, true}:
+			panic("todo")
+		case [3]bool{true, true, false}:
+			panic("todo")
+		case [3]bool{true, true, true}:
+			panic("todo")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+	panic("")
 }

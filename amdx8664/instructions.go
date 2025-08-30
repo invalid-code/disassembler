@@ -45,7 +45,9 @@ const (
 	CLC
 	CLD
 	CLI
+	CLRSSBSY
 	CLTS
+	CLWB
 	CMC
 	CMOVB
 	CMOVBE
@@ -110,6 +112,8 @@ const (
 	EXTRACTPS
 	EXTRQ
 	FEMMS
+	FXRSTOR
+	FXSAVE
 	HADDPD
 	HADDPS
 	HLT
@@ -120,6 +124,7 @@ const (
 	IMUL
 	IN
 	INC
+	INCSSP
 	INSB
 	INSERTPS
 	INSERTQ
@@ -152,6 +157,7 @@ const (
 	LAHF
 	LAR
 	LDDQU
+	LDMXCSR
 	LDS
 	LEA
 	LEAVE
@@ -338,6 +344,7 @@ const (
 	POPCNT
 	POPD
 	POR
+	PREFETCH
 	PSADBW
 	PSHUFB
 	PSHUFD
@@ -386,6 +393,8 @@ const (
 	RCPPS
 	RCPSS
 	RCR
+	RDFSBASE
+	RDGSBASE
 	RDMSR
 	RDPMC
 	RDRAND
@@ -435,6 +444,7 @@ const (
 	STC
 	STD
 	STI
+	STMXCSR
 	STOSB
 	STR
 	SUB
@@ -786,6 +796,7 @@ const (
 	VUNPCKLPS
 	VXORPD
 	VXORPS
+	WRFSBASE
 	WRMSR
 	WRSS
 	WRUSS
@@ -795,6 +806,7 @@ const (
 	XOR
 	XORPD
 	XORPS
+	XSAVE
 	NoInstruction
 )
 
@@ -884,8 +896,12 @@ func (instruction Instruction) String() string {
 		return "CLD"
 	case CLI:
 		return "CLI"
+	case CLRSSBSY:
+		return "CLRSSBSY"
 	case CLTS:
 		return "CLTS"
+	case CLWB:
+		return "CLWB"
 	case CMC:
 		return "CMC"
 	case CMOVB:
@@ -1014,6 +1030,10 @@ func (instruction Instruction) String() string {
 		return "EXTRQ"
 	case FEMMS:
 		return "FEMMS"
+	case FXRSTOR:
+		return "FXRSTOR"
+	case FXSAVE:
+		return "FXSAVE"
 	case HADDPD:
 		return "HADDPD"
 	case HADDPS:
@@ -1034,6 +1054,8 @@ func (instruction Instruction) String() string {
 		return "IN"
 	case INC:
 		return "INC"
+	case INCSSP:
+		return "INCSSP"
 	case INSB:
 		return "INSB"
 	case INSERTPS:
@@ -1098,6 +1120,8 @@ func (instruction Instruction) String() string {
 		return "LAR"
 	case LDDQU:
 		return "LDDQU"
+	case LDMXCSR:
+		return "LDMXCSR"
 	case LDS:
 		return "LDS"
 	case LEA:
@@ -1470,6 +1494,8 @@ func (instruction Instruction) String() string {
 		return "POPD"
 	case POR:
 		return "POR"
+	case PREFETCH:
+		return "PREFETCH"
 	case PSADBW:
 		return "PSADBW"
 	case PSHUFB:
@@ -1566,6 +1592,10 @@ func (instruction Instruction) String() string {
 		return "RCPSS"
 	case RCR:
 		return "RCR"
+	case RDFSBASE:
+		return "RDFSBASE"
+	case RDGSBASE:
+		return "RDGSBASE"
 	case RDMSR:
 		return "RDMSR"
 	case RDPMC:
@@ -1664,6 +1694,8 @@ func (instruction Instruction) String() string {
 		return "STD"
 	case STI:
 		return "STI"
+	case STMXCSR:
+		return "STMXCSR"
 	case STOSB:
 		return "STOSB"
 	case STR:
@@ -2366,6 +2398,8 @@ func (instruction Instruction) String() string {
 		return "VXORPD"
 	case VXORPS:
 		return "VXORPS"
+	case WRFSBASE:
+		return "WRFSBASE"
 	case WRMSR:
 		return "WRMSR"
 	case WRSS:
@@ -2384,6 +2418,8 @@ func (instruction Instruction) String() string {
 		return "XORPD"
 	case XORPS:
 		return "XORPS"
+	case XSAVE:
+		return "XSAVE"
 	case NoInstruction:
 		return "NoInstruction"
 	default:
