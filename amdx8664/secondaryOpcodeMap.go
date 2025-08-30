@@ -1868,3 +1868,266 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 		panic("Error: Unknown Opcode")
 	}
 }
+
+func secondaryOpcodeModRMG6(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0x0:
+		switch modrmReg {
+		case [3]bool{false, false, false}:
+			// return SLDT, false, NoSegment, NoRegister, NoRegister, 0
+			panic("todo")
+		case [3]bool{false, false, true}:
+			return STR, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{false, true, false}:
+			return LLDT, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{false, true, true}:
+			return LTR, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, false, false}:
+			return VERR, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, false, true}:
+			return VERW, false, NoSegment, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func secondaryOpcodeModRMG7(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0x1:
+		switch modrmReg {
+		case [3]bool{false, false, false}:
+			return SGDT, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{false, false, true}:
+			panic("todo")
+		case [3]bool{false, true, false}:
+			panic("todo")
+		case [3]bool{false, true, true}:
+			panic("todo")
+		case [3]bool{true, false, false}:
+			return MUL, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, false, true}:
+			return IMUL, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, true, false}:
+			return DIV, false, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, true, true}:
+			return IDIV, false, NoSegment, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func secondaryOpcodeModRMGB8(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0xBA:
+		switch modrmReg {
+		case [3]bool{true, false, false}:
+			return BT, true, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, false, true}:
+			return BTS, true, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, true, false}:
+			return BTR, true, NoSegment, NoRegister, NoRegister, 0
+		case [3]bool{true, true, true}:
+			return BTC, true, NoSegment, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func secondaryOpcodeModRMG9(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0xC7:
+		switch modrmReg {
+		case [3]bool{false, false, true}:
+			if isOperandSizeOverride {
+				// 0x66
+				panic("todo")
+			} else if isRep1 || isRep0 {
+				// 0xF3 0xF2
+				panic("Error: Unknown instruction")
+			} else {
+				panic("todo")
+			}
+		case [3]bool{true, true, false}:
+			if isOperandSizeOverride {
+				// 0x66
+				return RDRAND, false, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown opcode")
+			} else {
+				return RDRAND, false, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{true, true, true}:
+			if isOperandSizeOverride {
+				// 0x66
+				return RDSEED, false, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 {
+				// 0xF2
+				panic("Error: Unkown opcode")
+			} else if isRep1 {
+				// 0xF3
+				panic("todo")
+			} else {
+				return RDSEED, false, NoSegment, NoRegister, NoRegister, 0
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func secondaryOpcodeModRMG10(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0xB9:
+		return UD1, false, NoSegment, NoRegister, NoRegister, 0
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func secondaryOpcodeModRMG12(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0x71:
+		switch modrmReg {
+		case [3]bool{false, true, false}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSRLW, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSRLW, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{true, false, false}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSRAW, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSRAW, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{true, true, false}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSLLW, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSLLW, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func secondaryOpcodeModRMG13(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0x72:
+		switch modrmReg {
+		case [3]bool{false, true, false}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSRLD, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSRLD, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{true, false, false}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSRAD, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSRAD, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{true, true, false}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func secondaryOpcodeModRMG14(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+	switch opcode {
+	case 0x73:
+		switch modrmReg {
+		case [3]bool{false, true, false}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSRLD, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSRLD, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{false, true, true}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSRAD, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSRAD, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{true, true, false}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		case [3]bool{true, true, true}:
+			if isOperandSizeOverride {
+				// 0x66
+				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+			} else if isRep0 || isRep1 {
+				// 0xF2 0xF3
+				panic("Error: Unkown instruction")
+			} else {
+				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}

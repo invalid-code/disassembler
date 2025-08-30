@@ -116,6 +116,7 @@ const (
 	HRESET
 	HSUBPD
 	HSUBPS
+	IDIV
 	IMUL
 	IN
 	INC
@@ -145,6 +146,8 @@ const (
 	JrCXZ
 	JS
 	JZ
+	KMOVB
+	KMOVW
 	KUNPCKBW
 	LAHF
 	LAR
@@ -156,10 +159,12 @@ const (
 	LFS
 	LGDT
 	LGS
+	LLDT
 	LODSB
 	LOOP
 	LSL
 	LSS
+	LTR
 	LZCNT
 	MASKMOVDQU
 	MASKMOVQ
@@ -207,11 +212,14 @@ const (
 	MOVUPS
 	MOVZX
 	MPSADBW
+	MUL
 	MULPD
 	MULPS
 	MULSD
 	MULSS
+	NEG
 	NOP
+	NOT
 	OR
 	ORPD
 	ORPS
@@ -374,12 +382,18 @@ const (
 	PUSHAD
 	PUSHD
 	PXOR
+	RCL
 	RCPPS
 	RCPSS
+	RCR
 	RDMSR
 	RDPMC
+	RDRAND
+	RDSEED
 	RDTSC
 	RET
+	ROL
+	ROR
 	ROUNDPD
 	ROUNDPS
 	ROUNDSD
@@ -389,6 +403,7 @@ const (
 	RSQRTSS
 	SAHF
 	SALC
+	SAR
 	SBB
 	SCASB
 	SETB
@@ -407,7 +422,9 @@ const (
 	SETP
 	SETS
 	SETZ
+	SGDT
 	SHLD
+	SHR
 	SHRD
 	SHUFPD
 	SHUFPS
@@ -419,6 +436,7 @@ const (
 	STD
 	STI
 	STOSB
+	STR
 	SUB
 	SUBPD
 	SUBPS
@@ -433,13 +451,12 @@ const (
 	UCOMISD
 	UCOMISS
 	UD0
+	UD1
 	UD2
 	UNPCKHPD
 	UNPCKHPS
 	UNPCKLPD
 	UNPCKLPS
-	KMOVB
-	KMOVW
 	VADDPD
 	VADDPS
 	VADDSD
@@ -485,6 +502,8 @@ const (
 	VDIVSS
 	VDPPD
 	VDPPS
+	VERR
+	VERW
 	VEXTRACTF128
 	VEXTRACTI128
 	VEXTRACTPS
@@ -1007,6 +1026,8 @@ func (instruction Instruction) String() string {
 		return "HSUBPD"
 	case HSUBPS:
 		return "HSUBPS"
+	case IDIV:
+		return "IDIV"
 	case IMUL:
 		return "IMUL"
 	case IN:
@@ -1065,6 +1086,10 @@ func (instruction Instruction) String() string {
 		return "JS"
 	case JZ:
 		return "JZ"
+	case KMOVB:
+		return "KMOVB"
+	case KMOVW:
+		return "KMOVW"
 	case KUNPCKBW:
 		return "KUNPCKBW"
 	case LAHF:
@@ -1087,6 +1112,8 @@ func (instruction Instruction) String() string {
 		return "LGDT"
 	case LGS:
 		return "LGS"
+	case LLDT:
+		return "LLDT"
 	case LODSB:
 		return "LODSB"
 	case LOOP:
@@ -1095,6 +1122,8 @@ func (instruction Instruction) String() string {
 		return "LSL"
 	case LSS:
 		return "LSS"
+	case LTR:
+		return "LTR"
 	case LZCNT:
 		return "LZCNT"
 	case MASKMOVDQU:
@@ -1189,6 +1218,8 @@ func (instruction Instruction) String() string {
 		return "MOVZX"
 	case MPSADBW:
 		return "MPSADBW"
+	case MUL:
+		return "MUL"
 	case MULPD:
 		return "MULPD"
 	case MULPS:
@@ -1197,8 +1228,12 @@ func (instruction Instruction) String() string {
 		return "MULSD"
 	case MULSS:
 		return "MULSS"
+	case NEG:
+		return "NEG"
 	case NOP:
 		return "NOP"
+	case NOT:
+		return "NOT"
 	case OR:
 		return "OR"
 	case ORPD:
@@ -1523,18 +1558,30 @@ func (instruction Instruction) String() string {
 		return "PUSHD"
 	case PXOR:
 		return "PXOR"
+	case RCL:
+		return "RCL"
 	case RCPPS:
 		return "RCPPS"
 	case RCPSS:
 		return "RCPSS"
+	case RCR:
+		return "RCR"
 	case RDMSR:
 		return "RDMSR"
 	case RDPMC:
 		return "RDPMC"
+	case RDRAND:
+		return "RDRAND"
+	case RDSEED:
+		return "RDSEED"
 	case RDTSC:
 		return "RDTSC"
 	case RET:
 		return "RET"
+	case ROL:
+		return "ROL"
+	case ROR:
+		return "ROR"
 	case ROUNDPD:
 		return "ROUNDPD"
 	case ROUNDPS:
@@ -1553,6 +1600,8 @@ func (instruction Instruction) String() string {
 		return "SAHF"
 	case SALC:
 		return "SALC"
+	case SAR:
+		return "SAR"
 	case SBB:
 		return "SBB"
 	case SCASB:
@@ -1589,8 +1638,12 @@ func (instruction Instruction) String() string {
 		return "SETS"
 	case SETZ:
 		return "SETZ"
+	case SGDT:
+		return "SGDT"
 	case SHLD:
 		return "SHLD"
+	case SHR:
+		return "SHR"
 	case SHRD:
 		return "SHRD"
 	case SHUFPD:
@@ -1613,6 +1666,8 @@ func (instruction Instruction) String() string {
 		return "STI"
 	case STOSB:
 		return "STOSB"
+	case STR:
+		return "STR"
 	case SUB:
 		return "SUB"
 	case SUBPD:
@@ -1641,6 +1696,8 @@ func (instruction Instruction) String() string {
 		return "UCOMISS"
 	case UD0:
 		return "UD0"
+	case UD1:
+		return "UD1"
 	case UD2:
 		return "UD2"
 	case UNPCKHPD:
@@ -1741,6 +1798,10 @@ func (instruction Instruction) String() string {
 		return "VDPPD"
 	case VDPPS:
 		return "VDPPS"
+	case VERR:
+		return "VERR"
+	case VERW:
+		return "VERW"
 	case VEXTRACTF128:
 		return "VEXTRACTF128"
 	case VEXTRACTI128:

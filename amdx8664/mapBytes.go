@@ -205,10 +205,9 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 	//	isFSSegmentSizeOverride := false
 	//	isGSSegmentSizeOverride := false
 	//	isSSSegmentSizeOverride := false
-	isLock := false
 	isRep1 := false
 	isRep0 := false
-	isRexPrefix := false
+	// isRexPrefix := false
 	isRexW := false
 	isRexR := false
 	isRexX := false
@@ -236,7 +235,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 	isImmediate := false
 	isDisplacement := false
 	modrmMod := [2]bool{false, false}
-	modrmReg := [4]bool{false, false, false}
+	modrmReg := [3]bool{false, false, false}
 	modrmRM := [4]bool{false, false, false}
 	sibScale := [2]bool{false, false}
 	sibIndex := [3]bool{false, false, false}
@@ -245,6 +244,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 	memSegment := NoSegment
 	regOperand1, regOperand2, regOperand3 := NoRegister, NoRegister, NoRegister
 	instructionEncodedRegOperand := 0
+	opcode := byte(0)
 	for _, curByte := range data {
 		fmt.Println(curByte)
 		// 1-15 bytes
@@ -304,12 +304,12 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				}
 				//				isSSSegmentSizeOverride = true
 				legacePrefixCnt += 1
-			case 0xF0:
-				if legacePrefixCnt == 4 {
-					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
-				}
-				isLock = true
-				legacePrefixCnt += 1
+			// case 0xF0:
+			// 	if legacePrefixCnt == 4 {
+			// 		panic("Error: There can only be 4 legacy prefixes in 1 instruction")
+			// 	}
+			// 	isLock = true
+			// 	legacePrefixCnt += 1
 			case 0xF3:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
@@ -326,7 +326,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = false
@@ -337,7 +336,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = false
@@ -348,7 +346,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = false
@@ -359,7 +356,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = false
@@ -370,7 +366,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = false
@@ -381,7 +376,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = false
@@ -392,7 +386,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = false
@@ -403,7 +396,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = false
@@ -414,7 +406,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = true
@@ -425,7 +416,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = true
@@ -436,7 +426,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = true
@@ -447,7 +436,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = true
@@ -458,7 +446,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = true
@@ -469,7 +456,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = true
@@ -480,7 +466,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				isRexW = true
@@ -491,7 +476,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
 				}
-				isRexPrefix = true
 				isPrefix = false
 				isEscapeSequence = true
 				//				isRexW = true
@@ -732,97 +716,114 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			if isVex {
 				if isVex3Byte {
 					if mapSelect[3] == false && mapSelect[4] == true {
-						instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1(curByte, fieldPp, isRexW)
+						instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1(curByte, fieldPp, isRexW)
 					} else if mapSelect[3] == true && mapSelect[4] == false {
-						instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap2(curByte, fieldPp, isRexW)
+						instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap2(curByte, fieldPp, isRexW)
 					} else if mapSelect[3] == true && mapSelect[4] == true {
-						instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap3(curByte, fieldPp, isRexW)
+						instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap3(curByte, fieldPp, isRexW)
 					}
 				} else {
-					instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1(curByte, fieldPp, isRexW)
+					instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1(curByte, fieldPp, isRexW)
 				}
 			} else if isXop {
 				if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == false {
-					instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap8(curByte, fieldPp, isRexW)
+					instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap8(curByte, fieldPp, isRexW)
 				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == true {
-					instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9(curByte, fieldPp, isRexW)
+					instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9(curByte, fieldPp, isRexW)
 				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == true && mapSelect[4] == false {
-					instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap10(curByte, fieldPp, isRexW)
+					instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap10(curByte, fieldPp, isRexW)
 				}
 			} else if is3dNow {
 				panic("todo handle 3dnow opcode map differently")
-				// if isLock {
-				// }
 				// instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap3dnow(curByte, bitFormat, isRexB)
-				// if isRexPrefix {
-				// }
 			} else if is3A {
-				if isLock {
-				}
-				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap3A(curByte, isOperandSizeOverride, isRexB)
-				if isRexPrefix {
-				}
+				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap3A(curByte, isOperandSizeOverride, isRexB)
 			} else if is38 {
-				if isLock {
-				}
-				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap38(curByte, bitFormat, isRep0, isOperandSizeOverride, isRexB)
-				if isRexPrefix {
-				}
+				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap38(curByte, bitFormat, isRep0, isOperandSizeOverride, isRexB)
 			} else if isSecondaryMap {
-				if isLock {
-				}
-				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
-				// if isRexPrefix {
-				// }
+				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 			} else {
-				if isLock {
-				}
-				instruction, isModRM, isDisplacement, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
-				// if isRexPrefix {
-				// }
+				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
+			}
+			if instruction == NoInstruction {
+				opcode = curByte
 			}
 			isOpcode = false
 		}
 		// modr/m
 		if isModRM {
-			modRMByte := curByte
-			modrmMod[0] = modRMByte/128 == 1
+			modrmMod[0] = curByte/128 == 1
 			if modrmMod[0] {
-				modRMByte -= 128
+				curByte -= 128
 			}
-			modrmMod[1] = modRMByte/64 == 1
+			modrmMod[1] = curByte/64 == 1
 			if modrmMod[1] {
-				modRMByte -= 64
+				curByte -= 64
 			}
-			modrmReg[0] = modRMByte/32 == 1
+			modrmReg[0] = curByte/32 == 1
 			if modrmReg[0] {
-				modRMByte -= 32
+				curByte -= 32
 			}
-			modrmReg[1] = modRMByte/16 == 1
+			modrmReg[1] = curByte/16 == 1
 			if modrmReg[1] {
-				modRMByte -= 16
+				curByte -= 16
 			}
-			modrmReg[2] = modRMByte/8 == 1
+			modrmReg[2] = curByte/8 == 1
 			if modrmReg[2] {
-				modRMByte -= 8
+				curByte -= 8
 			}
 			if isRexR && r3B {
 			}
 			if isRexB && b3B {
 			}
-			modrmRM[0] = modRMByte/4 == 1
+			modrmRM[0] = curByte/4 == 1
 			if modrmRM[0] {
-				modRMByte -= 4
+				curByte -= 4
 			}
-			modrmRM[1] = modRMByte/2 == 1
+			modrmRM[1] = curByte/2 == 1
 			if modrmRM[1] {
-				modRMByte -= 4
+				curByte -= 4
 			}
-			modrmRM[2] = modRMByte == 1
+			modrmRM[2] = curByte == 1
 			if modrmRM[2] {
-				modRMByte -= 1
+				curByte -= 1
 			}
 			isModRM = false
+			if instruction == NoInstruction {
+				if isSecondaryMap {
+					switch opcode {
+					case 0x0:
+					case 0x1:
+					case 0xBA:
+					case 0xC7:
+					case 0xB9:
+					case 0x71:
+					case 0x72:
+					case 0x73:
+					default:
+						panic("Error: Unknown opcode modrm extension group")
+					}
+				} else {
+					switch opcode {
+					case 0x80, 0x81, 0x82, 0x83:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG1(opcode, modrmReg, bitFormat)
+					case 0x8F:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG1a(opcode, modrmReg, bitFormat)
+					case 0xC0, 0xC1, 0xD0, 0xD1, 0xD2, 0xD3:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG2(opcode, modrmReg, bitFormat)
+					case 0xF6, 0xF7:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG3(opcode, modrmReg, bitFormat)
+					case 0xFE:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG4(opcode, modrmReg, bitFormat)
+					case 0xFF:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG5(opcode, modrmReg, bitFormat)
+					case 0xC6, 0xC7:
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG11(opcode, modrmReg, bitFormat)
+					default:
+						panic("Error: Unknown opcode modrm extension group")
+					}
+				}
+			}
 			if !(modrmMod[0] && modrmMod[1]) {
 				if modrmRM[0] && !modrmRM[1] && !modrmRM[2] {
 					isSib = true
