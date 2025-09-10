@@ -742,7 +742,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			} else if isSecondaryMap {
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 			} else {
-				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
+				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride)
 			}
 			if instruction == NoInstruction {
 				opcode = curByte
@@ -789,7 +789,39 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			}
 			isModRM = false
 			if instruction == NoInstruction {
-				if isSecondaryMap {
+				if isVex {
+					if isVex3Byte {
+						if !mapSelect[3] && mapSelect[4] {
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1ModRMG1(opcode, fieldPp, modrmReg)
+						} else {
+							panic("Error: Unknown opcode modrm extension group")
+						}
+					} else {
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1ModRMG1(opcode, fieldPp, modrmReg)
+					}
+				} else if isXop {
+					if mapSelect[1] && !mapSelect[2] && !mapSelect[3] && mapSelect[4] {
+						switch opcode {
+						case 0x1:
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG1(opcode, modrmReg)
+						case 0x2:
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG2(opcode, modrmReg)
+						case 0x12:
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG3(opcode, modrmReg)
+						default:
+							panic("Error: Unknown opcode modrm extension group")
+						}
+					} else if mapSelect[1] && !mapSelect[2] && mapSelect[3] && !mapSelect[4] {
+						switch opcode {
+						case 0x12:
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG4(opcode, modrmReg)
+						default:
+							panic("Error: Unknown opcode modrm extension group")
+						}
+					} else {
+						panic("Error: Unknown opcode modrm extension group")
+					}
+				} else if isSecondaryMap {
 					switch opcode {
 					case 0x0:
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG6(opcode, modrmReg)
@@ -838,12 +870,15 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 						panic("Error: Unknown opcode modrm extension group")
 					}
 				}
+			} else {
+				regOperand1 = 
 			}
 			if !(modrmMod[0] && modrmMod[1]) {
 				if modrmRM[0] && !modrmRM[1] && !modrmRM[2] {
 					isSib = true
 				}
 			}
+
 		}
 		// sib
 		if isSib {

@@ -244,3 +244,62 @@ func xopOpcodeMap9(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, b
 		panic("Error: Unknown instruction")
 	}
 }
+
+func xopOpcodeMap9ModRMG1(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+	switch opcode {
+	case 0x1:
+		switch modrmReg {
+		case [3]bool{false, false, true}:
+			return BLCFILL, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [3]bool{false, true, false}:
+			return BLSFILL, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [3]bool{false, true, true}:
+			return BLCS, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [3]bool{true, false, false}:
+			return TZMSK, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [3]bool{true, false, true}:
+			return BLCIC, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [3]bool{true, true, false}:
+			return BLSIC, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [3]bool{true, false, true}:
+			return T1MSKC, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
+
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func xopOpcodeMap9ModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+	switch opcode {
+	case 0x2:
+		switch modrmReg {
+		case [3]bool{false, false, true}:
+			return BLCMSK, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [3]bool{true, true, false}:
+			return BLCI, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}
+
+func xopOpcodeMap9ModRMG3(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+	switch opcode {
+	case 0x12:
+		switch modrmReg {
+		case [3]bool{false, false, false}:
+			return LLWPCB, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [3]bool{false, false, true}:
+			return SLWPCB, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
+	default:
+		panic("Error: Unknown instruction")
+	}
+}

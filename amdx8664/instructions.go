@@ -30,9 +30,19 @@ const (
 	ANDPS
 	ARPL
 	BEXTR
+	BLCFILL
+	BLCI
+	BLCIC
+	BLCMSK
+	BLCS
 	BLENDPD
 	BLENDPS
 	BLENDVPS
+	BLSFILL
+	BLSI
+	BLSIC
+	BLSMSK
+	BLSR
 	BOUND
 	BSF
 	BSR
@@ -166,11 +176,14 @@ const (
 	LGDT
 	LGS
 	LLDT
+	LLWPCB
 	LODSB
 	LOOP
 	LSL
 	LSS
 	LTR
+	LWPINS
+	LWPVAL
 	LZCNT
 	MASKMOVDQU
 	MASKMOVQ
@@ -437,6 +450,7 @@ const (
 	SHRD
 	SHUFPD
 	SHUFPS
+	SLWPCB
 	SQRTPD
 	SQRTPS
 	SQRTSD
@@ -456,8 +470,10 @@ const (
 	SYSENTER
 	SYSEXIT
 	SYSRET
+	T1MSKC
 	TEST
 	TZCNT
+	TZMSK
 	UCOMISD
 	UCOMISS
 	UD0
@@ -552,6 +568,7 @@ const (
 	VINSERTI128
 	VINSERTPS
 	VLDDQU
+	VLDMXCSR
 	VMASKMOVDQU
 	VMASKMOVPD
 	VMASKMOVPS
@@ -744,12 +761,14 @@ const (
 	VPSIGND
 	VPSIGNW
 	VPSLLD
+	VPSLLDQ
 	VPSLLQ
 	VPSLLW
 	VPSRAD
 	VPSRAVD
 	VPSRAW
 	VPSRLD
+	VPSRLDQ
 	VPSRLQ
 	VPSRLW
 	VPSUBB
@@ -782,6 +801,7 @@ const (
 	VSQRTPS
 	VSQRTSD
 	VSQRTSS
+	VSTMXCSR
 	VSUBPD
 	VSUBPS
 	VSUBSD
@@ -866,12 +886,32 @@ func (instruction Instruction) String() string {
 		return "ARPL"
 	case BEXTR:
 		return "BEXTR"
+	case BLCFILL:
+		return "BLCFILL"
+	case BLCI:
+		return "BLCI"
+	case BLCIC:
+		return "BLCIC"
+	case BLCMSK:
+		return "BLCMSK"
+	case BLCS:
+		return "BLCS"
 	case BLENDPD:
 		return "BLENDPD"
 	case BLENDPS:
 		return "BLENDPS"
 	case BLENDVPS:
 		return "BLENDVPS"
+	case BLSFILL:
+		return "BLSFILL"
+	case BLSI:
+		return "BLSI"
+	case BLSIC:
+		return "BLSIC"
+	case BLSMSK:
+		return "BLSMSK"
+	case BLSR:
+		return "BLSR"
 	case BOUND:
 		return "BOUND"
 	case BSF:
@@ -1138,6 +1178,8 @@ func (instruction Instruction) String() string {
 		return "LGS"
 	case LLDT:
 		return "LLDT"
+	case LLWPCB:
+		return "LLWPCB"
 	case LODSB:
 		return "LODSB"
 	case LOOP:
@@ -1148,6 +1190,10 @@ func (instruction Instruction) String() string {
 		return "LSS"
 	case LTR:
 		return "LTR"
+	case LWPINS:
+		return "LWPINS"
+	case LWPVAL:
+		return "LWPVAL"
 	case LZCNT:
 		return "LZCNT"
 	case MASKMOVDQU:
@@ -1680,6 +1726,8 @@ func (instruction Instruction) String() string {
 		return "SHUFPD"
 	case SHUFPS:
 		return "SHUFPS"
+	case SLWPCB:
+		return "SLWPCB"
 	case SQRTPD:
 		return "SQRTPD"
 	case SQRTPS:
@@ -1718,10 +1766,14 @@ func (instruction Instruction) String() string {
 		return "SYSEXIT"
 	case SYSRET:
 		return "SYSRET"
+	case T1MSKC:
+		return "T1MSKC"
 	case TEST:
 		return "TEST"
 	case TZCNT:
 		return "TZCNT"
+	case TZMSK:
+		return "TZMSK"
 	case UCOMISD:
 		return "UCOMISD"
 	case UCOMISS:
@@ -1910,6 +1962,8 @@ func (instruction Instruction) String() string {
 		return "VINSERTPS"
 	case VLDDQU:
 		return "VLDDQU"
+	case VLDMXCSR:
+		return "VLDMXCSR"
 	case VMASKMOVDQU:
 		return "VMASKMOVDQU"
 	case VMASKMOVPD:
@@ -2294,6 +2348,8 @@ func (instruction Instruction) String() string {
 		return "VPSIGNW"
 	case VPSLLD:
 		return "VPSLLD"
+	case VPSLLDQ:
+		return "VPSLLDQ"
 	case VPSLLQ:
 		return "VPSLLQ"
 	case VPSLLW:
@@ -2306,6 +2362,8 @@ func (instruction Instruction) String() string {
 		return "VPSRAW"
 	case VPSRLD:
 		return "VPSRLD"
+	case VPSRLDQ:
+		return "VPSRLDQ"
 	case VPSRLQ:
 		return "VPSRLQ"
 	case VPSRLW:
@@ -2370,6 +2428,8 @@ func (instruction Instruction) String() string {
 		return "VSQRTSD"
 	case VSQRTSS:
 		return "VSQRTSS"
+	case VSTMXCSR:
+		return "VSTMXCSR"
 	case VSUBPD:
 		return "VSUBPD"
 	case VSUBPS:

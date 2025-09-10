@@ -1084,13 +1084,89 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, b
 	panic("")
 }
 
-func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
 	switch opcode {
 	case 0x71:
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			switch modrmReg {
+			case [3]bool{false, true, false}:
+				return VPSRLW, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{true, false, false}:
+				return VPSRAW, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{true, true, false}:
+				return VPSLLW, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			default:
+				panic("Error: Unknown instruction")
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x72:
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			switch modrmReg {
+			case [3]bool{false, true, false}:
+				return VPSRLD, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{true, false, false}:
+				return VPSRAD, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{true, true, false}:
+				return VPSLLD, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			default:
+				panic("Error: Unknown instruction")
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0x73:
+		switch opcodeExt {
+		case [2]bool{false, true}:
+			switch modrmReg {
+			case [3]bool{false, true, false}:
+				return VPSRLQ, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{false, true, true}:
+				return VPSRLDQ, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{true, true, false}:
+				return VPSLLQ, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{true, true, true}:
+				return VPSLLDQ, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			default:
+				panic("Error: Unknown instruction")
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xAE:
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			switch modrmReg {
+			case [3]bool{false, true, false}:
+				return VLDMXCSR, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{false, true, true}:
+				return VSTMXCSR, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			default:
+				panic("Error: Unknown instruction")
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xF3:
+		switch opcodeExt {
+		case [2]bool{false, false}:
+			switch modrmReg {
+			case [3]bool{false, false, true}:
+				return BLSR, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{false, true, false}:
+				return BLSMSK, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			case [3]bool{false, true, true}:
+				return BLSI, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			default:
+				panic("Error: Unknown instruction")
+			}
+		default:
+			panic("Error: Unknown instruction")
+		}
 	default:
+		panic("Error: Unknown instruction")
 	}
 }
