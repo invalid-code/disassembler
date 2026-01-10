@@ -1,6 +1,9 @@
 package amdx8664
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/invalid-code/disassembler/executableFeatures"
+)
 
 type MemSegment int
 
@@ -46,6 +49,10 @@ const (
 	DI
 	BP
 	SP
+	AH
+	BH
+	CH
+	DH
 	R8W
 	R9W
 	R10W
@@ -194,7 +201,7 @@ func (register Register) String() string {
 	}
 }
 
-func DisassembleBytes(data []byte, bitFormat bool) {
+func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatures.BinSecFeatures) {
 	isPrefix := true
 	legacePrefixCnt := 0
 	isOperandSizeOverride := false
@@ -246,8 +253,9 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 	instructionEncodedRegOperand := 0
 	isGpr := true
 	opcode := byte(0)
+	isCet := false
 	for _, curByte := range data {
-		fmt.Println(curByte)
+		fmt.Printf("%X\n", curByte)
 		// 1-15 bytes
 		// prefix(optional)
 		if isPrefix {
@@ -689,22 +697,22 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 					if isSecondaryMap {
 						is3dNow = true
 						isSecondaryMap = false
-						isEscapeSequence = false
-						isOpcode = true
+						// isEscapeSequence = false
+						// isOpcode = true
 					} else {
 						isSecondaryMap = true
 					}
 				case 0x38:
 					if isSecondaryMap {
 						is38 = true
-						isEscapeSequence = false
-						isOpcode = true
+						// isEscapeSequence = false
+						// isOpcode = true
 					}
 				case 0x3A:
 					if isSecondaryMap {
 						is3A = true
-						isEscapeSequence = false
-						isOpcode = true
+						// isEscapeSequence = false
+						// isOpcode = true
 					}
 				default:
 					isEscapeSequence = false
@@ -743,6 +751,27 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			} else if is38 {
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap38(curByte, bitFormat, isRep0, isOperandSizeOverride, isRexB)
 			} else if isSecondaryMap {
+				if isCet {
+					switch execFeatures {
+					case executableFeatures.IBT, executableFeatures.Both:
+						isPrefix = true
+						isRep1 = false
+						isOpcode = false
+						isSecondaryMap = false
+						isCet = false
+						if bitFormat {
+							instruction = ENDBR64
+						} else {
+							instruction = ENDBR32
+						}
+						fmt.Println(instruction)
+						continue
+					}
+				}
+				if isRep1 {
+					isCet = true
+					continue
+				}
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 			} else {
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride)
@@ -751,6 +780,7 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				opcode = curByte
 			}
 			isOpcode = false
+			continue
 		}
 		// modr/m
 		if isModRM {
@@ -875,33 +905,60 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 				}
 			} else {
 				if isGpr {
-					if isOperandSizeOverride {
-						if bitFormat {
-							switch modrmReg {
-							case [3]bool{false, false, false}:
-								regOperand1 = AX
-							case [3]bool{false, false, true}:
-								regOperand1 = CX
-							case [3]bool{false, true, false}:
-								regOperand1 = DX
-							case [3]bool{false, true, true}:
-								regOperand1 = BX
-							case [3]bool{true, false, false}:
-								regOperand1 = AH
-							case [3]bool{true, false, true}:
-								regOperand1 = CH
-							case [3]bool{true, true, false}:
-								regOperand1 = DH
-							case [3]bool{true, true, true}:
-								regOperand1 = BH
-							}
-						} else {
-
+					fmt.Println(modrmMod, modrmReg, modrmRM)
+					switch modrmMod {
+					case [2]bool{false, false}:
+					case [2]bool{false, true}:
+					case [2]bool{true, false}:
+					case [2]bool{true, true}:
+						switch modrmReg {
+						case [3]bool{false, false, false}:
+						case [3]bool{false, false, true}:
+						case [3]bool{false, true, false}:
+						case [3]bool{false, true, true}:
+						case [3]bool{true, false, false}:
+						case [3]bool{true, false, true}:
+						case [3]bool{true, true, false}:
+						case [3]bool{true, true, true}:
+						}
+						switch modrmRM {
+						case [4]bool{false, false, false, false}:
+						case [4]bool{false, false, true, false}:
+						case [4]bool{false, true, false, false}:
+						case [4]bool{false, true, true, false}:
+						case [4]bool{true, false, false, false}:
+						case [4]bool{true, false, true, false}:
+						case [4]bool{true, true, false, false}:
+						case [4]bool{true, true, true, false}:
 						}
 					}
-					if isRexW {
+					// if isOperandSizeOverride {
+					// 	if bitFormat {
+					// 		switch modrmReg {
+					// 		case [3]bool{false, false, false}:
+					// 			regOperand1 = AX
+					// 		case [3]bool{false, false, true}:
+					// 			regOperand1 = CX
+					// 		case [3]bool{false, true, false}:
+					// 			regOperand1 = DX
+					// 		case [3]bool{false, true, true}:
+					// 			regOperand1 = BX
+					// 		case [3]bool{true, false, false}:
+					// 			regOperand1 = AH
+					// 		case [3]bool{true, false, true}:
+					// 			regOperand1 = CH
+					// 		case [3]bool{true, true, false}:
+					// 			regOperand1 = DH
+					// 		case [3]bool{true, true, true}:
+					// 			regOperand1 = BH
+					// 		}
+					// 	} else {
 
-					}
+					// 	}
+					// }
+					// if isRexW {
+
+					// }
 				} else {
 				}
 			}
@@ -966,5 +1023,6 @@ func DisassembleBytes(data []byte, bitFormat bool) {
 			isImmediate = false
 			isPrefix = true
 		}
+		fmt.Sprint(memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand)
 	}
 }

@@ -2,7 +2,9 @@ package elf
 
 import (
 	"bytes"
+	// "fmt"
 	"github.com/invalid-code/disassembler/amdx8664"
+	"github.com/invalid-code/disassembler/executableFeatures"
 	"math"
 	"slices"
 )
@@ -36,10 +38,12 @@ func Disassemble(data []byte) {
 	entryPoint := 0
 	sectionHeaderOffset := 0
 	sectionHeaderLen := 0
-	sectionHeaderSize := 0
 	textSectionSize := 0
 	bitFormat = data[0x4] == 2
 	endianness = data[0x5] == 2
+	sectionNamesTableI := 0
+	sectionHeaderEntrySize := 0
+	binSecFeatures := executableFeatures.NoProt
 	switch convMultiByteToSingleByte(data[0x12:0x14], endianness) {
 	case 0x0:
 		instructionSet = NoInstruction
@@ -184,33 +188,81 @@ func Disassemble(data []byte) {
 		// 64-bit
 		entryPoint = convMultiByteToSingleByte(data[0x18:0x20], endianness)
 		sectionHeaderOffset = convMultiByteToSingleByte(data[0x28:0x30], endianness)
-		sectionHeaderSize = convMultiByteToSingleByte(data[0x34:0x36], endianness)
 		sectionHeaderLen = convMultiByteToSingleByte(data[0x3C:0x3E], endianness)
+		sectionNamesTableI = convMultiByteToSingleByte(data[0x3E:0x40], endianness)
+		sectionHeaderEntrySize = convMultiByteToSingleByte(data[0x3A:0x3C], endianness)
 	} else {
 		// 32-bit
 		entryPoint = convMultiByteToSingleByte(data[0x18:0x1C], endianness)
 		sectionHeaderOffset = convMultiByteToSingleByte(data[0x20:0x24], endianness)
-		sectionHeaderSize = convMultiByteToSingleByte(data[0x28:0x2A], endianness)
 		sectionHeaderLen = convMultiByteToSingleByte(data[0x30:0x32], endianness)
+		sectionNamesTableI = convMultiByteToSingleByte(data[0x32:0x34], endianness)
+		sectionHeaderEntrySize = convMultiByteToSingleByte(data[0x2E:0x30], endianness)
 	}
 	intialSectionHeaderOffset := sectionHeaderOffset
-	for range sectionHeaderLen {
+	sectionHeaderNameOffsets := []int{}
+	sectionHeaderOffsets := []int{}
+	sectionHeaderSizes := []int{}
+	sectionHeaderNameOffset := 0
+	for sectionHeaderI := range sectionHeaderLen {
 		sectionOffset := 0
+		sectionHeaderEntryNameOffset := convMultiByteToSingleByte(data[intialSectionHeaderOffset:intialSectionHeaderOffset+0x4], endianness)
+		sectionHeaderNameOffsets = append(sectionHeaderNameOffsets, sectionHeaderEntryNameOffset)
+		sectionHeaderSize := 0
+
 		if bitFormat {
-			sectionOffset = convMultiByteToSingleByte(data[intialSectionHeaderOffset+0x10:intialSectionHeaderOffset+0x14], endianness)
-		} else {
 			sectionOffset = convMultiByteToSingleByte(data[intialSectionHeaderOffset+0x18:intialSectionHeaderOffset+0x20], endianness)
+			sectionHeaderSize = convMultiByteToSingleByte(data[intialSectionHeaderOffset+0x20:intialSectionHeaderOffset+0x28], endianness)
+		} else {
+			sectionOffset = convMultiByteToSingleByte(data[intialSectionHeaderOffset+0x10:intialSectionHeaderOffset+0x14], endianness)
+			sectionHeaderSize = convMultiByteToSingleByte(data[intialSectionHeaderOffset+0x14:intialSectionHeaderOffset+0x18], endianness)
 		}
+		sectionHeaderSizes = append(sectionHeaderSizes, sectionHeaderSize)
+		sectionHeaderOffsets = append(sectionHeaderOffsets, sectionOffset)
 		if sectionOffset == entryPoint {
 			if bitFormat {
 				textSectionSize = convMultiByteToSingleByte(data[intialSectionHeaderOffset+0x20:intialSectionHeaderOffset+0x28], endianness)
 			} else {
 				textSectionSize = convMultiByteToSingleByte(data[intialSectionHeaderOffset+0x14:intialSectionHeaderOffset+0x18], endianness)
 			}
-			break
 		}
-		intialSectionHeaderOffset += sectionHeaderSize
+		if sectionHeaderI == sectionNamesTableI {
+			if bitFormat {
+				sectionHeaderNameOffset = convMultiByteToSingleByte(data[intialSectionHeaderOffset+0x18:intialSectionHeaderOffset+0x20], endianness)
+			} else {
+				sectionHeaderNameOffset = convMultiByteToSingleByte(data[intialSectionHeaderOffset+0x10:intialSectionHeaderOffset+0x14], endianness)
+			}
+		}
+		intialSectionHeaderOffset += sectionHeaderEntrySize
 	}
+	for sectionHeaderI_, sectionHeaderNameOffset_ := range sectionHeaderNameOffsets {
+		sectionHeaderName := ""
+		sectionHeaderI := 0
+		for data[sectionHeaderNameOffset_+sectionHeaderNameOffset+sectionHeaderI] != 0x0 {
+			sectionHeaderName += string(data[sectionHeaderNameOffset_+sectionHeaderNameOffset+sectionHeaderI])
+			sectionHeaderI += 1
+		}
+		if sectionHeaderName == ".note.gnu.property" {
+			noteGnuPropertySection := data[sectionHeaderOffsets[sectionHeaderI_] : sectionHeaderOffsets[sectionHeaderI_]+sectionHeaderSizes[sectionHeaderI_]]
+			noteGnuPropertySectionData := 16
+			for noteGnuPropertySectionData != len(noteGnuPropertySection) {
+				curProperty := noteGnuPropertySection[noteGnuPropertySectionData : noteGnuPropertySectionData+16]
+				curPropertyType := convMultiByteToSingleByte(curProperty[:4], endianness)
+				switch curPropertyType {
+				case 0xC0000002: // CET Features
+					curPropertyVal := convMultiByteToSingleByte(curProperty[8:12], endianness)
+					switch curPropertyVal {
+					case 1:
+						binSecFeatures = executableFeatures.IBT
+					case 3:
+						binSecFeatures = executableFeatures.Both
+					}
+				}
+				noteGnuPropertySectionData += 16
+			}
+		}
+	}
+
 	switch instructionSet {
 	case NoInstruction:
 	case We32100:
@@ -256,7 +308,7 @@ func Disassemble(data []byte) {
 	case StmeSt100:
 	case AdvLogCorp:
 	case Amdx8664:
-		amdx8664.DisassembleBytes(data[entryPoint:entryPoint+textSectionSize], bitFormat)
+		amdx8664.DisassembleBytes(data[entryPoint:entryPoint+textSectionSize], bitFormat, binSecFeatures)
 	case SonyDsp:
 	case Pdp10:
 	case Pdp11:

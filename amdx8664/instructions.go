@@ -118,6 +118,8 @@ const (
 	DPPD
 	DPPS
 	EMMS
+	ENDBR32
+	ENDBR64
 	ENTER
 	EXTRACTPS
 	EXTRQ
@@ -1062,6 +1064,10 @@ func (instruction Instruction) String() string {
 		return "DPPS"
 	case EMMS:
 		return "EMMS"
+	case ENDBR32:
+		return "ENDBR32"
+	case ENDBR64:
+		return "ENDBR64"
 	case ENTER:
 		return "ENTER"
 	case EXTRACTPS:
