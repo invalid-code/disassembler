@@ -3,6 +3,7 @@ package amdx8664
 import (
 	"fmt"
 	"github.com/invalid-code/disassembler/executableFeatures"
+	"github.com/invalid-code/disassembler/util"
 )
 
 type MemSegment int
@@ -255,6 +256,8 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 	opcode := byte(0)
 	isCet := false
 	regOperand1ModRMReg := false
+	ripAddressingDispByteCount := 0
+	ripAddressingDispBytes := [4]byte{}
 	for _, curByte := range data {
 		fmt.Printf("%X\n", curByte)
 		// 1-15 bytes
@@ -963,6 +966,73 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 					// figure out operand size
 					switch modrmMod {
 					case [2]bool{false, false}:
+						switch modrmReg {
+						case [3]bool{false, false, false}:
+							if regOperand1ModRMReg {
+								regOperand1 = RAX
+							} else {
+								regOperand2 = RAX
+							}
+						case [3]bool{false, false, true}:
+							if regOperand1ModRMReg {
+								regOperand1 = RCX
+							} else {
+								regOperand2 = RCX
+							}
+						case [3]bool{false, true, false}:
+							if regOperand1ModRMReg {
+								regOperand1 = RDX
+							} else {
+								regOperand2 = RDX
+							}
+						case [3]bool{false, true, true}:
+							if regOperand1ModRMReg {
+								regOperand1 = RBX
+							} else {
+								regOperand2 = RBX
+							}
+						case [3]bool{true, false, false}:
+							if regOperand1ModRMReg {
+								regOperand1 = RSP
+							} else {
+								regOperand2 = RSP
+							}
+						case [3]bool{true, false, true}:
+							if regOperand1ModRMReg {
+								regOperand1 = RBP
+							} else {
+								regOperand2 = RBP
+							}
+						case [3]bool{true, true, false}:
+							if regOperand1ModRMReg {
+								regOperand1 = RSI
+							} else {
+								regOperand2 = RSI
+							}
+						case [3]bool{true, true, true}:
+							if regOperand1ModRMReg {
+								regOperand1 = RDI
+							} else {
+								regOperand2 = RDI
+							}
+						}
+						switch modrmRM {
+						case [4]bool{false, false, false, false}:
+						case [4]bool{false, false, true, false}:
+						case [4]bool{false, true, false, false}:
+						case [4]bool{false, true, true, false}:
+						case [4]bool{true, false, false, false}:
+						case [4]bool{true, false, true, false}:
+							if bitFormat {
+								// 64 bit - rip addressing
+								isDisplacement = true
+							} else {
+								// 32 bit - absolute (displacement-only) addressing
+							}
+						case [4]bool{true, true, false, false}:
+						case [4]bool{true, true, true, false}:
+						}
+
 					case [2]bool{false, true}:
 					case [2]bool{true, false}:
 					case [2]bool{true, true}:
@@ -1151,10 +1221,15 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 		}
 		// displacemet
 		if isDisplacement {
-			if curByte != 0 {
+			if ripAddressingDispByteCount == 3 {
+				ripDispOperand := util.ConvMultiByteToSingleByte(ripAddressingDispBytes[:], false)
+				fmt.Println(instruction, regOperand1, fmt.Sprintf("%X", ripDispOperand))
 				isDisplacement = false
+				isPrefix = true
+				continue
 			}
-			isDisplacement = false
+			ripAddressingDispBytes[ripAddressingDispByteCount] = curByte
+			ripAddressingDispByteCount += 1
 			continue
 		}
 
