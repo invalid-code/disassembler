@@ -254,6 +254,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 	isGpr := true
 	opcode := byte(0)
 	isCet := false
+	regOperand1ModRMReg := false
 	for _, curByte := range data {
 		fmt.Printf("%X\n", curByte)
 		// 1-15 bytes
@@ -341,6 +342,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = false
 				// isRexX = false
 				isRexB = false
+				continue
 			case 0x41:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -351,6 +353,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = false
 				// isRexX = false
 				isRexB = true
+				continue
 			case 0x42:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -361,6 +364,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = false
 				// isRexX = true
 				isRexB = false
+				continue
 			case 0x43:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -371,6 +375,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = false
 				// isRexX = true
 				isRexB = true
+				continue
 			case 0x44:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -381,6 +386,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = true
 				// isRexX = false
 				isRexB = false
+				continue
 			case 0x45:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -391,6 +397,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = true
 				// isRexX = false
 				isRexB = true
+				continue
 			case 0x46:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -401,6 +408,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = true
 				// isRexX = true
 				isRexB = false
+				continue
 			case 0x47:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -411,6 +419,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = true
 				// isRexX = true
 				isRexB = true
+				continue
 			case 0x48:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -421,6 +430,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = false
 				// isRexX = false
 				isRexB = false
+				continue
 			case 0x49:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -431,6 +441,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = false
 				// isRexX = false
 				isRexB = true
+				continue
 			case 0x4A:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -441,6 +452,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = false
 				// isRexX = true
 				isRexB = false
+				continue
 			case 0x4B:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -451,6 +463,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = false
 				// isRexX = true
 				isRexB = true
+				continue
 			case 0x4C:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -461,6 +474,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = true
 				// isRexX = false
 				isRexB = false
+				continue
 			case 0x4D:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -471,6 +485,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = true
 				// isRexX = false
 				isRexB = true
+				continue
 			case 0x4E:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -481,6 +496,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = true
 				// isRexX = true
 				isRexB = false
+				continue
 			case 0x4F:
 				if !bitFormat {
 					panic("Error: REX prefix are only allowed in 64-bit mode")
@@ -491,6 +507,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isRexR = true
 				// isRexX = true
 				isRexB = true
+				continue
 			case 0xC5:
 				isVex = true
 				isVex3Byte = false
@@ -774,7 +791,21 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				}
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 			} else {
-				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcode(curByte, bitFormat, isOperandSizeOverride)
+				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, regOperand1ModRMReg = primaryOpcode(curByte, bitFormat, isOperandSizeOverride)
+				if !(isModRM || isImmediate) && instruction != NoInstruction {
+					fmt.Print(instruction)
+					if regOperand1 != NoRegister {
+						fmt.Printf(" %v", regOperand1)
+					}
+					if regOperand2 != NoRegister {
+						fmt.Printf(" %v", regOperand2)
+					}
+					if regOperand3 != NoRegister {
+						fmt.Printf(" %v", regOperand3)
+					}
+					fmt.Println()
+					isPrefix = true
+				}
 			}
 			if instruction == NoInstruction {
 				opcode = curByte
@@ -903,9 +934,33 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 						panic("Error: Unknown opcode modrm extension group")
 					}
 				}
+				switch modrmMod {
+				case [2]bool{false, false}:
+				case [2]bool{false, true}:
+				case [2]bool{true, false}:
+				case [2]bool{true, true}:
+					switch modrmRM {
+					case [4]bool{false, false, false, false}:
+						regOperand1 = RAX
+					case [4]bool{false, false, true, false}:
+						regOperand1 = RCX
+					case [4]bool{false, true, false, false}:
+						regOperand1 = RDX
+					case [4]bool{false, true, true, false}:
+						regOperand1 = RBX
+					case [4]bool{true, false, false, false}:
+						regOperand1 = RSP
+					case [4]bool{true, false, true, false}:
+						regOperand1 = RBP
+					case [4]bool{true, true, false, false}:
+						regOperand1 = RSI
+					case [4]bool{true, true, true, false}:
+						regOperand1 = RDI
+					}
+				}
 			} else {
 				if isGpr {
-					fmt.Println(modrmMod, modrmReg, modrmRM)
+					// figure out operand size
 					switch modrmMod {
 					case [2]bool{false, false}:
 					case [2]bool{false, true}:
@@ -913,24 +968,107 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 					case [2]bool{true, true}:
 						switch modrmReg {
 						case [3]bool{false, false, false}:
+							if regOperand1ModRMReg {
+								regOperand1 = RAX
+							} else {
+								regOperand2 = RAX
+							}
 						case [3]bool{false, false, true}:
+							if regOperand1ModRMReg {
+								regOperand1 = RCX
+							} else {
+								regOperand2 = RCX
+							}
 						case [3]bool{false, true, false}:
+							if regOperand1ModRMReg {
+								regOperand1 = RDX
+							} else {
+								regOperand2 = RDX
+							}
 						case [3]bool{false, true, true}:
+							if regOperand1ModRMReg {
+								regOperand1 = RBX
+							} else {
+								regOperand2 = RBX
+							}
 						case [3]bool{true, false, false}:
+							if regOperand1ModRMReg {
+								regOperand1 = RSP
+							} else {
+								regOperand2 = RSP
+							}
 						case [3]bool{true, false, true}:
+							if regOperand1ModRMReg {
+								regOperand1 = RBP
+							} else {
+								regOperand2 = RBP
+							}
 						case [3]bool{true, true, false}:
+							if regOperand1ModRMReg {
+								regOperand1 = RSI
+							} else {
+								regOperand2 = RSI
+							}
 						case [3]bool{true, true, true}:
+							if regOperand1ModRMReg {
+								regOperand1 = RDI
+							} else {
+								regOperand2 = RDI
+							}
 						}
 						switch modrmRM {
 						case [4]bool{false, false, false, false}:
+							if regOperand1ModRMReg {
+								regOperand2 = RAX
+							} else {
+								regOperand1 = RAX
+							}
 						case [4]bool{false, false, true, false}:
+							if regOperand1ModRMReg {
+								regOperand2 = RCX
+							} else {
+								regOperand1 = RCX
+							}
 						case [4]bool{false, true, false, false}:
+							if regOperand1ModRMReg {
+								regOperand2 = RDX
+							} else {
+								regOperand1 = RDX
+							}
 						case [4]bool{false, true, true, false}:
+							if regOperand1ModRMReg {
+								regOperand2 = RBX
+							} else {
+								regOperand1 = RBX
+							}
 						case [4]bool{true, false, false, false}:
+							if regOperand1ModRMReg {
+								regOperand2 = RSP
+							} else {
+								regOperand1 = RSP
+							}
 						case [4]bool{true, false, true, false}:
+							if regOperand1ModRMReg {
+								regOperand2 = RBP
+							} else {
+								regOperand1 = RBP
+							}
 						case [4]bool{true, true, false, false}:
+							if regOperand1ModRMReg {
+								regOperand2 = RSI
+							} else {
+								regOperand1 = RSI
+							}
 						case [4]bool{true, true, true, false}:
+							if regOperand1ModRMReg {
+								regOperand2 = RDI
+							} else {
+								regOperand1 = RDI
+							}
 						}
+						fmt.Printf("%v %v %v\n", instruction, regOperand1, regOperand2)
+						isModRM = false
+						isPrefix = true
 					}
 					// if isOperandSizeOverride {
 					// 	if bitFormat {
@@ -959,7 +1097,6 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 					// if isRexW {
 
 					// }
-				} else {
 				}
 			}
 			if !(modrmMod[0] && modrmMod[1]) {
@@ -967,6 +1104,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 					isSib = true
 				}
 			}
+			continue
 		}
 		// sib
 		if isSib {
@@ -1009,6 +1147,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 			}
 
 			isSib = false
+			continue
 		}
 		// displacemet
 		if isDisplacement {
@@ -1016,6 +1155,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				isDisplacement = false
 			}
 			isDisplacement = false
+			continue
 		}
 
 		// immediate
