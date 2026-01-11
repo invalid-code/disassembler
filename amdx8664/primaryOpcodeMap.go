@@ -747,9 +747,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0xFD:
 		return STD, false, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0xFE:
-		panic("todo modr/m opcode extension")
+		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0xFF:
-		panic("todo modr/m opcode extension")
+		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	default:
 		panic("Error: Unknown instruction")
 	}

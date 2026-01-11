@@ -169,8 +169,8 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 		} else {
 			return MOVHPS, true, false, NoSegment, NoRegister, NoRegister, 0
 		}
-	case 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1E, 0x1F:
-		if isRep0 || isRep1 || isOperandSizeOverride {
+	case 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1E:
+		if isRep0 || isRep1 || !isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
 		}
 		return NoInstruction, true, true, NoSegment, NoRegister, NoRegister, 0
@@ -179,6 +179,11 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
 		}
 		panic("todo weird")
+	case 0x1F:
+		if isRep0 || isRep1 {
+			panic("Error: prefices 0xF2 and 0xF3 not allowed for the secondary map opcode 0x1F")
+		}
+		return NOP, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x20, 0x21, 0x22, 0x23:
 		if isRep0 || isRep1 || isOperandSizeOverride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x20 - 0x27")
