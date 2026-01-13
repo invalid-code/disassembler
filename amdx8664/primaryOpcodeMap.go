@@ -443,37 +443,43 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x6F:
 		panic("todo multiple instructions in 1 byte")
 	case 0x70:
-		panic("todo dont know how to deal with rip addressing")
+		// panic("todo dont know how to deal with rip addressing")
+		return JO, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x71:
-		panic("todo dont know how to deal with rip addressing")
+		return JNO, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x72:
-		panic("todo dont know how to deal with rip addressing")
+		return JB, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x73:
-		panic("todo dont know how to deal with rip addressing")
+		// panic("todo dont know how to deal with rip addressing")
+		return JNB, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x74:
-		panic("todo dont know how to deal with rip addressing")
+		// panic("todo dont know how to deal with rip addressing")
+		return JZ, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x75:
-		panic("todo dont know how to deal with rip addressing")
+		// panic("todo dont know how to deal with rip addressing")
+		return JNZ, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x76:
-		panic("todo dont know how to deal with rip addressing")
+		// panic("todo dont know how to deal with rip addressing")
+		return JBE, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x77:
-		panic("todo dont know how to deal with rip addressing")
+		// panic("todo dont know how to deal with rip addressing")
+		return JNBE, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x78:
-		panic("todo dont know how to deal with rip addressing")
+		return JS, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x79:
-		panic("todo dont know how to deal with rip addressing")
+		return JNS, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x7A:
-		panic("todo dont know how to deal with rip addressing")
+		return JP, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x7B:
-		panic("todo dont know how to deal with rip addressing")
+		return JNP, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x7C:
-		panic("todo dont know how to deal with rip addressing")
+		return JL, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x7D:
-		panic("todo dont know how to deal with rip addressing")
+		return JNL, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x7E:
-		panic("todo dont know how to deal with rip addressing")
+		return JLE, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x7F:
-		panic("todo dont know how to deal with rip addressing")
+		return JNLE, true, false, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x80, 0x81, 0x82, 0x83:
 		return NoInstruction, true, true, NoSegment, NoRegister, NoRegister, 0, false
 	case 0x84, 0x85:

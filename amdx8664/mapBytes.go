@@ -259,7 +259,6 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 	regOperand1ModRMReg := false
 	ripAddressingDispByteCount := 0
 	ripAddressingDispBytes := [4]byte{}
-	isRipAddressing := false
 	for _, curByte := range data {
 		fmt.Printf("%X\n", curByte)
 		// 1-15 bytes
@@ -837,7 +836,6 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 						regOperand1ModRMReg = false
 						ripAddressingDispByteCount = 0
 						ripAddressingDispBytes = [4]byte{}
-						isRipAddressing = false
 						continue
 					}
 				}
@@ -914,7 +912,6 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 					regOperand1ModRMReg = false
 					ripAddressingDispByteCount = 0
 					ripAddressingDispBytes = [4]byte{}
-					isRipAddressing = false
 				}
 			}
 			if instruction == NoInstruction {
@@ -1038,7 +1035,6 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG4(opcode, modrmReg, bitFormat)
 					case 0xFF:
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG5(opcode, modrmReg, bitFormat)
-						fmt.Println("hello", instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand)
 					case 0xC6, 0xC7:
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG11(opcode, modrmReg, bitFormat)
 					default:
@@ -1150,7 +1146,6 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 							if bitFormat {
 								// 64 bit - rip addressing
 								isDisplacement = true
-								isRipAddressing = true
 							} else {
 								// 32 bit - absolute (displacement-only) addressing
 							}
@@ -1319,7 +1314,6 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 						ripAddressingDispBytes = [4]byte{}
 						isModRM = false
 						isPrefix = true
-						isRipAddressing = false
 						continue
 					}
 				}
@@ -1367,7 +1361,7 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				sibByte -= 1
 			}
 
-			fmt.Println(sibScale, sibIndex, sibBase)
+			// fmt.Println("modrm", modrmMod, modrmReg, modrmRM, "sib", sibScale, sibIndex, sibBase)
 			sibScaleVal := 0
 			switch sibScale {
 			case [2]bool{false, false}:
@@ -1441,72 +1435,69 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 		}
 		// displacemet
 		if isDisplacement {
-			if isRipAddressing {
-				if ripAddressingDispByteCount == 3 {
-					ripDispOperand := util.ConvMultiByteToSingleByte(ripAddressingDispBytes[:], false)
-					fmt.Println(instruction, regOperand1, fmt.Sprintf("%X", ripDispOperand))
-					isDisplacement = false
-					isPrefix = true
-					isPrefix = true
-					legacePrefixCnt = 0
-					isOperandSizeOverride = false
-					//	isAddressSizeOverride = false
-					//	isCSSegmentSizeOverride = false
-					//	isDSSegmentSizeOverride = false
-					//	isESSegmentSizeOverride = false
-					//	isFSSegmentSizeOverride = false
-					//	isGSSegmentSizeOverride = false
-					//	isSSSegmentSizeOverride = false
-					isRep1 = false
-					isRep0 = false
-					// isRexPrefix = false
-					isRexW = false
-					isRexR = false
-					// isRexX = false
-					isRexB = false
-					isVex = false
-					isXop = false
-					isVex3Byte = false
-					isEscapeSequence = false
-					is3dNow = false
-					is38 = false
-					is3A = false
-					isSecondaryMap = false
-					fieldR = false
-					fieldVvvv = [4]bool{false, false, false, false}
-					fieldL = false
-					fieldPp = [2]bool{false, false}
-					isRXB = true
-					r3B = false
-					x3B = false
-					b3B = false
-					mapSelect = [5]bool{false, false, false, false, false}
-					isModRM = false
-					isOpcode = false
-					isSib = false
-					isImmediate = false
-					modrmMod = [2]bool{false, false}
-					modrmReg = [3]bool{false, false, false}
-					modrmRM = [4]bool{false, false, false}
-					sibScale = [2]bool{false, false}
-					sibIndex = [3]bool{false, false, false}
-					sibBase = [3]bool{false, false, false}
-					instruction = AAA
-					memSegment = NoSegment
-					regOperand1, regOperand2, regOperand3 = NoRegister, NoRegister, NoRegister
-					instructionEncodedRegOperand = 0
-					isGpr = true
-					opcode = byte(0)
-					isCet = false
-					regOperand1ModRMReg = false
-					ripAddressingDispByteCount = 0
-					ripAddressingDispBytes = [4]byte{}
-					isRipAddressing = false
-					continue
-				}
-				ripAddressingDispBytes[ripAddressingDispByteCount] = curByte
-				ripAddressingDispByteCount += 1
+			if ripAddressingDispByteCount == 3 {
+				ripDispOperand := util.ConvMultiByteToSingleByte(ripAddressingDispBytes[:], false)
+				fmt.Println(instruction, regOperand1, fmt.Sprintf("%X", ripDispOperand))
+				isDisplacement = false
+				isPrefix = true
+				isPrefix = true
+				legacePrefixCnt = 0
+				isOperandSizeOverride = false
+				//	isAddressSizeOverride = false
+				//	isCSSegmentSizeOverride = false
+				//	isDSSegmentSizeOverride = false
+				//	isESSegmentSizeOverride = false
+				//	isFSSegmentSizeOverride = false
+				//	isGSSegmentSizeOverride = false
+				//	isSSSegmentSizeOverride = false
+				isRep1 = false
+				isRep0 = false
+				// isRexPrefix = false
+				isRexW = false
+				isRexR = false
+				// isRexX = false
+				isRexB = false
+				isVex = false
+				isXop = false
+				isVex3Byte = false
+				isEscapeSequence = false
+				is3dNow = false
+				is38 = false
+				is3A = false
+				isSecondaryMap = false
+				fieldR = false
+				fieldVvvv = [4]bool{false, false, false, false}
+				fieldL = false
+				fieldPp = [2]bool{false, false}
+				isRXB = true
+				r3B = false
+				x3B = false
+				b3B = false
+				mapSelect = [5]bool{false, false, false, false, false}
+				isModRM = false
+				isOpcode = false
+				isSib = false
+				isImmediate = false
+				modrmMod = [2]bool{false, false}
+				modrmReg = [3]bool{false, false, false}
+				modrmRM = [4]bool{false, false, false}
+				sibScale = [2]bool{false, false}
+				sibIndex = [3]bool{false, false, false}
+				sibBase = [3]bool{false, false, false}
+				instruction = AAA
+				memSegment = NoSegment
+				regOperand1, regOperand2, regOperand3 = NoRegister, NoRegister, NoRegister
+				instructionEncodedRegOperand = 0
+				isGpr = true
+				opcode = byte(0)
+				isCet = false
+				regOperand1ModRMReg = false
+				ripAddressingDispByteCount = 0
+				ripAddressingDispBytes = [4]byte{}
+				continue
 			}
+			ripAddressingDispBytes[ripAddressingDispByteCount] = curByte
+			ripAddressingDispByteCount += 1
 			continue
 		}
 
