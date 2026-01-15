@@ -9,7 +9,8 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x4, 0xC, 0x14, 0x1C, 0x24, 0x2C, 0x34, 0x3C:
 		panic("todo dont know what AL opcode syntax notation")
 	case 0x5:
-		// todo need to figure out operand addressing size if using eax, ax, rax and need to figure out how many immediate bytes
+
+		// todo need to figure out how many immediate bytes
 		return ADD, false, true, NoSegment, RAX, NoRegister, 0, false, 0
 	case 0x6:
 		if is64Bit {
@@ -767,47 +768,55 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	}
 }
 
-func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64bit bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64bit bool) (Instruction, bool, MemSegment, Register, Register, int, int) {
 	switch opcode {
 	case 0x80:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ADD, true, NoSegment, NoRegister, NoRegister, 0
+			return ADD, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, false, true}:
-			return OR, true, NoSegment, NoRegister, NoRegister, 0
+			return OR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, true, false}:
-			return ADC, true, NoSegment, NoRegister, NoRegister, 0
+			return ADC, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, true, true}:
-			return SBB, true, NoSegment, NoRegister, NoRegister, 0
+			return SBB, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, false}:
-			return AND, true, NoSegment, NoRegister, NoRegister, 0
+			return AND, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, true}:
-			return SUB, true, NoSegment, NoRegister, NoRegister, 0
+			return SUB, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, false}:
-			return XOR, true, NoSegment, NoRegister, NoRegister, 0
+			return XOR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, true}:
-			return CMP, true, NoSegment, NoRegister, NoRegister, 0
+			return CMP, true, NoSegment, NoRegister, NoRegister, 0, 1
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x81:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ADD, true, NoSegment, NoRegister, NoRegister, 0
+			// todo need to figure out how many immediate bytes
+			return ADD, true, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{false, false, true}:
-			return OR, true, NoSegment, NoRegister, NoRegister, 0
+			// todo need to figure out how many immediate bytes
+			return OR, true, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{false, true, false}:
-			return ADC, true, NoSegment, NoRegister, NoRegister, 0
+			// todo need to figure out how many immediate bytes
+			return ADC, true, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{false, true, true}:
-			return SBB, true, NoSegment, NoRegister, NoRegister, 0
+			// todo need to figure out how many immediate bytes
+			return SBB, true, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, false, false}:
-			return AND, true, NoSegment, NoRegister, NoRegister, 0
+			// todo need to figure out how many immediate bytes
+			return AND, true, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, false, true}:
-			return SUB, true, NoSegment, NoRegister, NoRegister, 0
+			// todo need to figure out how many immediate bytes
+			return SUB, true, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, true, false}:
-			return XOR, true, NoSegment, NoRegister, NoRegister, 0
+			// todo need to figure out how many immediate bytes
+			return XOR, true, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, true, true}:
-			return CMP, true, NoSegment, NoRegister, NoRegister, 0
+			// todo need to figure out how many immediate bytes
+			return CMP, true, NoSegment, NoRegister, NoRegister, 0, 0
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -816,21 +825,21 @@ func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64bit bool) (Instruct
 	case 0x83:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ADD, true, NoSegment, NoRegister, NoRegister, 0
+			return ADD, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, false, true}:
-			return OR, true, NoSegment, NoRegister, NoRegister, 0
+			return OR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, true, false}:
-			return ADC, true, NoSegment, NoRegister, NoRegister, 0
+			return ADC, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, true, true}:
-			return SBB, true, NoSegment, NoRegister, NoRegister, 0
+			return SBB, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, false}:
-			return AND, true, NoSegment, NoRegister, NoRegister, 0
+			return AND, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, true}:
-			return SUB, true, NoSegment, NoRegister, NoRegister, 0
+			return SUB, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, false}:
-			return XOR, true, NoSegment, NoRegister, NoRegister, 0
+			return XOR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, true}:
-			return CMP, true, NoSegment, NoRegister, NoRegister, 0
+			return CMP, true, NoSegment, NoRegister, NoRegister, 0, 1
 		default:
 			panic("Error: Unknown instruction")
 		}
