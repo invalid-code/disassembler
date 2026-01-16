@@ -712,7 +712,7 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0xE7:
 		return OUT, false, true, NoSegment, NoRegister, EAX, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xE8:
-		panic("todo dont know how to deal with rip addressing")
+		return CALL, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xE9:
 		panic("todo dont know how to deal with rip addressing")
 	case 0xEA:
@@ -864,89 +864,89 @@ func primaryOpcodeModRMG1a(opcode byte, modrmReg [3]bool) (Instruction, bool, Me
 	}
 }
 
-func primaryOpcodeModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func primaryOpcodeModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int, int) {
 	switch opcode {
 	case 0xC0:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, true, NoSegment, NoRegister, NoRegister, 0
+			return ROL, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, false, true}:
-			return ROR, true, NoSegment, NoRegister, NoRegister, 0
+			return ROR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, true, false}:
-			return RCL, true, NoSegment, NoRegister, NoRegister, 0
+			return RCL, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, true, true}:
-			return RCR, true, NoSegment, NoRegister, NoRegister, 0
+			return RCR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, true, NoSegment, NoRegister, NoRegister, 0
+			return SHR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, true, NoSegment, NoRegister, NoRegister, 0
+			return SAR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xC1:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, true, NoSegment, NoRegister, NoRegister, 0
+			return ROL, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, false, true}:
-			return ROR, true, NoSegment, NoRegister, NoRegister, 0
+			return ROR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, true, false}:
-			return RCL, true, NoSegment, NoRegister, NoRegister, 0
+			return RCL, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, true, true}:
-			return RCR, true, NoSegment, NoRegister, NoRegister, 0
+			return RCR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, true, NoSegment, NoRegister, NoRegister, 0
+			return SHR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, true, NoSegment, NoRegister, NoRegister, 0
+			return SAR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD0:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, false, NoSegment, NoRegister, NoRegister, 1
+			return ROL, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{false, false, true}:
-			return ROR, false, NoSegment, NoRegister, NoRegister, 1
+			return ROR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{false, true, false}:
-			return RCL, false, NoSegment, NoRegister, NoRegister, 1
+			return RCL, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{false, true, true}:
-			return RCR, false, NoSegment, NoRegister, NoRegister, 1
+			return RCR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, false, NoSegment, NoRegister, NoRegister, 1
+			return SHR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, false, NoSegment, NoRegister, NoRegister, 1
+			return SAR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD1:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, false, NoSegment, NoRegister, NoRegister, 1
+			return ROL, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{false, false, true}:
-			return ROR, false, NoSegment, NoRegister, NoRegister, 1
+			return ROR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{false, true, false}:
-			return RCL, false, NoSegment, NoRegister, NoRegister, 1
+			return RCL, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{false, true, true}:
-			return RCR, false, NoSegment, NoRegister, NoRegister, 1
+			return RCR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, false, NoSegment, NoRegister, NoRegister, 1
+			return SHR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, false, NoSegment, NoRegister, NoRegister, 1
+			return SAR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		default:
 			panic("Error: Unknown instruction")
 		}
