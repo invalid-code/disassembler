@@ -1,409 +1,377 @@
 package amdx8664
 
-func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instruction, bool, bool, MemSegment, Register, Register, int, bool, int) {
+func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW bool) (Instruction, bool, bool, bool, MemSegment, Register, Register, int, bool, int) {
 	switch curByte {
 	case 0x0, 0x1:
-		return ADD, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return ADD, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x2, 0x3:
-		return ADD, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+		return ADD, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 	case 0x4, 0xC, 0x14, 0x1C, 0x24, 0x2C, 0x34, 0x3C:
 		panic("todo dont know what AL opcode syntax notation")
 	case 0x5:
 
 		// todo need to figure out how many immediate bytes
-		return ADD, false, true, NoSegment, RAX, NoRegister, 0, false, 0
+		return ADD, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0
 	case 0x6:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return PUSH, false, false, ES, NoRegister, NoRegister, 0, false, 0
+			return PUSH, false, false, false, ES, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x7:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return POP, false, false, ES, NoRegister, NoRegister, 0, false, 0
+			return POP, false, false, false, ES, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x8, 0x9:
-		return OR, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return OR, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xA, 0xB:
-		return OR, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+		return OR, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 	case 0xD:
 		// todo need to figure out operand addressing size if using eax, ax, rax and need to figure out how many immediate bytes
-		return OR, false, true, NoSegment, RAX, NoRegister, 0, false, 0
+		return OR, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0
 	case 0xE:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return PUSH, false, false, ES, NoRegister, NoRegister, 0, false, 0
+			return PUSH, false, false, false, ES, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0xF:
 		panic("Error: 2-byte opcodes")
 	case 0x10, 0x11:
-		return ADC, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return ADC, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0x12, 0x13:
-		return ADC, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+		return ADC, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 	case 0x15:
 		// todo need to figure out operand addressing size if using eax, ax, rax and need to figure out how many immediate bytes
-		return ADC, false, true, NoSegment, RAX, NoRegister, 0, false, 0
+		return ADC, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0
 	case 0x16:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return PUSH, false, false, SS, NoRegister, NoRegister, 0, false, 0
+			return PUSH, false, false, false, SS, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x17:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return POP, false, false, SS, NoRegister, NoRegister, 0, false, 0
+			return POP, false, false, false, SS, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x18, 0x19:
-		return SBB, true, false, ES, NoRegister, NoRegister, 0, false, 0
+		return SBB, true, false, false, ES, NoRegister, NoRegister, 0, false, 0
 	case 0x1A, 0x1B:
-		return SBB, true, false, ES, NoRegister, NoRegister, 0, true, 0
+		return SBB, true, false, false, ES, NoRegister, NoRegister, 0, true, 0
 	case 0x1D:
 		// todo need to figure out operand addressing size if using eax, ax, rax and need to figure out how many immediate bytes
-		return SBB, false, true, NoSegment, RAX, NoRegister, 0, false, 0
+		return SBB, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0
 	case 0x1E:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return PUSH, false, false, DS, NoRegister, NoRegister, 0, false, 0
+			return PUSH, false, false, false, DS, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x1F:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return POP, false, false, DS, NoRegister, NoRegister, 0, false, 0
+			return POP, false, false, false, DS, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x20, 0x21:
-		return AND, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return AND, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x22, 0x23:
-		return AND, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+		return AND, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 	case 0x25:
 		// todo need to figure out operand addressing size if using eax, ax, rax and need to figure out how many immediate bytes
-		return AND, false, true, NoSegment, RAX, NoRegister, 0, false, 0
+		return AND, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0
 	case 0x26:
 		panic("Error: this is the ES segment")
 	case 0x27:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return DAA, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+			return DAA, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x28, 0x29:
-		return SUB, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return SUB, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x2A, 0x2B:
-		return SUB, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+		return SUB, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 	case 0x2D:
 		// todo need to figure out operand addressing size if using eax, ax, rax and need to figure out how many immediate bytes
-		return SUB, false, true, NoSegment, RAX, NoRegister, 0, false, 0
+		return SUB, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0
 	case 0x2E:
 		panic("Error: this is the CS segment")
 	case 0x2F:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return DAS, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+			return DAS, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x30, 0x31:
-		return XOR, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return XOR, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x32, 0x33:
-		return XOR, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+		return XOR, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 	case 0x35:
 		// todo need to figure out operand addressing size if using eax, ax, rax and need to figure out how many immediate bytes
-		return XOR, false, true, NoSegment, RAX, NoRegister, 0, false, 0
+		return XOR, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0
 	case 0x36:
 		panic("Error: this is the SS segment")
 	case 0x37:
-		return AAA, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return AAA, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x38, 0x39:
-		return CMP, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return CMP, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x3A, 0x3B:
-		return CMP, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+		return CMP, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 	case 0x3D:
 		// todo need to figure out operand addressing size if using eax, ax, rax and need to figure out how many immediate bytes
-		return CMP, false, true, NoSegment, RAX, NoRegister, 0, false, 0
+		return CMP, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0
 	case 0x3E:
 		panic("Error: this is the DS segment")
 	case 0x3F:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return AAS, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+			return AAS, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x40:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return INC, false, false, NoSegment, EAX, NoRegister, 0, false, 0
+			return INC, false, false, false, NoSegment, EAX, NoRegister, 0, false, 0
 		}
 	case 0x41:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return INC, false, false, NoSegment, ECX, NoRegister, 0, false, 0
+			return INC, false, false, false, NoSegment, ECX, NoRegister, 0, false, 0
 		}
 	case 0x42:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return INC, false, false, NoSegment, EDX, NoRegister, 0, false, 0
+			return INC, false, false, false, NoSegment, EDX, NoRegister, 0, false, 0
 		}
 	case 0x43:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return INC, false, false, NoSegment, EBX, NoRegister, 0, false, 0
+			return INC, false, false, false, NoSegment, EBX, NoRegister, 0, false, 0
 		}
 	case 0x44:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return INC, false, false, NoSegment, ESP, NoRegister, 0, false, 0
+			return INC, false, false, false, NoSegment, ESP, NoRegister, 0, false, 0
 		}
 	case 0x45:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return INC, false, false, NoSegment, EBP, NoRegister, 0, false, 0
+			return INC, false, false, false, NoSegment, EBP, NoRegister, 0, false, 0
 		}
 	case 0x46:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return INC, false, false, NoSegment, ESI, NoRegister, 0, false, 0
+			return INC, false, false, false, NoSegment, ESI, NoRegister, 0, false, 0
 		}
 	case 0x47:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return INC, false, false, NoSegment, EDI, NoRegister, 0, false, 0
+			return INC, false, false, false, NoSegment, EDI, NoRegister, 0, false, 0
 		}
 	case 0x48:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return DEC, false, false, NoSegment, EAX, NoRegister, 0, false, 0
+			return DEC, false, false, false, NoSegment, EAX, NoRegister, 0, false, 0
 		}
 	case 0x49:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return DEC, false, false, NoSegment, ECX, NoRegister, 0, false, 0
+			return DEC, false, false, false, NoSegment, ECX, NoRegister, 0, false, 0
 		}
 	case 0x4A:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return DEC, false, false, NoSegment, EDX, NoRegister, 0, false, 0
+			return DEC, false, false, false, NoSegment, EDX, NoRegister, 0, false, 0
 		}
 	case 0x4B:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return DEC, false, false, NoSegment, EBX, NoRegister, 0, false, 0
+			return DEC, false, false, false, NoSegment, EBX, NoRegister, 0, false, 0
 		}
 	case 0x4C:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return DEC, false, false, NoSegment, ESP, NoRegister, 0, false, 0
+			return DEC, false, false, false, NoSegment, ESP, NoRegister, 0, false, 0
 		}
 	case 0x4D:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return DEC, false, false, NoSegment, EBP, NoRegister, 0, false, 0
+			return DEC, false, false, false, NoSegment, EBP, NoRegister, 0, false, 0
 		}
 	case 0x4E:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return DEC, false, false, NoSegment, ESI, NoRegister, 0, false, 0
+			return DEC, false, false, false, NoSegment, ESI, NoRegister, 0, false, 0
 		}
 	case 0x4F:
 		if is64Bit {
 			panic("Error: Used as REX prefix in 64-bit mode")
 		} else {
-			return DEC, false, false, NoSegment, EDI, NoRegister, 0, false, 0
+			return DEC, false, false, false, NoSegment, EDI, NoRegister, 0, false, 0
 		}
 	case 0x50:
-		if is64Bit {
-			// todo operand size override check
-			return PUSH, false, false, NoSegment, EAX, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return PUSH, false, false, false, NoSegment, R8, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return PUSH, false, false, NoSegment, R8, NoRegister, 0, false, 0
-			} else {
-				return PUSH, false, false, NoSegment, RAX, NoRegister, 0, false, 0
+				return PUSH, false, false, false, NoSegment, EAX, NoRegister, 0, false, 0
 			}
+			return PUSH, false, false, false, NoSegment, RAX, NoRegister, 0, false, 0
 		}
 	case 0x51:
-		if is64Bit {
-			// todo operand size override check
-			return PUSH, false, false, NoSegment, ECX, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return PUSH, false, false, false, NoSegment, R9, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return PUSH, false, false, NoSegment, R9, NoRegister, 0, false, 0
-			} else {
-				return PUSH, false, false, NoSegment, RCX, NoRegister, 0, false, 0
+				return PUSH, false, false, false, NoSegment, ECX, NoRegister, 0, false, 0
 			}
+			return PUSH, false, false, false, NoSegment, RCX, NoRegister, 0, false, 0
 		}
 	case 0x52:
-		if is64Bit {
-			// todo operand size override check
-			return PUSH, false, false, NoSegment, EDX, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return PUSH, false, false, false, NoSegment, R10, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return PUSH, false, false, NoSegment, R10, NoRegister, 0, false, 0
-			} else {
-				return PUSH, false, false, NoSegment, RDX, NoRegister, 0, false, 0
+				return PUSH, false, false, false, NoSegment, EDX, NoRegister, 0, false, 0
 			}
+			return PUSH, false, false, false, NoSegment, RDX, NoRegister, 0, false, 0
 		}
 	case 0x53:
-		if is64Bit {
-			// todo operand size override check
-			return PUSH, false, false, NoSegment, EBX, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return PUSH, false, false, false, NoSegment, R11, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return PUSH, false, false, NoSegment, R11, NoRegister, 0, false, 0
-			} else {
-				return PUSH, false, false, NoSegment, RBX, NoRegister, 0, false, 0
+				return PUSH, false, false, false, NoSegment, EBX, NoRegister, 0, false, 0
 			}
+			return PUSH, false, false, false, NoSegment, RBX, NoRegister, 0, false, 0
 		}
 	case 0x54:
-		if is64Bit {
-			// todo operand size override check
-			return PUSH, false, false, NoSegment, ESP, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return PUSH, false, false, false, NoSegment, R12, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return PUSH, false, false, NoSegment, R12, NoRegister, 0, false, 0
-			} else {
-				return PUSH, false, false, NoSegment, RSP, NoRegister, 0, false, 0
+				return PUSH, false, false, false, NoSegment, ESP, NoRegister, 0, false, 0
 			}
+			return PUSH, false, false, false, NoSegment, RSP, NoRegister, 0, false, 0
 		}
 	case 0x55:
-		if is64Bit {
-			// todo operand size override check
-			return PUSH, false, false, NoSegment, EBP, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return PUSH, false, false, false, NoSegment, R13, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return PUSH, false, false, NoSegment, R13, NoRegister, 0, false, 0
-			} else {
-				return PUSH, false, false, NoSegment, RBP, NoRegister, 0, false, 0
+				return PUSH, false, false, false, NoSegment, EBP, NoRegister, 0, false, 0
 			}
+			return PUSH, false, false, false, NoSegment, RBP, NoRegister, 0, false, 0
 		}
 	case 0x56:
 		if is64Bit {
-			// todo operand size override check
-			return PUSH, false, false, NoSegment, ESI, NoRegister, 0, false, 0
+			return PUSH, false, false, false, NoSegment, ESI, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return PUSH, false, false, NoSegment, R14, NoRegister, 0, false, 0
-			} else {
-				return PUSH, false, false, NoSegment, RSI, NoRegister, 0, false, 0
+				return PUSH, false, false, false, NoSegment, R14, NoRegister, 0, false, 0
 			}
+			return PUSH, false, false, false, NoSegment, RSI, NoRegister, 0, false, 0
 		}
 	case 0x57:
-		if is64Bit {
-			// todo operand size override check
-			return PUSH, false, false, NoSegment, EDI, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return PUSH, false, false, false, NoSegment, R15, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return PUSH, false, false, NoSegment, R15, NoRegister, 0, false, 0
-			} else {
-				return PUSH, false, false, NoSegment, RDI, NoRegister, 0, false, 0
+				return PUSH, false, false, false, NoSegment, EDI, NoRegister, 0, false, 0
 			}
+			return PUSH, false, false, false, NoSegment, RDI, NoRegister, 0, false, 0
 		}
 	case 0x58:
-		if is64Bit {
-			// todo operand size override check
-			return POP, false, false, NoSegment, EAX, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return POP, false, false, false, NoSegment, EAX, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return POP, false, false, NoSegment, R8, NoRegister, 0, false, 0
-			} else {
-				return POP, false, false, NoSegment, RAX, NoRegister, 0, false, 0
+				return POP, false, false, false, NoSegment, R8, NoRegister, 0, false, 0
 			}
+			return POP, false, false, false, NoSegment, RAX, NoRegister, 0, false, 0
 		}
 	case 0x59:
-		if is64Bit {
-			// todo operand size override check
-			return POP, false, false, NoSegment, ECX, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return POP, false, false, false, NoSegment, R9, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return POP, false, false, NoSegment, R9, NoRegister, 0, false, 0
-			} else {
-				return POP, false, false, NoSegment, RCX, NoRegister, 0, false, 0
+				return POP, false, false, false, NoSegment, ECX, NoRegister, 0, false, 0
 			}
+			return POP, false, false, false, NoSegment, RCX, NoRegister, 0, false, 0
 		}
 	case 0x5A:
-		if is64Bit {
-			// todo operand size override check
-			return POP, false, false, NoSegment, EDX, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return POP, false, false, false, NoSegment, R10, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return POP, false, false, NoSegment, R10, NoRegister, 0, false, 0
-			} else {
-				return POP, false, false, NoSegment, RDX, NoRegister, 0, false, 0
+				return POP, false, false, false, NoSegment, EDX, NoRegister, 0, false, 0
 			}
+			return POP, false, false, false, NoSegment, RDX, NoRegister, 0, false, 0
 		}
 	case 0x5B:
-		if is64Bit {
-			// todo operand size override check
-			return POP, false, false, NoSegment, EBX, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return POP, false, false, false, NoSegment, EBX, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return POP, false, false, NoSegment, R11, NoRegister, 0, false, 0
-			} else {
-				return POP, false, false, NoSegment, RBX, NoRegister, 0, false, 0
+				return POP, false, false, false, NoSegment, R11, NoRegister, 0, false, 0
 			}
+			return POP, false, false, false, NoSegment, RBX, NoRegister, 0, false, 0
 		}
 	case 0x5C:
-		if is64Bit {
-			// todo operand size override check
-			return POP, false, false, NoSegment, ESP, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return POP, false, false, false, NoSegment, R12, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return POP, false, false, NoSegment, R12, NoRegister, 0, false, 0
-			} else {
-				return POP, false, false, NoSegment, RSP, NoRegister, 0, false, 0
+				return POP, false, false, false, NoSegment, ESP, NoRegister, 0, false, 0
 			}
+			return POP, false, false, false, NoSegment, RSP, NoRegister, 0, false, 0
 		}
 	case 0x5D:
-		if is64Bit {
-			// todo operand size override check
-			return POP, false, false, NoSegment, EBP, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return POP, false, false, false, NoSegment, R13, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return POP, false, false, NoSegment, R13, NoRegister, 0, false, 0
-			} else {
-				return POP, false, false, NoSegment, RBP, NoRegister, 0, false, 0
+				return POP, false, false, false, NoSegment, EBP, NoRegister, 0, false, 0
 			}
+			return POP, false, false, false, NoSegment, RBP, NoRegister, 0, false, 0
 		}
 	case 0x5E:
-		if is64Bit {
-			// todo operand size override check
-			return POP, false, false, NoSegment, ESI, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return POP, false, false, false, NoSegment, R14, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return POP, false, false, NoSegment, R14, NoRegister, 0, false, 0
-			} else {
-				return POP, false, false, NoSegment, RSI, NoRegister, 0, false, 0
+				return POP, false, false, false, NoSegment, ESI, NoRegister, 0, false, 0
 			}
+			return POP, false, false, false, NoSegment, RSI, NoRegister, 0, false, 0
 		}
 	case 0x5F:
-		if is64Bit {
-			// todo operand size override check
-			return POP, false, false, NoSegment, EDI, NoRegister, 0, false, 0
+		if is64Bit && isRexW {
+			return POP, false, false, false, NoSegment, R15, NoRegister, 0, false, 0
 		} else {
 			if isOperandSizeOveride {
-				return POP, false, false, NoSegment, R15, NoRegister, 0, false, 0
-			} else {
-				return POP, false, false, NoSegment, RDI, NoRegister, 0, false, 0
+				return POP, false, false, false, NoSegment, EDI, NoRegister, 0, false, 0
 			}
+			return POP, false, false, false, NoSegment, RDI, NoRegister, 0, false, 0
 		}
 	case 0x60:
 		if is64Bit {
@@ -421,13 +389,13 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return BOUND, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+			return BOUND, false, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 		}
 	case 0x63:
 		if is64Bit {
-			return MOVSXD, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+			return MOVSXD, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 		} else {
-			return ARPL, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+			return ARPL, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x64:
 		panic("Error: this is the FS segment")
@@ -438,11 +406,11 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x67:
 		panic("Error: this is the address size override prefix")
 	case 0x68:
-		return PUSH, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return PUSH, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0x69, 0x6B:
 		panic("Error: todo has 3 operands")
 	case 0x6A:
-		return PUSH, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return PUSH, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0x6C:
 		panic("todo dont know how to deal with Y operand syntax notation")
 	case 0x6D:
@@ -452,53 +420,53 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x6F:
 		panic("todo multiple instructions in 1 byte")
 	case 0x70:
-		return JO, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JO, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x71:
-		return JNO, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JNO, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x72:
-		return JB, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JB, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x73:
-		return JNB, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JNB, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x74:
-		return JZ, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JZ, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x75:
-		return JNZ, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JNZ, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x76:
-		return JBE, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JBE, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x77:
-		return JNBE, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JNBE, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x78:
-		return JS, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JS, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x79:
-		return JNS, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JNS, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x7A:
-		return JP, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JP, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x7B:
-		return JNP, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JNP, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x7C:
-		return JL, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JL, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x7D:
-		return JNL, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JNL, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x7E:
-		return JLE, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JLE, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x7F:
-		return JNLE, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
+		return JNLE, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1
 	case 0x80, 0x81, 0x82, 0x83:
-		return NoInstruction, true, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return NoInstruction, true, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0x84, 0x85:
-		return TEST, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return TEST, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x86, 0x87:
-		return XCHG, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return XCHG, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x88, 0x89:
-		return MOV, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return MOV, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x8A, 0x8B:
-		return MOV, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+		return MOV, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 	case 0x8E:
 		panic("Error: todo don't know segment registers")
 	case 0x8C:
 		panic("todo multiple operand types")
 	case 0x8D:
-		return LEA, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+		return LEA, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 	case 0x8F:
 		panic("Error: todo don't know")
 	case 0x90:
@@ -506,9 +474,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x91:
 		if is64Bit {
 			if isOperandSizeOveride {
-				return XCHG, false, false, NoSegment, R9, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, R9, RAX, 0, false, 0
 			} else {
-				return XCHG, false, false, NoSegment, RCX, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, RCX, RAX, 0, false, 0
 			}
 		} else {
 			panic("todo possibly a different operand size if 32 bit")
@@ -516,9 +484,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x92:
 		if is64Bit {
 			if isOperandSizeOveride {
-				return XCHG, false, false, NoSegment, R10, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, R10, RAX, 0, false, 0
 			} else {
-				return XCHG, false, false, NoSegment, RDX, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, RDX, RAX, 0, false, 0
 			}
 		} else {
 			panic("todo possibly a different operand size if 32 bit")
@@ -526,9 +494,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x93:
 		if is64Bit {
 			if isOperandSizeOveride {
-				return XCHG, false, false, NoSegment, R11, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, R11, RAX, 0, false, 0
 			} else {
-				return XCHG, false, false, NoSegment, RBX, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, RBX, RAX, 0, false, 0
 			}
 		} else {
 			panic("todo possibly a different operand size if 32 bit")
@@ -536,9 +504,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x94:
 		if is64Bit {
 			if isOperandSizeOveride {
-				return XCHG, false, false, NoSegment, R12, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, R12, RAX, 0, false, 0
 			} else {
-				return XCHG, false, false, NoSegment, RSP, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, RSP, RAX, 0, false, 0
 			}
 		} else {
 			panic("todo possibly a different operand size if 32 bit")
@@ -546,9 +514,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x95:
 		if is64Bit {
 			if isOperandSizeOveride {
-				return XCHG, false, false, NoSegment, R13, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, R13, RAX, 0, false, 0
 			} else {
-				return XCHG, false, false, NoSegment, RBP, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, RBP, RAX, 0, false, 0
 			}
 		} else {
 			panic("todo possibly a different operand size if 32 bit")
@@ -556,9 +524,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x96:
 		if is64Bit {
 			if isOperandSizeOveride {
-				return XCHG, false, false, NoSegment, R14, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, R14, RAX, 0, false, 0
 			} else {
-				return XCHG, false, false, NoSegment, RSI, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, RSI, RAX, 0, false, 0
 			}
 		} else {
 			panic("todo possibly a different operand size if 32 bit")
@@ -566,9 +534,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x97:
 		if is64Bit {
 			if isOperandSizeOveride {
-				return XCHG, false, false, NoSegment, R15, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, R15, RAX, 0, false, 0
 			} else {
-				return XCHG, false, false, NoSegment, RDI, RAX, 0, false, 0
+				return XCHG, false, false, false, NoSegment, RDI, RAX, 0, false, 0
 			}
 		} else {
 			panic("todo possibly a different operand size if 32 bit")
@@ -581,7 +549,7 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return CALL, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+			return CALL, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0x9B:
 		panic("todo multiple instructions in 1 byte")
@@ -590,15 +558,15 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0x9D:
 		panic("todo multiple instructions in 1 byte")
 	case 0x9E:
-		return SAHF, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return SAHF, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0x9F:
-		return LAHF, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return LAHF, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xA0, 0xA2:
-		return MOV, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return MOV, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xA1:
-		return MOV, false, true, NoSegment, RAX, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return MOV, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xA3:
-		return MOV, false, true, NoSegment, NoRegister, RAX, 0, false, 0 // todo need to figure out how many immediate bytes
+		return MOV, false, false, true, NoSegment, NoRegister, RAX, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xA4:
 		panic("todo dont know how to deal with X, Y operand notation")
 	case 0xA5:
@@ -608,9 +576,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0xA7:
 		panic("todo multiple instructions in 1 byte")
 	case 0xA8:
-		return TEST, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return TEST, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xA9:
-		return TEST, false, true, NoSegment, RAX, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return TEST, false, false, true, NoSegment, RAX, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xAA:
 		panic("todo dont know how to deal with X, Y operand notation")
 	case 0xAB:
@@ -626,53 +594,53 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8, 0xB9, 0xBA, 0xBB, 0xBC, 0xBD, 0xBE, 0xBF:
 		panic("todo multiple operands")
 	case 0xC0, 0xC1:
-		return NoInstruction, true, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return NoInstruction, true, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xC2:
 		// near
-		return RET, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return RET, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xC3:
 		// near
-		return RET, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return RET, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xC4:
 		if is64Bit {
 			panic("Error: this is the vex escape prefix")
 		} else {
-			return LES, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+			return LES, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 		}
 	case 0xC5:
 		if is64Bit {
 			panic("Error: this is the vex escape prefix")
 		} else {
-			return LDS, true, false, NoSegment, NoRegister, NoRegister, 0, true, 0
+			return LDS, true, false, false, NoSegment, NoRegister, NoRegister, 0, true, 0
 		}
 	case 0xC6, 0xC7:
-		return NoInstruction, true, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return NoInstruction, true, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xC8:
-		return ENTER, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return ENTER, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xC9:
-		return LEAVE, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return LEAVE, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xCA:
 		// far
-		return RET, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return RET, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xCB:
 		// far
-		return RET, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return RET, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xCC:
-		return INT3, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return INT3, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xCD:
-		return INT, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return INT, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xCE:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return INTO, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+			return INTO, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 		}
 	case 0xCF:
 		panic("todo multiple instructions in 1 byte")
 	case 0xD0:
-		return NoInstruction, true, true, NoSegment, NoRegister, NoRegister, 1, false, 0 // todo need to figure out how many immediate bytes
+		return NoInstruction, true, false, true, NoSegment, NoRegister, NoRegister, 1, false, 0 // todo need to figure out how many immediate bytes
 	case 0xD1:
-		return NoInstruction, true, true, NoSegment, NoRegister, NoRegister, 1, false, 0 // todo need to figure out how many immediate bytes
+		return NoInstruction, true, false, true, NoSegment, NoRegister, NoRegister, 1, false, 0 // todo need to figure out how many immediate bytes
 	case 0xD2:
 		panic("todo dont know how to deal with DX")
 	case 0xD3:
@@ -681,13 +649,13 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return AAM, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+			return AAM, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 		}
 	case 0xD5:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return AAD, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+			return AAD, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 		}
 	case 0xD6:
 		panic("Error: Invalid")
@@ -704,22 +672,22 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0xE3:
 		panic("todo dont know how to deal with rip addressing")
 	case 0xE4:
-		return IN, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return IN, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xE5:
-		return IN, false, true, NoSegment, EAX, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return IN, false, false, true, NoSegment, EAX, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xE6:
-		return OUT, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
+		return OUT, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xE7:
-		return OUT, false, true, NoSegment, NoRegister, EAX, 0, false, 0 // todo need to figure out how many immediate bytes
+		return OUT, false, false, true, NoSegment, NoRegister, EAX, 0, false, 0 // todo need to figure out how many immediate bytes
 	case 0xE8:
-		return CALL, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return CALL, false, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xE9:
 		panic("todo dont know how to deal with rip addressing")
 	case 0xEA:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		} else {
-			return JMP, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // dont know if this is correct and need to figure out how many immediate bytes
+			return JMP, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0 // dont know if this is correct and need to figure out how many immediate bytes
 		}
 	case 0xEB:
 		panic("todo dont know how to deal with rip addressing")
@@ -734,35 +702,35 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool) (Instr
 	case 0xF0:
 		panic("Error: this is the lock prefix")
 	case 0xF1:
-		return INT1, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return INT1, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xF2:
 		panic("Error: this is repne prefix")
 	case 0xF3:
 		panic("Error: this is rep/e prefix")
 	case 0xF4:
-		return HLT, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return HLT, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xF5:
-		return CMC, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return CMC, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xF6:
-		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return NoInstruction, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xF7:
-		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return NoInstruction, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xF8:
-		return CLC, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return CLC, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xF9:
-		return STC, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return STC, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xFA:
-		return CLI, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return CLI, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xFB:
-		return STI, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return STI, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xFC:
-		return CLD, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return CLD, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xFD:
-		return STD, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return STD, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xFE:
-		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return NoInstruction, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	case 0xFF:
-		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0, false, 0
+		return NoInstruction, true, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0
 	default:
 		panic("Error: Unknown instruction")
 	}
