@@ -7,205 +7,8 @@ import (
 	"github.com/invalid-code/disassembler/util"
 )
 
-type MemSegment int
-
-const (
-	CS MemSegment = iota
-	DS
-	ES
-	FS
-	GS
-	SS
-	NoSegment
-)
-
-func (memSegment MemSegment) String() string {
-	switch memSegment {
-	case CS:
-		return "CS"
-	case DS:
-		return "DS"
-	case ES:
-		return "ES"
-	case FS:
-		return "FS"
-	case GS:
-		return "GS"
-	case SS:
-		return "SS"
-	case NoSegment:
-		return "NoSegment"
-	default:
-		return "Unknown segment"
-	}
-}
-
-type Register int
-
-const (
-	AX Register = iota
-	BX
-	CX
-	DX
-	SI
-	DI
-	BP
-	SP
-	AH
-	BH
-	CH
-	DH
-	R8W
-	R9W
-	R10W
-	R11W
-	R12W
-	R13W
-	R14W
-	R15W
-	EAX
-	EBX
-	ECX
-	EDX
-	ESI
-	EDI
-	EBP
-	ESP
-	R8D
-	R9D
-	R10D
-	R11D
-	R12D
-	R13D
-	R14D
-	R15D
-	RAX
-	RBX
-	RCX
-	RDX
-	RSI
-	RDI
-	RBP
-	RSP
-	R8
-	R9
-	R10
-	R11
-	R12
-	R13
-	R14
-	R15
-	NoRegister
-)
-
-func (register Register) String() string {
-	switch register {
-	case AX:
-		return "AX"
-	case BX:
-		return "BX"
-	case CX:
-		return "CX"
-	case DX:
-		return "DX"
-	case SI:
-		return "SI"
-	case DI:
-		return "DI"
-	case BP:
-		return "BP"
-	case SP:
-		return "SP"
-	case R8W:
-		return "R8W"
-	case R9W:
-		return "R9W"
-	case R10W:
-		return "R10W"
-	case R11W:
-		return "R11W"
-	case R12W:
-		return "R12W"
-	case R13W:
-		return "R13W"
-	case R14W:
-		return "R14W"
-	case R15W:
-		return "R15W"
-	case EAX:
-		return "EAX"
-	case EBX:
-		return "EBX"
-	case ECX:
-		return "ECX"
-	case EDX:
-		return "EDX"
-	case ESI:
-		return "ESI"
-	case EDI:
-		return "EDI"
-	case EBP:
-		return "EBP"
-	case ESP:
-		return "ESP"
-	case R8D:
-		return "R8D"
-	case R9D:
-		return "R9D"
-	case R10D:
-		return "R10D"
-	case R11D:
-		return "R11D"
-	case R12D:
-		return "R12D"
-	case R13D:
-		return "R13D"
-	case R14D:
-		return "R14D"
-	case R15D:
-		return "R15D"
-	case RAX:
-		return "RAX"
-	case RBX:
-		return "RBX"
-	case RCX:
-		return "RCX"
-	case RDX:
-		return "RDX"
-	case RSI:
-		return "RSI"
-	case RDI:
-		return "RDI"
-	case RBP:
-		return "RBP"
-	case RSP:
-		return "RSP"
-	case R8:
-		return "R8"
-	case R9:
-		return "R9"
-	case R10:
-		return "R10"
-	case R11:
-		return "R11"
-	case R12:
-		return "R12"
-	case R13:
-		return "R13"
-	case R14:
-		return "R14"
-	case R15:
-		return "R15"
-	case NoRegister:
-		return "NoRegister"
-	default:
-		return "Unknown register"
-	}
-}
-
-func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatures.BinSecFeatures) {
-
-	isPrefix := true
+func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures executableFeatures.BinSecFeatures) {
+	isPrefix, isEscapeSequence, isOpcode, isModRM, isSib, isDisplacement, isImmediate := true, false, false, false, false, false, false
 	legacePrefixCnt := 0
 	isOperandSizeOverride := false
 	//	isAddressSizeOverride := false
@@ -225,7 +28,6 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 	isVex := false
 	isXop := false
 	isVex3Byte := false
-	isEscapeSequence := false
 	is3dNow := false
 	is38 := false
 	is3A := false
@@ -239,11 +41,6 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 	x3B := false
 	b3B := false
 	mapSelect := [5]bool{false, false, false, false, false}
-	isModRM := false
-	isOpcode := false
-	isSib := false
-	isImmediate := false
-	isDisplacement := false
 	modrmMod := [2]bool{false, false}
 	modrmReg := [3]bool{false, false, false}
 	modrmRM := [4]bool{false, false, false}
@@ -258,11 +55,14 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 	opcode := byte(0)
 	isCet := false
 	regOperand1ModRMReg := false
-	ripAddressingDispByteCount := 0
-	ripAddressingDispBytes := [4]byte{}
+	noDisplacementBytes := 0
+	displacementBytesI := 1
+	displacementBytesVal := []byte{}
 	noImmediateBytes := 0
-	immediateBytesI := 0
-	isDispImm := false
+	immediateBytesI := 1
+	immediateBytesVal := []byte{}
+	displacementBytes := 0
+	wasDisplacement := false
 	resetVars := func() {
 		isPrefix = true
 		legacePrefixCnt = 0
@@ -317,11 +117,14 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 		opcode = byte(0)
 		isCet = false
 		regOperand1ModRMReg = false
-		ripAddressingDispByteCount = 0
-		ripAddressingDispBytes = [4]byte{}
+		noDisplacementBytes = 0
+		displacementBytesI = 1
+		displacementBytesVal = []byte{}
 		noImmediateBytes = 0
-		immediateBytesI = 0
-		isDispImm = false
+		immediateBytesI = 1
+		immediateBytesVal = []byte{}
+		displacementBytes = 0
+		wasDisplacement = false
 	}
 	for _, curByte := range data {
 		fmt.Printf("%X\n", curByte)
@@ -855,24 +658,15 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				}
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 			} else {
-				instruction, isModRM, isDisplacement, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, regOperand1ModRMReg, noImmediateBytes = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
-				if !(isModRM || isImmediate || isDisplacement) && instruction != NoInstruction {
-					fmt.Print(instruction)
-					if regOperand1 != NoRegister {
-						fmt.Printf(" %v", regOperand1)
-					}
-					if regOperand2 != NoRegister {
-						fmt.Printf(" %v", regOperand2)
-					}
-					if regOperand3 != NoRegister {
-						fmt.Printf(" %v", regOperand3)
-					}
-					fmt.Println()
-					resetVars()
-				}
+				instruction, isModRM, isDisplacement, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, regOperand1ModRMReg, noImmediateBytes, noDisplacementBytes = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
+				fmt.Println(instruction, isModRM, isDisplacement, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, regOperand1ModRMReg, noImmediateBytes)
 			}
 			if instruction == NoInstruction {
 				opcode = curByte
+			}
+			if !(isModRM || isImmediate || isDisplacement) {
+				fmt.Println(instruction, regOperand1, regOperand2)
+				resetVars()
 			}
 			isOpcode = false
 			continue
@@ -1007,12 +801,10 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 					case [4]bool{false, true, true, false}:
 					case [4]bool{true, false, false, false}:
 					case [4]bool{true, false, true, false}:
-						if bitFormat {
-							// 64 bit - rip addressing
-							isDisplacement = true
-						} else {
-							// 32 bit - absolute (displacement-only) addressing
-						}
+						// 64 bit - rip addressing
+						// 32 bit - absolute (displacement-only) addressing
+						isDisplacement = true
+						noDisplacementBytes = 4
 					case [4]bool{true, true, false, false}:
 					case [4]bool{true, true, true, false}:
 					}
@@ -1109,20 +901,25 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 						case [4]bool{false, true, true, false}:
 						case [4]bool{true, false, false, false}:
 						case [4]bool{true, false, true, false}:
-							if bitFormat {
-								// 64 bit - rip addressing
-								isDisplacement = true
-							} else {
-								// 32 bit - absolute (displacement-only) addressing
-							}
+							// 64 bit - rip addressing
+							// 32 bit - absolute (displacement-only) addressing
+							isDisplacement = true
+							noDisplacementBytes = 4
 						case [4]bool{true, true, false, false}:
 						case [4]bool{true, true, true, false}:
 						}
+						// if !(isSib || isDisplacement || isImmediate) {
+						// 	fmt.Println(instruction, regOperand1, regOperand2, regOperand3)
+						// 	resetVars()
+						// 	continue
+						// }
 
 					case [2]bool{false, true}:
 						isDisplacement = true
+						noDisplacementBytes = 1
 					case [2]bool{true, false}:
 						isDisplacement = true
+						noDisplacementBytes = 4
 					case [2]bool{true, true}:
 						switch modrmReg {
 						case [3]bool{false, false, false}:
@@ -1224,16 +1021,22 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 								regOperand1 = RDI
 							}
 						}
-						fmt.Printf("%v %v %v\n", instruction, regOperand1, regOperand2)
-						resetVars()
-						continue
+						// fmt.Printf("%v %v %v\n", instruction, regOperand1, regOperand2)
+						// resetVars()
+						// continue
 					}
+				} else {
+					// xmm, ymm regs
 				}
 			}
 			if !(modrmMod[0] && modrmMod[1]) {
 				if modrmRM[0] && !modrmRM[1] && !modrmRM[2] {
 					isSib = true
 				}
+			}
+			if !(isSib || isDisplacement || isImmediate) {
+				fmt.Println(instruction, regOperand1, regOperand2)
+				resetVars()
 			}
 			continue
 		}
@@ -1303,82 +1106,78 @@ func DisassembleBytes(data []byte, bitFormat bool, execFeatures executableFeatur
 				sibIndexVal = RDI
 			}
 			sibBaseVal := NoRegister
-			switch modrmRM {
-			case [4]bool{false, false, false, false}:
-			case [4]bool{false, false, true, false}:
-			case [4]bool{false, true, false, false}:
-			case [4]bool{false, false, true, false}:
-			case [4]bool{false, true, true, false}:
-			case [4]bool{true, false, false, false}:
-				if modrmMod != [2]bool{true, true} {
-					switch sibBase {
-					case [3]bool{false, false, false}:
-						sibBaseVal = RAX
-					case [3]bool{false, false, true}:
-						sibBaseVal = RCX
-					case [3]bool{false, true, false}:
-						sibBaseVal = RDX
-					case [3]bool{false, true, true}:
-						sibBaseVal = RBX
-					case [3]bool{true, false, false}:
-						sibBaseVal = RSP
-					case [3]bool{true, false, true}:
-						isDisplacement = true
-						switch modrmMod {
-						case [2]bool{false, true}:
-							// todo need to specify how many displacement bytes
-						case [2]bool{true, false}:
-						}
-					case [3]bool{true, true, false}:
-						sibBaseVal = RSI
-					case [3]bool{true, true, true}:
-						sibBaseVal = RDI
-					}
-				}
+			// `switch modrmRM {
+			// case [4]bool{false, false, false, false}:
+			// case [4]bool{false, false, true, false}:
+			// case [4]bool{false, true, false, false}:
+			// case [4]bool{false, false, true, false}:
+			// case [4]bool{false, true, true, false}:
+			// case [4]bool{true, false, false, false}:
+			// 	if modrmMod != [2]bool{true, true} {
+			// 		switch sibBase {
+			// 		case [3]bool{false, false, false}:
+			// 			sibBaseVal = RAX
+			// 		case [3]bool{false, false, true}:
+			// 			sibBaseVal = RCX
+			// 		case [3]bool{false, true, false}:
+			// 			sibBaseVal = RDX
+			// 		case [3]bool{false, true, true}:
+			// 			sibBaseVal = RBX
+			// 		case [3]bool{true, false, false}:
+			// 			sibBaseVal = RSP
+			// 		case [3]bool{true, false, true}:
+			// 			isDisplacement = true
+			// 			switch modrmMod {
+			// 			case [2]bool{false, true}:
+			// 				// todo need to specify how many displacement bytes
+			// 			case [2]bool{true, false}:
+			// 			}
+			// 		case [3]bool{true, true, false}:
+			// 			sibBaseVal = RSI
+			// 		case [3]bool{true, true, true}:
+			// 			sibBaseVal = RDI
+			// 		}
+			// 	}
 
-			case [4]bool{true, false, true, false}:
-			case [4]bool{true, true, false, false}:
-			case [4]bool{true, true, true, false}:
-			}
+			// case [4]bool{true, false, true, false}:
+			// case [4]bool{true, true, false, false}:
+			// case [4]bool{true, true, true, false}:
+			// }`
 			isSib = false
 			fmt.Sprint(sibScaleVal, sibIndexVal, sibBaseVal)
 			continue
 		}
 		// displacemet
 		if isDisplacement {
-			if curByte != 0 && instruction == NOP {
-				fmt.Println(instruction, regOperand1)
-				resetVars()
-				continue
-			}
-			if ripAddressingDispByteCount == 3 {
-				ripDispOperand := util.ConvMultiByteToSingleByte(ripAddressingDispBytes[:], false)
-				fmt.Println(instruction, regOperand1, fmt.Sprintf("%X", ripDispOperand))
-				if isImmediate {
-					isDisplacement = false
-					isDispImm = true
-					continue
+			displacementBytesVal = append(displacementBytesVal, curByte)
+			if displacementBytesI == noDisplacementBytes {
+				displacementBytes = util.ConvMultiByteToSingleByte(displacementBytesVal, endianness)
+				if !isImmediate {
+					fmt.Printf("%v %v %v %X\n", instruction, regOperand1, regOperand2, displacementBytes)
+					resetVars()
 				}
-				resetVars()
+				wasDisplacement = true
+				isDisplacement = false
 				continue
 			}
-			ripAddressingDispBytes[ripAddressingDispByteCount] = curByte
-			ripAddressingDispByteCount += 1
+			displacementBytesI += 1
 			continue
 		}
 
 		// immediate
 		if isImmediate {
-			immediateBytesI += 1
+			immediateBytesVal = append(immediateBytesVal, curByte)
 			if immediateBytesI == noImmediateBytes {
-				if isDispImm {
-					continue
+				immediateBytes := util.ConvMultiByteToSingleByte(immediateBytesVal, endianness)
+				fmt.Printf("%v %v %v ", instruction, regOperand1, regOperand2)
+				if wasDisplacement {
+					fmt.Printf("%X ", displacementBytes)
 				}
-				fmt.Println(instruction, regOperand1, regOperand2)
+				fmt.Printf("%X\n", immediateBytes)
 				resetVars()
 				continue
 			}
-			isPrefix = true
+			immediateBytesI += 1
 		}
 		fmt.Sprint(memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand)
 	}
