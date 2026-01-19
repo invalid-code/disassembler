@@ -20,10 +20,9 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	//	isSSSegmentSizeOverride := false
 	isRep1 := false
 	isRep0 := false
-	// isRexPrefix := false
 	isRexW := false
 	isRexR := false
-	// isRexX := false
+	isRexX := false
 	isRexB := false
 	isVex := false
 	isXop := false
@@ -42,11 +41,11 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	b3B := false
 	mapSelect := [5]bool{false, false, false, false, false}
 	modrmMod := [2]bool{false, false}
-	modrmReg := [3]bool{false, false, false}
+	modrmReg := [4]bool{false, false, false, false}
 	modrmRM := [4]bool{false, false, false}
 	sibScale := [2]bool{false, false}
-	sibIndex := [3]bool{false, false, false}
-	sibBase := [3]bool{false, false, false}
+	sibIndex := [4]bool{false, false, false, false}
+	sibBase := [4]bool{false, false, false, false}
 	instruction := AAA
 	memSegment := NoSegment
 	regOperand1, regOperand2, regOperand3 := NoRegister, NoRegister, NoRegister
@@ -76,10 +75,9 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		//	sSSSegmentSizeOverride := false
 		isRep1 = false
 		isRep0 = false
-		// sRexPrefix := false
 		isRexW = false
 		isRexR = false
-		// sRexX := false
+		isRexX = false
 		isRexB = false
 		isVex = false
 		isXop = false
@@ -104,11 +102,11 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		isImmediate = false
 		isDisplacement = false
 		modrmMod = [2]bool{false, false}
-		modrmReg = [3]bool{false, false, false}
+		modrmReg = [4]bool{false, false, false, false}
 		modrmRM = [4]bool{false, false, false}
 		sibScale = [2]bool{false, false}
-		sibIndex = [3]bool{false, false, false}
-		sibBase = [3]bool{false, false, false}
+		sibIndex = [4]bool{false, false, false, false}
+		sibBase = [4]bool{false, false, false, false}
 		instruction = AAA
 		memSegment = NoSegment
 		regOperand1, regOperand2, regOperand3 = NoRegister, NoRegister, NoRegister
@@ -211,7 +209,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = false
 				isRexR = false
-				// isRexX = false
+				isRexX = false
 				isRexB = false
 				continue
 			case 0x41:
@@ -222,7 +220,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = false
 				isRexR = false
-				// isRexX = false
+				isRexX = false
 				isRexB = true
 				continue
 			case 0x42:
@@ -233,7 +231,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = false
 				isRexR = false
-				// isRexX = true
+				isRexX = true
 				isRexB = false
 				continue
 			case 0x43:
@@ -244,7 +242,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = false
 				isRexR = false
-				// isRexX = true
+				isRexX = true
 				isRexB = true
 				continue
 			case 0x44:
@@ -255,7 +253,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = false
 				isRexR = true
-				// isRexX = false
+				isRexX = false
 				isRexB = false
 				continue
 			case 0x45:
@@ -266,7 +264,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = false
 				isRexR = true
-				// isRexX = false
+				isRexX = false
 				isRexB = true
 				continue
 			case 0x46:
@@ -277,7 +275,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = false
 				isRexR = true
-				// isRexX = true
+				isRexX = true
 				isRexB = false
 				continue
 			case 0x47:
@@ -288,7 +286,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = false
 				isRexR = true
-				// isRexX = true
+				isRexX = true
 				isRexB = true
 				continue
 			case 0x48:
@@ -299,7 +297,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = true
 				isRexR = false
-				// isRexX = false
+				isRexX = false
 				isRexB = false
 				continue
 			case 0x49:
@@ -310,7 +308,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = true
 				isRexR = false
-				// isRexX = false
+				isRexX = false
 				isRexB = true
 				continue
 			case 0x4A:
@@ -321,7 +319,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = true
 				isRexR = false
-				// isRexX = true
+				isRexX = true
 				isRexB = false
 				continue
 			case 0x4B:
@@ -332,7 +330,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = true
 				isRexR = false
-				// isRexX = true
+				isRexX = true
 				isRexB = true
 				continue
 			case 0x4C:
@@ -343,7 +341,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = true
 				isRexR = true
-				// isRexX = false
+				isRexX = false
 				isRexB = false
 				continue
 			case 0x4D:
@@ -354,7 +352,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = true
 				isRexR = true
-				// isRexX = false
+				isRexX = false
 				isRexB = true
 				continue
 			case 0x4E:
@@ -365,7 +363,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = true
 				isRexR = true
-				// isRexX = true
+				isRexX = true
 				isRexB = false
 				continue
 			case 0x4F:
@@ -376,7 +374,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isEscapeSequence = true
 				isRexW = true
 				isRexR = true
-				// isRexX = true
+				isRexX = true
 				isRexB = true
 				continue
 			case 0xC5:
@@ -680,62 +678,63 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 			if modrmMod[1] {
 				curByte -= 64
 			}
-			modrmReg[0] = curByte/32 == 1
-			if modrmReg[0] {
+			modrmReg[1] = curByte/32 == 1
+			if modrmReg[1] {
 				curByte -= 32
 			}
-			modrmReg[1] = curByte/16 == 1
-			if modrmReg[1] {
+			modrmReg[2] = curByte/16 == 1
+			if modrmReg[2] {
 				curByte -= 16
 			}
-			modrmReg[2] = curByte/8 == 1
-			if modrmReg[2] {
+			modrmReg[3] = curByte/8 == 1
+			if modrmReg[3] {
 				curByte -= 8
 			}
-			if isRexR && r3B {
-			}
-			if isRexB && b3B {
-			}
-			modrmRM[0] = curByte/4 == 1
-			if modrmRM[0] {
-				curByte -= 4
-			}
-			modrmRM[1] = curByte/2 == 1
+			modrmRM[1] = curByte/4 == 1
 			if modrmRM[1] {
 				curByte -= 4
 			}
-			modrmRM[2] = curByte == 1
+			modrmRM[2] = curByte/2 == 1
 			if modrmRM[2] {
+				curByte -= 4
+			}
+			modrmRM[3] = curByte == 1
+			if modrmRM[3] {
 				curByte -= 1
+			}
+			modrmReg[0] = isRexR || r3B
+			if !(modrmMod[0] && modrmMod[1]) && (modrmRM[1] && !(modrmRM[2] || modrmRM[3])) {
+				modrmRM[0] = isRexB || b3B
 			}
 			isModRM = false
 			if instruction == NoInstruction {
+				opcodeSel := [3]bool{modrmReg[1], modrmReg[2], modrmReg[3]}
 				if isVex {
 					if isVex3Byte {
 						if !mapSelect[3] && mapSelect[4] {
-							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1ModRMG1(opcode, fieldPp, modrmReg)
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1ModRMG1(opcode, fieldPp, opcodeSel)
 						} else {
 							panic("Error: Unknown opcode modrm extension group")
 						}
 					} else {
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1ModRMG1(opcode, fieldPp, modrmReg)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1ModRMG1(opcode, fieldPp, opcodeSel)
 					}
 				} else if isXop {
 					if mapSelect[1] && !mapSelect[2] && !mapSelect[3] && mapSelect[4] {
 						switch opcode {
 						case 0x1:
-							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG1(opcode, modrmReg)
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG1(opcode, opcodeSel)
 						case 0x2:
-							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG2(opcode, modrmReg)
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG2(opcode, opcodeSel)
 						case 0x12:
-							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG3(opcode, modrmReg)
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG3(opcode, opcodeSel)
 						default:
 							panic("Error: Unknown opcode modrm extension group")
 						}
 					} else if mapSelect[1] && !mapSelect[2] && mapSelect[3] && !mapSelect[4] {
 						switch opcode {
 						case 0x12:
-							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG4(opcode, modrmReg)
+							instruction, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9ModRMG4(opcode, opcodeSel)
 						default:
 							panic("Error: Unknown opcode modrm extension group")
 						}
@@ -745,48 +744,48 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				} else if isSecondaryMap {
 					switch opcode {
 					case 0x0:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG6(opcode, modrmReg)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG6(opcode, opcodeSel)
 					case 0x1:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG7(opcode, modrmReg)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG7(opcode, opcodeSel)
 					case 0xBA:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG8(opcode, modrmReg)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG8(opcode, opcodeSel)
 					case 0xC7:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG9(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG9(opcode, opcodeSel, isRep0, isRep1, isOperandSizeOverride)
 					case 0xB9:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG10(opcode, modrmReg)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG10(opcode, opcodeSel)
 					case 0x71:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG12(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG12(opcode, opcodeSel, isRep0, isRep1, isOperandSizeOverride)
 					case 0x72:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG13(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG13(opcode, opcodeSel, isRep0, isRep1, isOperandSizeOverride)
 					case 0x73:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG14(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG14(opcode, opcodeSel, isRep0, isRep1, isOperandSizeOverride)
 					case 0xAE:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG15(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG15(opcode, opcodeSel, isRep0, isRep1, isOperandSizeOverride)
 					case 0x18:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG16(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG16(opcode, opcodeSel, isRep0, isRep1, isOperandSizeOverride)
 					case 0x78:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG17(opcode, modrmReg, isOperandSizeOverride)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMG17(opcode, opcodeSel, isOperandSizeOverride)
 					case 0x0D:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMGP(opcode, modrmReg, isRep0, isRep1, isOperandSizeOverride)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeModRMGP(opcode, opcodeSel, isRep0, isRep1, isOperandSizeOverride)
 					default:
 						panic("Error: Unknown opcode modrm extension group")
 					}
 				} else {
 					switch opcode {
 					case 0x80, 0x81, 0x82, 0x83:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG1(opcode, modrmReg, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG1(opcode, opcodeSel, bitFormat)
 					case 0x8F:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG1a(opcode, modrmReg)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG1a(opcode, opcodeSel)
 					case 0xC0, 0xC1, 0xD0, 0xD1, 0xD2, 0xD3:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG2(opcode, modrmReg)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG2(opcode, opcodeSel)
 					case 0xF6, 0xF7:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG3(opcode, modrmReg, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG3(opcode, opcodeSel, bitFormat)
 					case 0xFE:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG4(opcode, modrmReg, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG4(opcode, opcodeSel, bitFormat)
 					case 0xFF:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG5(opcode, modrmReg, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG5(opcode, opcodeSel, bitFormat)
 					case 0xC6, 0xC7:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG11(opcode, modrmReg, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG11(opcode, opcodeSel, bitFormat)
 					default:
 						panic("Error: Unknown opcode modrm extension group")
 					}
@@ -840,49 +839,49 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					switch modrmMod {
 					case [2]bool{false, false}:
 						switch modrmReg {
-						case [3]bool{false, false, false}:
+						case [4]bool{false, false, false, false}:
 							if regOperand1ModRMReg {
 								regOperand1 = RAX
 							} else {
 								regOperand2 = RAX
 							}
-						case [3]bool{false, false, true}:
+						case [4]bool{false, false, false, true}:
 							if regOperand1ModRMReg {
 								regOperand1 = RCX
 							} else {
 								regOperand2 = RCX
 							}
-						case [3]bool{false, true, false}:
+						case [4]bool{false, false, true, false}:
 							if regOperand1ModRMReg {
 								regOperand1 = RDX
 							} else {
 								regOperand2 = RDX
 							}
-						case [3]bool{false, true, true}:
+						case [4]bool{false, false, true, true}:
 							if regOperand1ModRMReg {
 								regOperand1 = RBX
 							} else {
 								regOperand2 = RBX
 							}
-						case [3]bool{true, false, false}:
+						case [4]bool{false, true, false, false}:
 							if regOperand1ModRMReg {
 								regOperand1 = RSP
 							} else {
 								regOperand2 = RSP
 							}
-						case [3]bool{true, false, true}:
+						case [4]bool{false, true, false, true}:
 							if regOperand1ModRMReg {
 								regOperand1 = RBP
 							} else {
 								regOperand2 = RBP
 							}
-						case [3]bool{true, true, false}:
+						case [4]bool{false, true, true, false}:
 							if regOperand1ModRMReg {
 								regOperand1 = RSI
 							} else {
 								regOperand2 = RSI
 							}
-						case [3]bool{true, true, true}:
+						case [4]bool{false, true, true, true}:
 							if regOperand1ModRMReg {
 								regOperand1 = RDI
 							} else {
@@ -907,12 +906,6 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 						case [4]bool{true, true, false, false}:
 						case [4]bool{true, true, true, false}:
 						}
-						// if !(isSib || isDisplacement || isImmediate) {
-						// 	fmt.Println(instruction, regOperand1, regOperand2, regOperand3)
-						// 	resetVars()
-						// 	continue
-						// }
-
 					case [2]bool{false, true}:
 						isDisplacement = true
 						noDisplacementBytes = 1
@@ -921,49 +914,49 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 						noDisplacementBytes = 4
 					case [2]bool{true, true}:
 						switch modrmReg {
-						case [3]bool{false, false, false}:
+						case [4]bool{false, false, false, false}:
 							if regOperand1ModRMReg {
 								regOperand1 = RAX
 							} else {
 								regOperand2 = RAX
 							}
-						case [3]bool{false, false, true}:
+						case [4]bool{false, false, false, true}:
 							if regOperand1ModRMReg {
 								regOperand1 = RCX
 							} else {
 								regOperand2 = RCX
 							}
-						case [3]bool{false, true, false}:
+						case [4]bool{false, false, true, false}:
 							if regOperand1ModRMReg {
 								regOperand1 = RDX
 							} else {
 								regOperand2 = RDX
 							}
-						case [3]bool{false, true, true}:
+						case [4]bool{false, false, true, true}:
 							if regOperand1ModRMReg {
 								regOperand1 = RBX
 							} else {
 								regOperand2 = RBX
 							}
-						case [3]bool{true, false, false}:
+						case [4]bool{false, true, false, false}:
 							if regOperand1ModRMReg {
 								regOperand1 = RSP
 							} else {
 								regOperand2 = RSP
 							}
-						case [3]bool{true, false, true}:
+						case [4]bool{false, true, false, true}:
 							if regOperand1ModRMReg {
 								regOperand1 = RBP
 							} else {
 								regOperand2 = RBP
 							}
-						case [3]bool{true, true, false}:
+						case [4]bool{false, true, true, false}:
 							if regOperand1ModRMReg {
 								regOperand1 = RSI
 							} else {
 								regOperand2 = RSI
 							}
-						case [3]bool{true, true, true}:
+						case [4]bool{false, true, true, true}:
 							if regOperand1ModRMReg {
 								regOperand1 = RDI
 							} else {
@@ -977,52 +970,49 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 							} else {
 								regOperand1 = RAX
 							}
-						case [4]bool{false, false, true, false}:
+						case [4]bool{false, false, false, true}:
 							if regOperand1ModRMReg {
 								regOperand2 = RCX
 							} else {
 								regOperand1 = RCX
 							}
-						case [4]bool{false, true, false, false}:
+						case [4]bool{false, false, true, false}:
 							if regOperand1ModRMReg {
 								regOperand2 = RDX
 							} else {
 								regOperand1 = RDX
 							}
-						case [4]bool{false, true, true, false}:
+						case [4]bool{false, false, true, true}:
 							if regOperand1ModRMReg {
 								regOperand2 = RBX
 							} else {
 								regOperand1 = RBX
 							}
-						case [4]bool{true, false, false, false}:
+						case [4]bool{false, true, false, false}:
 							if regOperand1ModRMReg {
 								regOperand2 = RSP
 							} else {
 								regOperand1 = RSP
 							}
-						case [4]bool{true, false, true, false}:
+						case [4]bool{false, true, false, true}:
 							if regOperand1ModRMReg {
 								regOperand2 = RBP
 							} else {
 								regOperand1 = RBP
 							}
-						case [4]bool{true, true, false, false}:
+						case [4]bool{false, true, true, false}:
 							if regOperand1ModRMReg {
 								regOperand2 = RSI
 							} else {
 								regOperand1 = RSI
 							}
-						case [4]bool{true, true, true, false}:
+						case [4]bool{false, true, true, true}:
 							if regOperand1ModRMReg {
 								regOperand2 = RDI
 							} else {
 								regOperand1 = RDI
 							}
 						}
-						// fmt.Printf("%v %v %v\n", instruction, regOperand1, regOperand2)
-						// resetVars()
-						// continue
 					}
 				} else {
 					// xmm, ymm regs
@@ -1050,30 +1040,32 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 			if sibScale[1] {
 				sibByte -= 64
 			}
-			sibIndex[0] = sibByte/32 == 1
+			sibIndex[1] = sibByte/32 == 1
 			if sibIndex[0] {
 				sibByte -= 32
 			}
-			sibIndex[1] = sibByte/16 == 1
+			sibIndex[2] = sibByte/16 == 1
 			if sibIndex[1] {
 				sibByte -= 16
 			}
-			sibIndex[2] = sibByte/8 == 1
+			sibIndex[3] = sibByte/8 == 1
 			if sibIndex[2] {
 				sibByte -= 8
 			}
-			sibBase[0] = sibByte/4 == 1
+			sibBase[1] = sibByte/4 == 1
 			if sibBase[0] {
 				sibByte -= 4
 			}
-			sibBase[1] = sibByte/2 == 1
+			sibBase[2] = sibByte/2 == 1
 			if sibBase[1] {
 				sibByte -= 4
 			}
-			sibBase[2] = sibByte == 1
+			sibBase[3] = sibByte == 1
 			if sibBase[2] {
 				sibByte -= 1
 			}
+			sibIndex[0] = isRexX || x3B
+			sibBase[0] = isRexB || b3B
 
 			sibScaleVal := 0
 			switch sibScale {
@@ -1088,20 +1080,20 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 			}
 			sibIndexVal := NoRegister
 			switch sibIndex {
-			case [3]bool{false, false, false}:
+			case [4]bool{false, false, false, false}:
 				sibIndexVal = RAX
-			case [3]bool{false, false, true}:
+			case [4]bool{false, false, false, true}:
 				sibIndexVal = RCX
-			case [3]bool{false, true, false}:
+			case [4]bool{false, false, true, false}:
 				sibIndexVal = RDX
-			case [3]bool{false, true, true}:
+			case [4]bool{false, false, true, true}:
 				sibIndexVal = RBX
-			case [3]bool{true, false, false}:
-			case [3]bool{true, false, true}:
+			case [4]bool{false, true, false, false}:
+			case [4]bool{false, true, false, true}:
 				sibIndexVal = RBP
-			case [3]bool{true, true, false}:
+			case [4]bool{false, true, true, false}:
 				sibIndexVal = RSI
-			case [3]bool{true, true, true}:
+			case [4]bool{false, true, true, true}:
 				sibIndexVal = RDI
 			}
 			sibBaseVal := NoRegister
