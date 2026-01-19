@@ -64,6 +64,14 @@ const (
 	RDI
 	RSP
 	RBP
+	R8B
+	R9B
+	R10B
+	R11B
+	R12B
+	R13B
+	R14B
+	R15B
 	R8W
 	R9W
 	R10W
@@ -109,6 +117,22 @@ func (register Register) String() string {
 		return "CX"
 	case DX:
 		return "DX"
+	case R8B:
+		return "R8B"
+	case R9B:
+		return "R9B"
+	case R10B:
+		return "R10B"
+	case R11B:
+		return "R11B"
+	case R12B:
+		return "R12B"
+	case R13B:
+		return "R13B"
+	case R14B:
+		return "R14B"
+	case R15B:
+		return "R15B"
 	case R8W:
 		return "R8W"
 	case R9W:

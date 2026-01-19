@@ -145,8 +145,13 @@ const (
 	INT3
 	INTO
 	INVD
+	IRET
+	IRETD
+	IRETQ
 	JB
 	JBE
+	JCXZ
+	JECXZ
 	JL
 	JLE
 	JMP
@@ -160,7 +165,7 @@ const (
 	JNZ
 	JO
 	JP
-	JrCXZ
+	JRCXZ
 	JS
 	JZ
 	KMOVB
@@ -181,6 +186,8 @@ const (
 	LLWPCB
 	LODSB
 	LOOP
+	LOOPE
+	LOOPNE
 	LSL
 	LSS
 	LTR
@@ -239,6 +246,7 @@ const (
 	MULSD
 	MULSS
 	NEG
+	NoInstruction
 	NOP
 	NOT
 	OR
@@ -829,7 +837,6 @@ const (
 	XORPD
 	XORPS
 	XSAVE
-	NoInstruction
 )
 
 func (instruction Instruction) String() string {
@@ -1118,10 +1125,20 @@ func (instruction Instruction) String() string {
 		return "INTO"
 	case INVD:
 		return "INVD"
+	case IRET:
+		return "IRET"
+	case IRETD:
+		return "IRETD"
+	case IRETQ:
+		return "IRETQ"
 	case JB:
 		return "JB"
 	case JBE:
 		return "JBE"
+	case JCXZ:
+		return "JCXZ"
+	case JECXZ:
+		return "JECXZ"
 	case JL:
 		return "JL"
 	case JLE:
@@ -1148,8 +1165,8 @@ func (instruction Instruction) String() string {
 		return "JO"
 	case JP:
 		return "JP"
-	case JrCXZ:
-		return "JrCXZ"
+	case JRCXZ:
+		return "JRCXZ"
 	case JS:
 		return "JS"
 	case JZ:
@@ -1190,6 +1207,10 @@ func (instruction Instruction) String() string {
 		return "LODSB"
 	case LOOP:
 		return "LOOP"
+	case LOOPE:
+		return "LOOPE"
+	case LOOPNE:
+		return "LOOPNE"
 	case LSL:
 		return "LSL"
 	case LSS:
@@ -1306,6 +1327,8 @@ func (instruction Instruction) String() string {
 		return "MULSS"
 	case NEG:
 		return "NEG"
+	case NoInstruction:
+		return "NoInstruction"
 	case NOP:
 		return "NOP"
 	case NOT:
@@ -2486,8 +2509,6 @@ func (instruction Instruction) String() string {
 		return "XORPS"
 	case XSAVE:
 		return "XSAVE"
-	case NoInstruction:
-		return "NoInstruction"
 	default:
 		return "Unknown instruction"
 	}

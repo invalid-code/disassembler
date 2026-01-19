@@ -659,7 +659,6 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 			} else {
 				instruction, isModRM, isDisplacement, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, regOperand1ModRMReg, noImmediateBytes, noDisplacementBytes = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
-				fmt.Println(instruction, isModRM, isDisplacement, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, regOperand1ModRMReg, noImmediateBytes)
 			}
 			if instruction == NoInstruction {
 				opcode = curByte
