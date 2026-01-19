@@ -22,10 +22,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	isVex := false
 	isXop := false
 	isVex3Byte := false
-	is3dNow := false
-	is38 := false
-	is3A := false
-	isSecondaryMap := false
+	isSecondaryMap, is3dNow, is38, is3A := false, false, false, false
 	fieldR := false
 	fieldVvvv := [4]bool{false, false, false, false}
 	fieldL := false
@@ -33,12 +30,8 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	isRXB := true
 	r3B, x3B, b3B := false, false, false
 	mapSelect := [5]bool{false, false, false, false, false}
-	modrmMod := [2]bool{false, false}
-	modrmReg := [4]bool{false, false, false, false}
-	modrmRM := [4]bool{false, false, false}
-	sibScale := [2]bool{false, false}
-	sibIndex := [4]bool{false, false, false, false}
-	sibBase := [4]bool{false, false, false, false}
+	modrmMod, modrmReg, modrmRM := [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false}
+	sibScale, sibIndex, sibBase := [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false, false}
 	instruction := AAA
 	memSegment := NoSegment
 	regOperand1, regOperand2, regOperand3 := NoRegister, NoRegister, NoRegister
@@ -47,59 +40,33 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	opcode := byte(0)
 	isCet := false
 	regOperand1ModRMReg := false
-	noDisplacementBytes := 0
-	displacementBytesI := 1
-	displacementBytesVal := []byte{}
-	noImmediateBytes := 0
-	immediateBytesI := 1
-	immediateBytesVal := []byte{}
-	displacementBytes := 0
-	wasDisplacement := false
+	noDisplacementBytes, displacementBytesI, displacementBytesVal, displacementBytes, wasDisplacement := 0, 1, []byte{}, 0, false
+	noImmediateBytes, immediateBytesI, immediateBytesVal := 0, 1, []byte{}
 	resetVars := func() {
-		isPrefix = true
+		isPrefix, isEscapeSequence, isOpcode, isModRM, isSib, isDisplacement, isImmediate = true, false, false, false, false, false, false
 		legacePrefixCnt = 0
-		isOperandSizeOverride = false
-		//	sAddressSizeOverride := false
-		//	sCSSegmentSizeOverride := false
-		//	sDSSegmentSizeOverride := false
-		//	sESSegmentSizeOverride := false
-		//	sFSSegmentSizeOverride := false
-		//	sGSSegmentSizeOverride := false
-		//	sSSSegmentSizeOverride := false
-		isRep1 = false
-		isRep0 = false
-		isRexW = false
-		isRexR = false
-		isRexX = false
-		isRexB = false
+		isOperandSizeOverride, isRep1, isRep0 = false, false, false
+		//	isAddressSizeOverride := false
+		//	isCSSegmentSizeOverride := false
+		//	isDSSegmentSizeOverride := false
+		//	isESSegmentSizeOverride := false
+		//	isFSSegmentSizeOverride := false
+		//	isGSSegmentSizeOverride := false
+		//	isSSSegmentSizeOverride := false
+		isRexW, isRexR, isRexX, isRexB = false, false, false, false
 		isVex = false
 		isXop = false
 		isVex3Byte = false
-		isEscapeSequence = false
-		is3dNow = false
-		is38 = false
-		is3A = false
-		isSecondaryMap = false
+		isSecondaryMap, is3dNow, is38, is3A = false, false, false, false
 		fieldR = false
 		fieldVvvv = [4]bool{false, false, false, false}
 		fieldL = false
 		fieldPp = [2]bool{false, false}
 		isRXB = true
-		r3B = false
-		x3B = false
-		b3B = false
+		r3B, x3B, b3B = false, false, false
 		mapSelect = [5]bool{false, false, false, false, false}
-		isModRM = false
-		isOpcode = false
-		isSib = false
-		isDisplacement = false
-		isImmediate = false
-		modrmMod = [2]bool{false, false}
-		modrmReg = [4]bool{false, false, false, false}
-		modrmRM = [4]bool{false, false, false}
-		sibScale = [2]bool{false, false}
-		sibIndex = [4]bool{false, false, false, false}
-		sibBase = [4]bool{false, false, false, false}
+		modrmMod, modrmReg, modrmRM = [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false}
+		sibScale, sibIndex, sibBase = [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false, false}
 		instruction = AAA
 		memSegment = NoSegment
 		regOperand1, regOperand2, regOperand3 = NoRegister, NoRegister, NoRegister
@@ -108,14 +75,8 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		opcode = byte(0)
 		isCet = false
 		regOperand1ModRMReg = false
-		noDisplacementBytes = 0
-		displacementBytesI = 1
-		displacementBytesVal = []byte{}
-		noImmediateBytes = 0
-		immediateBytesI = 1
-		immediateBytesVal = []byte{}
-		displacementBytes = 0
-		wasDisplacement = false
+		noDisplacementBytes, displacementBytesI, displacementBytesVal, displacementBytes, wasDisplacement = 0, 1, []byte{}, 0, false
+		noImmediateBytes, immediateBytesI, immediateBytesVal = 0, 1, []byte{}
 	}
 	for _, curByte := range data {
 		fmt.Printf("%X\n", curByte)
@@ -498,6 +459,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					}
 					isEscapeSequence = false
 					isOpcode = true
+					continue
 				}
 			} else if isXop {
 				if isRXB {
@@ -569,6 +531,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					}
 					isEscapeSequence = false
 					isOpcode = true
+					continue
 				}
 			} else {
 				switch curByte {
@@ -576,22 +539,25 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					if isSecondaryMap {
 						is3dNow = true
 						isSecondaryMap = false
-						// isEscapeSequence = false
-						// isOpcode = true
+						isEscapeSequence = false
+						isOpcode = true
+						continue
 					} else {
 						isSecondaryMap = true
 					}
 				case 0x38:
 					if isSecondaryMap {
 						is38 = true
-						// isEscapeSequence = false
-						// isOpcode = true
+						isEscapeSequence = false
+						isOpcode = true
+						continue
 					}
 				case 0x3A:
 					if isSecondaryMap {
 						is3A = true
-						// isEscapeSequence = false
-						// isOpcode = true
+						isEscapeSequence = false
+						isOpcode = true
+						continue
 					}
 				default:
 					isEscapeSequence = false
@@ -624,7 +590,8 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				}
 				isGpr = false
 			} else if is3dNow {
-				panic("todo handle 3dnow opcode map differently")
+				isModRM = true
+				isImmediate = true
 			} else if is3A {
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap3A(curByte, isOperandSizeOverride, isRexB)
 			} else if is38 {
