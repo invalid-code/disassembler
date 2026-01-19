@@ -10,7 +10,7 @@ import (
 func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures executableFeatures.BinSecFeatures) {
 	isPrefix, isEscapeSequence, isOpcode, isModRM, isSib, isDisplacement, isImmediate := true, false, false, false, false, false, false
 	legacePrefixCnt := 0
-	isOperandSizeOverride := false
+	isOperandSizeOverride, isRep1, isRep0 := false, false, false
 	//	isAddressSizeOverride := false
 	//	isCSSegmentSizeOverride := false
 	//	isDSSegmentSizeOverride := false
@@ -18,12 +18,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	//	isFSSegmentSizeOverride := false
 	//	isGSSegmentSizeOverride := false
 	//	isSSSegmentSizeOverride := false
-	isRep1 := false
-	isRep0 := false
-	isRexW := false
-	isRexR := false
-	isRexX := false
-	isRexB := false
+	isRexW, isRexR, isRexX, isRexB := false, false, false, false
 	isVex := false
 	isXop := false
 	isVex3Byte := false
@@ -36,9 +31,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	fieldL := false
 	fieldPp := [2]bool{false, false}
 	isRXB := true
-	r3B := false
-	x3B := false
-	b3B := false
+	r3B, x3B, b3B := false, false, false
 	mapSelect := [5]bool{false, false, false, false, false}
 	modrmMod := [2]bool{false, false}
 	modrmReg := [4]bool{false, false, false, false}
@@ -99,8 +92,8 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		isModRM = false
 		isOpcode = false
 		isSib = false
-		isImmediate = false
 		isDisplacement = false
+		isImmediate = false
 		modrmMod = [2]bool{false, false}
 		modrmReg = [4]bool{false, false, false, false}
 		modrmRM = [4]bool{false, false, false}
@@ -794,17 +787,17 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				case [2]bool{false, false}:
 					switch modrmRM {
 					case [4]bool{false, false, false, false}:
+					case [4]bool{false, false, false, true}:
 					case [4]bool{false, false, true, false}:
+					case [4]bool{false, false, true, true}:
 					case [4]bool{false, true, false, false}:
-					case [4]bool{false, true, true, false}:
-					case [4]bool{true, false, false, false}:
-					case [4]bool{true, false, true, false}:
+					case [4]bool{false, true, false, true}:
 						// 64 bit - rip addressing
 						// 32 bit - absolute (displacement-only) addressing
 						isDisplacement = true
 						noDisplacementBytes = 4
-					case [4]bool{true, true, false, false}:
-					case [4]bool{true, true, true, false}:
+					case [4]bool{false, true, true, false}:
+					case [4]bool{false, true, true, true}:
 					}
 				case [2]bool{false, true}:
 				case [2]bool{true, false}:
@@ -812,19 +805,19 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					switch modrmRM {
 					case [4]bool{false, false, false, false}:
 						regOperand1 = RAX
-					case [4]bool{false, false, true, false}:
+					case [4]bool{false, false, false, true}:
 						regOperand1 = RCX
-					case [4]bool{false, true, false, false}:
+					case [4]bool{false, false, true, false}:
 						regOperand1 = RDX
-					case [4]bool{false, true, true, false}:
+					case [4]bool{false, false, true, true}:
 						regOperand1 = RBX
-					case [4]bool{true, false, false, false}:
+					case [4]bool{false, true, false, false}:
 						regOperand1 = RSP
-					case [4]bool{true, false, true, false}:
+					case [4]bool{false, true, false, true}:
 						regOperand1 = RBP
-					case [4]bool{true, true, false, false}:
+					case [4]bool{false, true, true, false}:
 						regOperand1 = RSI
-					case [4]bool{true, true, true, false}:
+					case [4]bool{false, true, true, true}:
 						regOperand1 = RDI
 					}
 					if !isImmediate {
@@ -890,21 +883,21 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 						}
 						switch modrmRM {
 						case [4]bool{false, false, false, false}:
-						case [4]bool{false, false, true, false}:
+						case [4]bool{false, false, false, true}:
 							if bitFormat {
 								// 64 bit - rip addressing
 								isDisplacement = true
 							}
+						case [4]bool{false, false, true, false}:
+						case [4]bool{false, false, true, true}:
 						case [4]bool{false, true, false, false}:
-						case [4]bool{false, true, true, false}:
-						case [4]bool{true, false, false, false}:
-						case [4]bool{true, false, true, false}:
+						case [4]bool{false, true, false, true}:
 							// 64 bit - rip addressing
 							// 32 bit - absolute (displacement-only) addressing
 							isDisplacement = true
 							noDisplacementBytes = 4
-						case [4]bool{true, true, false, false}:
-						case [4]bool{true, true, true, false}:
+						case [4]bool{false, true, true, false}:
+						case [4]bool{false, true, true, true}:
 						}
 					case [2]bool{false, true}:
 						isDisplacement = true
@@ -1019,7 +1012,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				}
 			}
 			if !(modrmMod[0] && modrmMod[1]) {
-				if modrmRM[0] && !modrmRM[1] && !modrmRM[2] {
+				if modrmRM[1] && !modrmRM[2] && !modrmRM[3] {
 					isSib = true
 				}
 			}
