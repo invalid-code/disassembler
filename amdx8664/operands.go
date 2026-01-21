@@ -219,3 +219,108 @@ func (register Register) String() string {
 		return "Unknown register"
 	}
 }
+
+type Operand struct {
+	isModRM                      bool
+	isModRMRegField              bool
+	isGpr                        bool
+	isImmediate                  bool
+	noImmediateBytes             int
+	instructionEncodedReg        Register
+	instructionEncodedMemSegment MemSegment
+	isDisplacement               bool
+	noDisplacementBytes          int
+	instructionEncodedInt        int
+	register                     Register
+}
+
+func modRMOperand(isRegField bool, isGpr bool) Operand {
+	return Operand{
+		isModRM:                      true,
+		isModRMRegField:              isRegField,
+		isGpr:                        isGpr,
+		isImmediate:                  false,
+		noImmediateBytes:             0,
+		instructionEncodedReg:        NoRegister,
+		instructionEncodedMemSegment: NoSegment,
+		isDisplacement:               false,
+		noDisplacementBytes:          0,
+		instructionEncodedInt:        0,
+		register:                     NoRegister,
+	}
+}
+
+func instructionEncodedRegOperand(reg Register) Operand {
+	return Operand{
+		isModRM:                      false,
+		isModRMRegField:              false,
+		isImmediate:                  false,
+		noImmediateBytes:             0,
+		instructionEncodedReg:        reg,
+		instructionEncodedMemSegment: NoSegment,
+		isDisplacement:               false,
+		noDisplacementBytes:          0,
+		instructionEncodedInt:        0,
+		register:                     NoRegister,
+	}
+}
+
+func immediateOperand(noImmediateBytes int) Operand {
+	return Operand{
+		isModRM:                      false,
+		isModRMRegField:              false,
+		isImmediate:                  true,
+		noImmediateBytes:             noImmediateBytes,
+		instructionEncodedReg:        NoRegister,
+		instructionEncodedMemSegment: NoSegment,
+		isDisplacement:               false,
+		noDisplacementBytes:          0,
+		instructionEncodedInt:        0,
+		register:                     NoRegister,
+	}
+}
+
+func memSegmentOperand(memSegment MemSegment) Operand {
+	return Operand{
+		isModRM:                      false,
+		isModRMRegField:              false,
+		isImmediate:                  false,
+		noImmediateBytes:             0,
+		instructionEncodedReg:        NoRegister,
+		instructionEncodedMemSegment: memSegment,
+		isDisplacement:               false,
+		noDisplacementBytes:          0,
+		instructionEncodedInt:        0,
+		register:                     NoRegister,
+	}
+}
+
+func displacementOperand(noDisplacementBytes int) Operand {
+	return Operand{
+		isModRM:                      false,
+		isModRMRegField:              false,
+		isImmediate:                  false,
+		noImmediateBytes:             0,
+		instructionEncodedReg:        NoRegister,
+		instructionEncodedMemSegment: NoSegment,
+		isDisplacement:               true,
+		noDisplacementBytes:          noDisplacementBytes,
+		instructionEncodedInt:        0,
+		register:                     NoRegister,
+	}
+}
+
+func instructionEncodedIntOperand(instructionEncodedInt int) Operand {
+	return Operand{
+		isModRM:                      false,
+		isModRMRegField:              false,
+		isImmediate:                  false,
+		noImmediateBytes:             0,
+		instructionEncodedReg:        NoRegister,
+		instructionEncodedMemSegment: NoSegment,
+		isDisplacement:               false,
+		noDisplacementBytes:          0,
+		instructionEncodedInt:        instructionEncodedInt,
+		register:                     NoRegister,
+	}
+}

@@ -39,9 +39,9 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	isGpr := true
 	opcode := byte(0)
 	isCet := false
-	regOperand1ModRMReg := false
 	noDisplacementBytes, displacementBytesI, displacementBytesVal, displacementBytes, wasDisplacement := 0, 1, []byte{}, 0, false
 	noImmediateBytes, immediateBytesI, immediateBytesVal := 0, 1, []byte{}
+	operands := []Operand{}
 	resetVars := func() {
 		isPrefix, isEscapeSequence, isOpcode, isModRM, isSib, isDisplacement, isImmediate = true, false, false, false, false, false, false
 		legacePrefixCnt = 0
@@ -74,9 +74,9 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		isGpr = true
 		opcode = byte(0)
 		isCet = false
-		regOperand1ModRMReg = false
 		noDisplacementBytes, displacementBytesI, displacementBytesVal, displacementBytes, wasDisplacement = 0, 1, []byte{}, 0, false
 		noImmediateBytes, immediateBytesI, immediateBytesVal = 0, 1, []byte{}
+		operands = []Operand{}
 	}
 	for _, curByte := range data {
 		fmt.Printf("%X\n", curByte)
@@ -616,13 +616,18 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				}
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 			} else {
-				instruction, isModRM, isDisplacement, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, regOperand1ModRMReg, noImmediateBytes, noDisplacementBytes = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
+				instruction, operands = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
+				for _, operand := range operands {
+					isModRM = operand.isModRM
+					isDisplacement = operand.isDisplacement
+					isImmediate = operand.isImmediate
+				}
 			}
 			if instruction == NoInstruction {
 				opcode = curByte
 			}
-			if !(isModRM || isImmediate || isDisplacement) {
-				fmt.Println(instruction, regOperand1, regOperand2)
+			if !isModRM && !isDisplacement && !isImmediate {
+				fmt.Println(instruction)
 				resetVars()
 			}
 			isOpcode = false
@@ -733,138 +738,88 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				} else {
 					switch opcode {
 					case 0x80, 0x81, 0x82, 0x83:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG1(opcode, opcodeSel, bitFormat)
+						instruction, operands = primaryOpcodeModRMG1(opcode, opcodeSel, bitFormat, isOperandSizeOverride, isRexW)
 					case 0x8F:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG1a(opcode, opcodeSel)
+						instruction, operands = primaryOpcodeModRMG1a(opcode, opcodeSel, bitFormat, isOperandSizeOverride, isRexW)
 					case 0xC0, 0xC1, 0xD0, 0xD1, 0xD2, 0xD3:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG2(opcode, opcodeSel)
+						instruction, operands = primaryOpcodeModRMG2(opcode, opcodeSel, bitFormat, isOperandSizeOverride, isRexW)
 					case 0xF6, 0xF7:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG3(opcode, opcodeSel, bitFormat)
+						instruction, operands = primaryOpcodeModRMG3(opcode, opcodeSel, bitFormat, isOperandSizeOverride, isRexW)
 					case 0xFE:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG4(opcode, opcodeSel, bitFormat)
+						instruction, operands = primaryOpcodeModRMG4(opcode, opcodeSel, bitFormat, isOperandSizeOverride, isRexW)
 					case 0xFF:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG5(opcode, opcodeSel, bitFormat)
+						instruction, operands = primaryOpcodeModRMG5(opcode, opcodeSel, bitFormat, isOperandSizeOverride, isRexW)
 					case 0xC6, 0xC7:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG11(opcode, opcodeSel, bitFormat)
+						instruction, operands = primaryOpcodeModRMG11(opcode, opcodeSel, bitFormat, isOperandSizeOverride, isRexW)
 					default:
 						panic("Error: Unknown opcode modrm extension group")
+					}
+					for _, operand := range operands {
+						isModRM = operand.isModRM
+						isDisplacement = operand.isDisplacement
+						isImmediate = operand.isImmediate
 					}
 				}
 				switch modrmMod {
 				case [2]bool{false, false}:
-					switch modrmRM {
-					case [4]bool{false, false, false, false}:
-					case [4]bool{false, false, false, true}:
-					case [4]bool{false, false, true, false}:
-					case [4]bool{false, false, true, true}:
-					case [4]bool{false, true, false, false}:
-					case [4]bool{false, true, false, true}:
-						// 64 bit - rip addressing
+					if modrmRM == [4]bool{false, true, false, true} {
 						// 32 bit - absolute (displacement-only) addressing
 						isDisplacement = true
 						noDisplacementBytes = 4
-					case [4]bool{false, true, true, false}:
-					case [4]bool{false, true, true, true}:
 					}
 				case [2]bool{false, true}:
+					isDisplacement = true
+					noDisplacementBytes = 1
 				case [2]bool{true, false}:
+					isDisplacement = true
+					noDisplacementBytes = 4
 				case [2]bool{true, true}:
-					switch modrmRM {
-					case [4]bool{false, false, false, false}:
-						regOperand1 = RAX
-					case [4]bool{false, false, false, true}:
-						regOperand1 = RCX
-					case [4]bool{false, false, true, false}:
-						regOperand1 = RDX
-					case [4]bool{false, false, true, true}:
-						regOperand1 = RBX
-					case [4]bool{false, true, false, false}:
-						regOperand1 = RSP
-					case [4]bool{false, true, false, true}:
-						regOperand1 = RBP
-					case [4]bool{false, true, true, false}:
-						regOperand1 = RSI
-					case [4]bool{false, true, true, true}:
-						regOperand1 = RDI
-					}
-					if !isImmediate {
-						fmt.Println(instruction, regOperand1)
-						resetVars()
-						continue
+					for operandI, operand := range operands {
+						if operand.isModRMRegField {
+							switch modrmRM {
+							case [4]bool{false, false, false, false}:
+								if !operand.isModRMRegField {
+									operands[operandI].register = RAX
+								}
+							case [4]bool{false, false, false, true}:
+								if !operand.isModRMRegField {
+									operands[operandI].register = RCX
+								}
+							case [4]bool{false, false, true, false}:
+								if !operand.isModRMRegField {
+									operands[operandI].register = RDX
+								}
+							case [4]bool{false, false, true, true}:
+								if !operand.isModRMRegField {
+									operands[operandI].register = RBX
+								}
+							case [4]bool{false, true, false, false}:
+								if !operand.isModRMRegField {
+									operands[operandI].register = RSP
+								}
+							case [4]bool{false, true, false, true}:
+								if !operand.isModRMRegField {
+									operands[operandI].register = RBP
+								}
+							case [4]bool{false, true, true, false}:
+								if !operand.isModRMRegField {
+									operands[operandI].register = RSI
+								}
+							case [4]bool{false, true, true, true}:
+								if !operand.isModRMRegField {
+									operands[operandI].register = RDI
+								}
+							}
+						}
 					}
 				}
 			} else {
 				if isGpr {
-					// figure out operand size
 					switch modrmMod {
 					case [2]bool{false, false}:
-						switch modrmReg {
-						case [4]bool{false, false, false, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RAX
-							} else {
-								regOperand2 = RAX
-							}
-						case [4]bool{false, false, false, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RCX
-							} else {
-								regOperand2 = RCX
-							}
-						case [4]bool{false, false, true, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RDX
-							} else {
-								regOperand2 = RDX
-							}
-						case [4]bool{false, false, true, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RBX
-							} else {
-								regOperand2 = RBX
-							}
-						case [4]bool{false, true, false, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RSP
-							} else {
-								regOperand2 = RSP
-							}
-						case [4]bool{false, true, false, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RBP
-							} else {
-								regOperand2 = RBP
-							}
-						case [4]bool{false, true, true, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RSI
-							} else {
-								regOperand2 = RSI
-							}
-						case [4]bool{false, true, true, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RDI
-							} else {
-								regOperand2 = RDI
-							}
-						}
-						switch modrmRM {
-						case [4]bool{false, false, false, false}:
-						case [4]bool{false, false, false, true}:
-							if bitFormat {
-								// 64 bit - rip addressing
-								isDisplacement = true
-							}
-						case [4]bool{false, false, true, false}:
-						case [4]bool{false, false, true, true}:
-						case [4]bool{false, true, false, false}:
-						case [4]bool{false, true, false, true}:
-							// 64 bit - rip addressing
-							// 32 bit - absolute (displacement-only) addressing
+						if modrmRM == [4]bool{false, true, false, true} {
 							isDisplacement = true
 							noDisplacementBytes = 4
-						case [4]bool{false, true, true, false}:
-						case [4]bool{false, true, true, true}:
 						}
 					case [2]bool{false, true}:
 						isDisplacement = true
@@ -873,104 +828,76 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 						isDisplacement = true
 						noDisplacementBytes = 4
 					case [2]bool{true, true}:
-						switch modrmReg {
-						case [4]bool{false, false, false, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RAX
-							} else {
-								regOperand2 = RAX
-							}
-						case [4]bool{false, false, false, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RCX
-							} else {
-								regOperand2 = RCX
-							}
-						case [4]bool{false, false, true, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RDX
-							} else {
-								regOperand2 = RDX
-							}
-						case [4]bool{false, false, true, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RBX
-							} else {
-								regOperand2 = RBX
-							}
-						case [4]bool{false, true, false, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RSP
-							} else {
-								regOperand2 = RSP
-							}
-						case [4]bool{false, true, false, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RBP
-							} else {
-								regOperand2 = RBP
-							}
-						case [4]bool{false, true, true, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RSI
-							} else {
-								regOperand2 = RSI
-							}
-						case [4]bool{false, true, true, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RDI
-							} else {
-								regOperand2 = RDI
-							}
-						}
-						switch modrmRM {
-						case [4]bool{false, false, false, false}:
-							if regOperand1ModRMReg {
-								regOperand2 = RAX
-							} else {
-								regOperand1 = RAX
-							}
-						case [4]bool{false, false, false, true}:
-							if regOperand1ModRMReg {
-								regOperand2 = RCX
-							} else {
-								regOperand1 = RCX
-							}
-						case [4]bool{false, false, true, false}:
-							if regOperand1ModRMReg {
-								regOperand2 = RDX
-							} else {
-								regOperand1 = RDX
-							}
-						case [4]bool{false, false, true, true}:
-							if regOperand1ModRMReg {
-								regOperand2 = RBX
-							} else {
-								regOperand1 = RBX
-							}
-						case [4]bool{false, true, false, false}:
-							if regOperand1ModRMReg {
-								regOperand2 = RSP
-							} else {
-								regOperand1 = RSP
-							}
-						case [4]bool{false, true, false, true}:
-							if regOperand1ModRMReg {
-								regOperand2 = RBP
-							} else {
-								regOperand1 = RBP
-							}
-						case [4]bool{false, true, true, false}:
-							if regOperand1ModRMReg {
-								regOperand2 = RSI
-							} else {
-								regOperand1 = RSI
-							}
-						case [4]bool{false, true, true, true}:
-							if regOperand1ModRMReg {
-								regOperand2 = RDI
-							} else {
-								regOperand1 = RDI
+						for operandI, operand := range operands {
+							if operand.isModRMRegField {
+								switch modrmReg {
+								case [4]bool{false, false, false, false}:
+									if operand.isModRMRegField {
+										operands[operandI].register = RAX
+									}
+								case [4]bool{false, false, false, true}:
+									if operand.isModRMRegField {
+										operands[operandI].register = RCX
+									}
+								case [4]bool{false, false, true, false}:
+									if operand.isModRMRegField {
+										operands[operandI].register = RDX
+									}
+								case [4]bool{false, false, true, true}:
+									if operand.isModRMRegField {
+										operands[operandI].register = RBX
+									}
+								case [4]bool{false, true, false, false}:
+									if operand.isModRMRegField {
+										operands[operandI].register = RSP
+									}
+								case [4]bool{false, true, false, true}:
+									if operand.isModRMRegField {
+										operands[operandI].register = RBP
+									}
+								case [4]bool{false, true, true, false}:
+									if operand.isModRMRegField {
+										operands[operandI].register = RSI
+									}
+								case [4]bool{false, true, true, true}:
+									if operand.isModRMRegField {
+										operands[operandI].register = RDI
+									}
+								}
+								switch modrmRM {
+								case [4]bool{false, false, false, false}:
+									if !operand.isModRMRegField {
+										operands[operandI].register = RAX
+									}
+								case [4]bool{false, false, false, true}:
+									if !operand.isModRMRegField {
+										operands[operandI].register = RCX
+									}
+								case [4]bool{false, false, true, false}:
+									if !operand.isModRMRegField {
+										operands[operandI].register = RDX
+									}
+								case [4]bool{false, false, true, true}:
+									if !operand.isModRMRegField {
+										operands[operandI].register = RBX
+									}
+								case [4]bool{false, true, false, false}:
+									if !operand.isModRMRegField {
+										operands[operandI].register = RSP
+									}
+								case [4]bool{false, true, false, true}:
+									if !operand.isModRMRegField {
+										operands[operandI].register = RBP
+									}
+								case [4]bool{false, true, true, false}:
+									if !operand.isModRMRegField {
+										operands[operandI].register = RSI
+									}
+								case [4]bool{false, true, true, true}:
+									if !operand.isModRMRegField {
+										operands[operandI].register = RDI
+									}
+								}
 							}
 						}
 					}
