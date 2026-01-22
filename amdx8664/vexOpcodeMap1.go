@@ -1,6 +1,6 @@
 package amdx8664
 
-func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, bool, bool, MemSegment, Register, Register, Register, int) {
+func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch curByte {
 	case 0x10:
 		switch opcodeExt {
@@ -1084,7 +1084,7 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, b
 	panic("")
 }
 
-func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool, modrmReg [3]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x71:
 		switch opcodeExt {

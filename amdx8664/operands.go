@@ -220,6 +220,13 @@ func (register Register) String() string {
 	}
 }
 
+type MemoryAddress struct {
+	scale  int
+	index  int
+	base   Register
+	offset int
+}
+
 type Operand struct {
 	isModRM                      bool
 	isModRMRegField              bool
@@ -232,6 +239,7 @@ type Operand struct {
 	noDisplacementBytes          int
 	instructionEncodedInt        int
 	register                     Register
+	memoryAddress                MemoryAddress
 }
 
 func modRMOperand(isRegField bool, isGpr bool) Operand {
@@ -247,6 +255,7 @@ func modRMOperand(isRegField bool, isGpr bool) Operand {
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        0,
 		register:                     NoRegister,
+		memoryAddress:                MemoryAddress{},
 	}
 }
 
@@ -262,6 +271,7 @@ func instructionEncodedRegOperand(reg Register) Operand {
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        0,
 		register:                     NoRegister,
+		memoryAddress:                MemoryAddress{},
 	}
 }
 
@@ -277,6 +287,7 @@ func immediateOperand(noImmediateBytes int) Operand {
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        0,
 		register:                     NoRegister,
+		memoryAddress:                MemoryAddress{},
 	}
 }
 
@@ -292,6 +303,7 @@ func memSegmentOperand(memSegment MemSegment) Operand {
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        0,
 		register:                     NoRegister,
+		memoryAddress:                MemoryAddress{},
 	}
 }
 
@@ -307,6 +319,7 @@ func displacementOperand(noDisplacementBytes int) Operand {
 		noDisplacementBytes:          noDisplacementBytes,
 		instructionEncodedInt:        0,
 		register:                     NoRegister,
+		memoryAddress:                MemoryAddress{},
 	}
 }
 
@@ -322,5 +335,6 @@ func instructionEncodedIntOperand(instructionEncodedInt int) Operand {
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        instructionEncodedInt,
 		register:                     NoRegister,
+		memoryAddress:                MemoryAddress{},
 	}
 }

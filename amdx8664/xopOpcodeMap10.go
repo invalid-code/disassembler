@@ -1,6 +1,6 @@
 package amdx8664
 
-func xopOpcodeMap10(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, bool, bool, MemSegment, Register, Register, Register, int) {
+func xopOpcodeMap10(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch curByte {
 	case 0x10:
 		switch opcodeExt {
@@ -16,7 +16,7 @@ func xopOpcodeMap10(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, 
 	}
 }
 
-func xopOpcodeMap9ModRMG4(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+func xopOpcodeMap9ModRMG4(opcode byte, modrmReg [3]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x12:
 		switch modrmReg {

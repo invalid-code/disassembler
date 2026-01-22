@@ -1869,7 +1869,7 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 	}
 }
 
-func secondaryOpcodeModRMG6(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG6(opcode byte, modrmReg [3]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x0:
 		switch modrmReg {
@@ -1877,15 +1877,16 @@ func secondaryOpcodeModRMG6(opcode byte, modrmReg [3]bool) (Instruction, bool, M
 			// return SLDT, false, NoSegment, NoRegister, NoRegister, 0
 			panic("todo")
 		case [3]bool{false, false, true}:
-			return STR, false, NoSegment, NoRegister, NoRegister, 0
+			// return STR, false, NoSegment, NoRegister, NoRegister, 0
+			panic("todo")
 		case [3]bool{false, true, false}:
-			return LLDT, false, NoSegment, NoRegister, NoRegister, 0
+			return LLDT, []Operand{modRMOperand(false, true)}
 		case [3]bool{false, true, true}:
-			return LTR, false, NoSegment, NoRegister, NoRegister, 0
+			return LTR, []Operand{modRMOperand(false, true)}
 		case [3]bool{true, false, false}:
-			return VERR, false, NoSegment, NoRegister, NoRegister, 0
+			return VERR, []Operand{modRMOperand(false, true)}
 		case [3]bool{true, false, true}:
-			return VERW, false, NoSegment, NoRegister, NoRegister, 0
+			return VERW, []Operand{modRMOperand(false, true)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1894,12 +1895,12 @@ func secondaryOpcodeModRMG6(opcode byte, modrmReg [3]bool) (Instruction, bool, M
 	}
 }
 
-func secondaryOpcodeModRMG7(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG7(opcode byte, modrmReg [3]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x1:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return SGDT, false, NoSegment, NoRegister, NoRegister, 0
+			return SGDT, []Operand{modRMOperand(false, true)}
 		case [3]bool{false, false, true}:
 			panic("todo")
 		case [3]bool{false, true, false}:
@@ -1907,13 +1908,16 @@ func secondaryOpcodeModRMG7(opcode byte, modrmReg [3]bool) (Instruction, bool, M
 		case [3]bool{false, true, true}:
 			panic("todo")
 		case [3]bool{true, false, false}:
-			return MUL, false, NoSegment, NoRegister, NoRegister, 0
+			// return SMSW, false, NoSegment, NoRegister, NoRegister, 0
+			panic("todo")
 		case [3]bool{true, false, true}:
-			return IMUL, false, NoSegment, NoRegister, NoRegister, 0
+			// return IMUL, false, NoSegment, NoRegister, NoRegister, 0
+			panic("todo")
 		case [3]bool{true, true, false}:
-			return DIV, false, NoSegment, NoRegister, NoRegister, 0
+			return LMSW, []Operand{modRMOperand(false, true)}
 		case [3]bool{true, true, true}:
-			return IDIV, false, NoSegment, NoRegister, NoRegister, 0
+			// return IDIV, false, NoSegment, NoRegister, NoRegister, 0
+			panic("todo")
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1922,18 +1926,18 @@ func secondaryOpcodeModRMG7(opcode byte, modrmReg [3]bool) (Instruction, bool, M
 	}
 }
 
-func secondaryOpcodeModRMG8(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG8(opcode byte, modrmReg [3]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0xBA:
 		switch modrmReg {
 		case [3]bool{true, false, false}:
-			return BT, true, NoSegment, NoRegister, NoRegister, 0
+			return BT, []Operand{modRMOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, false, true}:
-			return BTS, true, NoSegment, NoRegister, NoRegister, 0
+			return BTS, []Operand{modRMOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, true, false}:
-			return BTR, true, NoSegment, NoRegister, NoRegister, 0
+			return BTR, []Operand{modRMOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, true, true}:
-			return BTC, true, NoSegment, NoRegister, NoRegister, 0
+			return BTC, []Operand{modRMOperand(false, true), immediateOperand(1)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1942,7 +1946,7 @@ func secondaryOpcodeModRMG8(opcode byte, modrmReg [3]bool) (Instruction, bool, M
 	}
 }
 
-func secondaryOpcodeModRMG9(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG9(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0xC7:
 		switch modrmReg {
@@ -1959,17 +1963,17 @@ func secondaryOpcodeModRMG9(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 b
 		case [3]bool{true, true, false}:
 			if isOperandSizeOverride {
 				// 0x66
-				return RDRAND, false, NoSegment, NoRegister, NoRegister, 0
+				return RDRAND, []Operand{modRMOperand(false, true)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown opcode")
 			} else {
-				return RDRAND, false, NoSegment, NoRegister, NoRegister, 0
+				return RDRAND, []Operand{modRMOperand(false, true)}
 			}
 		case [3]bool{true, true, true}:
 			if isOperandSizeOverride {
 				// 0x66
-				return RDSEED, false, NoSegment, NoRegister, NoRegister, 0
+				return RDSEED, []Operand{modRMOperand(false, true)}
 			} else if isRep0 {
 				// 0xF2
 				panic("Error: Unkown opcode")
@@ -1977,7 +1981,7 @@ func secondaryOpcodeModRMG9(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 b
 				// 0xF3
 				panic("todo")
 			} else {
-				return RDSEED, false, NoSegment, NoRegister, NoRegister, 0
+				return RDSEED, []Operand{modRMOperand(false, true)}
 			}
 		default:
 			panic("Error: Unknown instruction")
@@ -1987,48 +1991,48 @@ func secondaryOpcodeModRMG9(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 b
 	}
 }
 
-func secondaryOpcodeModRMG10(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG10(opcode byte, modrmReg [3]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0xB9:
-		return UD1, false, NoSegment, NoRegister, NoRegister, 0
+		return UD1, []Operand{}
 	default:
 		panic("Error: Unknown instruction")
 	}
 }
 
-func secondaryOpcodeModRMG12(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG12(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x71:
 		switch modrmReg {
 		case [3]bool{false, true, false}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSRLW, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRLW, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSRLW, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRLW, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		case [3]bool{true, false, false}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSRAW, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRAW, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSRAW, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRAW, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		case [3]bool{true, true, false}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSLLW, true, NoSegment, NoRegister, NoRegister, 0
+				return PSLLW, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSLLW, true, NoSegment, NoRegister, NoRegister, 0
+				return PSLLW, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		default:
 			panic("Error: Unknown instruction")
@@ -2038,39 +2042,39 @@ func secondaryOpcodeModRMG12(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 
 	}
 }
 
-func secondaryOpcodeModRMG13(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG13(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x72:
 		switch modrmReg {
 		case [3]bool{false, true, false}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSRLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSRLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		case [3]bool{true, false, false}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSRAD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRAD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSRAD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRAD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		case [3]bool{true, true, false}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		default:
 			panic("Error: Unknown instruction")
@@ -2080,49 +2084,49 @@ func secondaryOpcodeModRMG13(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 
 	}
 }
 
-func secondaryOpcodeModRMG14(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG14(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x73:
 		switch modrmReg {
 		case [3]bool{false, true, false}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSRLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSRLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		case [3]bool{false, true, true}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSRAD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRAD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSRAD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSRAD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		case [3]bool{true, true, false}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		case [3]bool{true, true, true}:
 			if isOperandSizeOverride {
 				// 0x66
-				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			} else if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
 			} else {
-				return PSLLD, true, NoSegment, NoRegister, NoRegister, 0
+				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
 		default:
 			panic("Error: Unknown instruction")
@@ -2132,7 +2136,7 @@ func secondaryOpcodeModRMG14(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 
 	}
 }
 
-func secondaryOpcodeModRMG15(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG15(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0xAE:
 		switch modrmReg {
@@ -2220,7 +2224,7 @@ func secondaryOpcodeModRMG15(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 
 	}
 }
 
-func secondaryOpcodeModRMG16(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG16(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0xAE:
 		switch modrmReg {
@@ -2248,7 +2252,7 @@ func secondaryOpcodeModRMG16(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 
 	}
 }
 
-func secondaryOpcodeModRMG17(opcode byte, modrmReg [3]bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMG17(opcode byte, modrmReg [3]bool, is64Bit bool, isOperandSizeOverride bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x78:
 		switch modrmReg {
@@ -2265,7 +2269,7 @@ func secondaryOpcodeModRMG17(opcode byte, modrmReg [3]bool, isOperandSizeOverrid
 	panic("")
 }
 
-func secondaryOpcodeModRMGP(opcode byte, modrmReg [3]bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func secondaryOpcodeModRMGP(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0 bool, isRep1 bool, isOperandSizeOverride bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x0D:
 		switch modrmReg {

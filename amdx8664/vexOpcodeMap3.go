@@ -1,6 +1,6 @@
 package amdx8664
 
-func vexOpcodeMap3(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, bool, bool, MemSegment, Register, Register, Register, int) {
+func vexOpcodeMap3(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch curByte {
 	case 0x0:
 		switch opcodeExt {

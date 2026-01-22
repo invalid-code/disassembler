@@ -1,6 +1,6 @@
 package amdx8664
 
-func xopOpcodeMap9(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, bool, bool, MemSegment, Register, Register, Register, int) {
+func xopOpcodeMap9(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch curByte {
 	case 0x1:
 		switch opcodeExt {
@@ -245,7 +245,7 @@ func xopOpcodeMap9(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, b
 	}
 }
 
-func xopOpcodeMap9ModRMG1(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+func xopOpcodeMap9ModRMG1(opcode byte, modrmReg [3]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x1:
 		switch modrmReg {
@@ -272,7 +272,7 @@ func xopOpcodeMap9ModRMG1(opcode byte, modrmReg [3]bool) (Instruction, bool, Mem
 	}
 }
 
-func xopOpcodeMap9ModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+func xopOpcodeMap9ModRMG2(opcode byte, modrmReg [3]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x2:
 		switch modrmReg {
@@ -288,7 +288,7 @@ func xopOpcodeMap9ModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, Mem
 	}
 }
 
-func xopOpcodeMap9ModRMG3(opcode byte, modrmReg [3]bool) (Instruction, bool, MemSegment, Register, Register, Register, int) {
+func xopOpcodeMap9ModRMG3(opcode byte, modrmReg [3]bool, is64Bit bool, isRexW bool) (Instruction, []Operand) {
 	switch opcode {
 	case 0x12:
 		switch modrmReg {
