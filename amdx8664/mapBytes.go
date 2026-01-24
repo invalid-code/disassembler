@@ -901,7 +901,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 						}
 					}
 				} else {
-					// xmm, ymm regs
+					// xmm, ymm, control regs
 				}
 			}
 			if !(modrmMod[0] && modrmMod[1]) {

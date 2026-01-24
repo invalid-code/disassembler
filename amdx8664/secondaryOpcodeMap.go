@@ -6,17 +6,17 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 		if isRep0 || isRep1 || isOperandSizeOveride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, 0
+		return NoInstruction, []Operand{} // todo the opcode map doesn't specify operands but in the mod.r/m opcode extension map specifies the operand
 	case 0x2:
 		if isRep0 || isRep1 || isOperandSizeOveride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return LAR, []Operand{modRMOperand(true), modRMOperand(false)}
+		return LAR, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
 	case 0x3:
 		if isRep0 || isRep1 || isOperandSizeOveride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x0 - 0xF")
 		}
-		return LSL, []Operand{modRMOperand(true), modRMOperand(false)}
+		return LSL, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
 	case 0x4:
 		panic("Error: No opcode")
 	case 0x5:
@@ -110,43 +110,40 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 	case 0x13:
 		if isOperandSizeOveride {
 			// 0x66
-			return MOVLPS, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVLPS, []Operand{modRMOperand(false, true), modRMOperand(true, false)}
 		} else if isRep1 || isRep0 {
-			// 0xF3
-			// 0xF2
+			// 0xF3 0xF2
 			panic("Error: Unkown opcode")
 		} else {
-			return MOVLPD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVLPD, []Operand{modRMOperand(false, true), modRMOperand(true, false)}
 		}
 	case 0x14:
 		if isOperandSizeOveride {
 			// 0x66
-			return UNPCKLPD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return UNPCKLPD, []Operand{modRMOperand(true, false), modRMOperand(false, false)}
 		} else if isRep1 || isRep0 {
-			// 0xF3
-			// 0xF2
+			// 0xF3 0xF2
 			panic("Error: Unkown opcode")
 		} else {
-			return UNPCKLPS, true, false, NoSegment, NoRegister, NoRegister, 0
+			return UNPCKLPS, []Operand{modRMOperand(true, false), modRMOperand(false, false)}
 		}
 	case 0x15:
 		if isOperandSizeOveride {
 			// 0x66
-			return UNPCKHPD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return UNPCKHPD, []Operand{modRMOperand(true, false), modRMOperand(false, false)}
 		} else if isRep1 || isRep0 {
-			// 0xF3
-			// 0xF2
+			// 0xF3 0xF2
 			panic("Error: Unkown opcode")
 		} else {
-			return UNPCKHPS, true, false, NoSegment, NoRegister, NoRegister, 0
+			return UNPCKHPS, []Operand{modRMOperand(true, false), modRMOperand(false, false)}
 		}
 	case 0x16:
 		if isOperandSizeOveride {
 			// 0x66
-			return MOVHPD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVHPD, []Operand{modRMOperand(true, false), modRMOperand(false, false)}
 		} else if isRep1 {
 			// 0xF3
-			return MOVSHDUP, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVSHDUP, []Operand{modRMOperand(true, false), modRMOperand(false, false)}
 		} else if isRep0 {
 			// 0xF2
 			panic("Error: Unkown opcode")
@@ -156,34 +153,30 @@ func secondaryOpcodeMap(curByte byte, is64Bit bool, isRep0 bool, isRep1 bool, is
 	case 0x17:
 		if isOperandSizeOveride {
 			// 0x66
-			return MOVHPD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVHPD, []Operand{modRMOperand(false, true), modRMOperand(true, false)}
 		} else if isRep1 || isRep0 {
-			// 0xF3
-			// 0xF2
+			// 0xF3 0xF2
 			panic("Error: Unkown opcode")
 		} else {
-			return MOVHPS, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVHPS, []Operand{modRMOperand(false, true), modRMOperand(true, false)}
 		}
-	case 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1E:
+	case 0x18:
 		if isRep0 || isRep1 || !isOperandSizeOveride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
 		}
-		return NoInstruction, true, true, NoSegment, NoRegister, NoRegister, 0
+		return NoInstruction, []Operand{modRMOperand(false, true)} // todo the opcode map doesn't specify operands but in the mod.r/m opcode extension map specifies the operand
+	case 0x19, 0x1A, 0x1B, 0x1C, 0x1E, 0x1F:
+		return NOP, []Operand{}
 	case 0x1D:
 		if isRep0 || isRep1 || isOperandSizeOveride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x18 - 0x1F")
 		}
 		panic("todo weird")
-	case 0x1F:
-		if isRep0 || isRep1 {
-			panic("Error: prefices 0xF2 and 0xF3 not allowed for the secondary map opcode 0x1F")
-		}
-		return NOP, true, false, NoSegment, NoRegister, NoRegister, 0
 	case 0x20, 0x21, 0x22, 0x23:
 		if isRep0 || isRep1 || isOperandSizeOveride {
 			panic("Error: prefix not allowed for the secondary map opcode 0x20 - 0x27")
 		}
-		return MOV, true, false, NoSegment, NoRegister, NoRegister, 0
+		return MOV, []Operand{modRMOperand(false, true), modRMOperand(false, false)}
 	case 0x24, 0x25, 0x26, 0x27:
 		panic("Error: Unkown opcode")
 	case 0x28, 0x29:
@@ -2092,42 +2085,42 @@ func secondaryOpcodeModRMG14(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0
 			if isOperandSizeOverride {
 				// 0x66
 				return PSRLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
-			} else if isRep0 || isRep1 {
+			}
+			if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
-			} else {
-				return PSRLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
+			return PSRLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 		case [3]bool{false, true, true}:
 			if isOperandSizeOverride {
 				// 0x66
 				return PSRAD, []Operand{modRMOperand(false, false), immediateOperand(1)}
-			} else if isRep0 || isRep1 {
+			}
+			if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
-			} else {
-				return PSRAD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
+			return PSRAD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 		case [3]bool{true, true, false}:
 			if isOperandSizeOverride {
 				// 0x66
 				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
-			} else if isRep0 || isRep1 {
+			}
+			if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
-			} else {
-				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
+			return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 		case [3]bool{true, true, true}:
 			if isOperandSizeOverride {
 				// 0x66
 				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
-			} else if isRep0 || isRep1 {
+			}
+			if isRep0 || isRep1 {
 				// 0xF2 0xF3
 				panic("Error: Unkown instruction")
-			} else {
-				return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 			}
+			return PSLLD, []Operand{modRMOperand(false, false), immediateOperand(1)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -2146,9 +2139,9 @@ func secondaryOpcodeModRMG15(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0
 				panic("Error: Unkown opcode")
 			} else if isRep1 {
 				// 0xF3
-				return RDFSBASE, false, NoSegment, NoRegister, NoRegister, 0
+				return RDFSBASE, []Operand{modRMOperand(false, true)}
 			} else {
-				return FXSAVE, false, NoSegment, NoRegister, NoRegister, 0
+				return FXSAVE, []Operand{modRMOperand(true, true)}
 			}
 		case [3]bool{false, false, true}:
 			if isOperandSizeOverride || isRep0 {
@@ -2156,9 +2149,9 @@ func secondaryOpcodeModRMG15(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0
 				panic("Error: Unkown opcode")
 			} else if isRep1 {
 				// 0xF3
-				return RDGSBASE, false, NoSegment, NoRegister, NoRegister, 0
+				return RDGSBASE, []Operand{modRMOperand(false, true)}
 			} else {
-				return FXRSTOR, false, NoSegment, NoRegister, NoRegister, 0
+				return FXRSTOR, []Operand{modRMOperand(true, true)}
 			}
 		case [3]bool{false, true, false}:
 			if isOperandSizeOverride || isRep0 {
@@ -2166,9 +2159,9 @@ func secondaryOpcodeModRMG15(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0
 				panic("Error: Unkown opcode")
 			} else if isRep1 {
 				// 0xF3
-				return WRFSBASE, false, NoSegment, NoRegister, NoRegister, 0
+				return WRFSBASE, []Operand{modRMOperand(false, true)}
 			} else {
-				return LDMXCSR, false, NoSegment, NoRegister, NoRegister, 0
+				return LDMXCSR, []Operand{modRMOperand(true, true)}
 			}
 		case [3]bool{false, true, true}:
 			if isOperandSizeOverride || isRep0 {
@@ -2176,16 +2169,17 @@ func secondaryOpcodeModRMG15(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0
 				panic("Error: Unkown opcode")
 			} else if isRep1 {
 				// 0xF3
-				return WRFSBASE, false, NoSegment, NoRegister, NoRegister, 0
+				return WRGSBASE, []Operand{modRMOperand(false, true)}
 			} else {
-				return STMXCSR, false, NoSegment, NoRegister, NoRegister, 0
+				return STMXCSR, []Operand{modRMOperand(true, true)}
 			}
 		case [3]bool{true, false, false}:
 			if isOperandSizeOverride || isRep0 || isRep1 {
 				// 0x66 0xF2 0xF3
 				panic("Error: Unkown opcode")
 			} else {
-				return XSAVE, false, NoSegment, NoRegister, NoRegister, 0
+				// return XSAVE, []Operand{modRMOperand(false, true)}
+				panic("todo this needs the mod.r/m mod field")
 			}
 		case [3]bool{true, false, true}:
 			if isOperandSizeOverride || isRep0 {
@@ -2193,28 +2187,33 @@ func secondaryOpcodeModRMG15(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0
 				panic("Error: Unkown opcode")
 			} else if isRep1 {
 				// 0xF3
-				return INCSSP, false, NoSegment, NoRegister, NoRegister, 0
+				return INCSSP, []Operand{}
 			} else {
-				panic("todo")
+				panic("todo this needs the mod.r/m mod field")
 			}
 		case [3]bool{true, true, false}:
 			if isOperandSizeOverride {
-				return CLWB, false, NoSegment, NoRegister, NoRegister, 0
-			} else if isRep0 {
+				// return CLWB, false, NoSegment, NoRegister, NoRegister, 0
+				panic("todo this needs the mod.r/m mod field")
+			}
+			if isRep0 {
 				// 0x66 0xF2
 				panic("Error: Unkown opcode")
-			} else if isRep1 {
-				// 0xF3
-				return CLRSSBSY, false, NoSegment, NoRegister, NoRegister, 0
-			} else {
-				panic("todo")
 			}
+			if isRep1 {
+				return CLWB, []Operand{modRMOperand(true, true)}
+			}
+			if isRep1 {
+				// 0xF3
+				return CLRSSBSY, []Operand{}
+			}
+			panic("todo")
 		case [3]bool{true, true, true}:
 			if isOperandSizeOverride || isRep0 || isRep1 {
 				// 0x66 0xF2 0xF3
 				panic("Error: Unkown opcode")
 			} else {
-				panic("todo")
+				panic("todo this needs the mod.r/m mod field")
 			}
 		default:
 			panic("Error: Unknown instruction")
@@ -2229,21 +2228,21 @@ func secondaryOpcodeModRMG16(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0
 	case 0xAE:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return PREFETCH, false, NoSegment, NoRegister, NoRegister, 0
+			return PREFETCHNTA, []Operand{}
 		case [3]bool{false, false, true}:
-			return PREFETCH, false, NoSegment, NoRegister, NoRegister, 0
+			return PREFETCHT0, []Operand{}
 		case [3]bool{false, true, false}:
-			return PREFETCH, false, NoSegment, NoRegister, NoRegister, 0
+			return PREFETCHT1, []Operand{}
 		case [3]bool{false, true, true}:
-			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+			return PREFETCHT2, []Operand{}
 		case [3]bool{true, false, false}:
-			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+			return NOP, []Operand{}
 		case [3]bool{true, false, true}:
-			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+			return NOP, []Operand{}
 		case [3]bool{true, true, false}:
-			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+			return NOP, []Operand{}
 		case [3]bool{true, true, true}:
-			return NOP, false, NoSegment, NoRegister, NoRegister, 0
+			return NOP, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -2258,7 +2257,8 @@ func secondaryOpcodeModRMG17(opcode byte, modrmReg [3]bool, is64Bit bool, isOper
 		switch modrmReg {
 		case [3]bool{false, false, false}:
 			if isOperandSizeOverride {
-				return EXTRQ, true, NoSegment, NoRegister, NoRegister, 0
+				// return EXTRQ, []Operand{}
+				panic("todo multiple immediate operands")
 			}
 		default:
 			panic("Error: Unknown instruction")
@@ -2274,21 +2274,21 @@ func secondaryOpcodeModRMGP(opcode byte, modrmReg [3]bool, is64Bit bool, isRep0 
 	case 0x0D:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			panic("todo")
+			return PREFETCHEXCLUSIVE, []Operand{}
 		case [3]bool{false, false, true}:
-			panic("todo")
+			return PREFETCHMODIFIED, []Operand{}
 		case [3]bool{false, true, false}:
-			panic("todo")
+			panic("todo this goes back to modrmReg /0")
 		case [3]bool{false, true, true}:
-			panic("todo")
+			panic("todo this goes back to modrmReg /0")
 		case [3]bool{true, false, false}:
-			panic("todo")
+			panic("todo this goes back to modrmReg /0")
 		case [3]bool{true, false, true}:
-			panic("todo")
+			panic("todo this goes back to modrmReg /0")
 		case [3]bool{true, true, false}:
-			panic("todo")
+			panic("todo this goes back to modrmReg /0")
 		case [3]bool{true, true, true}:
-			panic("todo")
+			panic("todo this goes back to modrmReg /0")
 		}
 	default:
 		panic("Error: Unknown instruction")

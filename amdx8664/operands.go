@@ -220,6 +220,14 @@ func (register Register) String() string {
 	}
 }
 
+type OperandType int
+
+const (
+	ImmediateOT OperandType = iota
+	RegisterOT
+	MemoryAddressOT
+)
+
 type MemoryAddress struct {
 	scale  int
 	index  int
