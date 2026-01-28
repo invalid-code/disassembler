@@ -5,9 +5,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x10:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMOVUPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVUPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMOVUPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVUPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("todo")
 		case [2]bool{true, true}:
@@ -16,9 +16,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x11:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMOVUPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVUPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMOVUPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVUPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("todo")
 		case [2]bool{true, true}:
@@ -29,18 +29,18 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 		case [2]bool{false, false}:
 			panic("todo")
 		case [2]bool{false, true}:
-			return VMOVLPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVLPD, []Operand{}
 		case [2]bool{true, false}:
-			return VMOVSLDUP, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVSLDUP, []Operand{}
 		case [2]bool{true, true}:
-			return VMOVDDUP, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVDDUP, []Operand{}
 		}
 	case 0x13:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMOVLPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVLPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMOVLPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVLPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -49,9 +49,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x14:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VUNPCKLPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VUNPCKLPS, []Operand{}
 		case [2]bool{false, true}:
-			return VUNPCKLPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VUNPCKLPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -60,9 +60,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x15:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VUNPCKHPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VUNPCKHPS, []Operand{}
 		case [2]bool{false, true}:
-			return VUNPCKHPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VUNPCKHPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -73,18 +73,18 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 		case [2]bool{false, false}:
 			panic("todo")
 		case [2]bool{false, true}:
-			return VMOVHPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVHPD, []Operand{}
 		case [2]bool{true, false}:
-			return VMOVSHDUP, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVSHDUP, []Operand{}
 		case [2]bool{true, true}:
 			panic("Error: Unknown opcode")
 		}
 	case 0x17:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMOVHPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVHPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMOVHPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVHPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -93,9 +93,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x28:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMOVAPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVAPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMOVAPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVAPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -104,9 +104,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x29:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMOVAPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVAPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMOVAPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVAPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -119,16 +119,16 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 		case [2]bool{false, true}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, false}:
-			return VCVTSI2SS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTSI2SS, []Operand{}
 		case [2]bool{true, true}:
-			return VCVTSI2SD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTSI2SD, []Operand{}
 		}
 	case 0x2B:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMOVNTPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVNTPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMOVNTPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVNTPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -159,9 +159,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x2E:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VUCOMISS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VUCOMISS, []Operand{}
 		case [2]bool{false, true}:
-			return VUCOMISD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VUCOMISD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -170,9 +170,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x2F:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VCOMISS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCOMISS, []Operand{}
 		case [2]bool{false, true}:
-			return VCOMISD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCOMISD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -264,16 +264,16 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 		case [2]bool{false, false}:
 			panic("todo")
 		case [2]bool{false, true}:
-			return KUNPCKBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return KUNPCKBW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x50:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMOVMSKPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVMSKPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMOVMSKPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVMSKPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -282,42 +282,42 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x51:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VSQRTPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSQRTPS, []Operand{}
 		case [2]bool{false, true}:
-			return VSQRTPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSQRTPD, []Operand{}
 		case [2]bool{true, false}:
-			return VSQRTSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSQRTSS, []Operand{}
 		case [2]bool{true, true}:
-			return VSQRTSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSQRTSD, []Operand{}
 		}
 	case 0x52:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VRSQRTPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VRSQRTPS, []Operand{}
 		case [2]bool{false, true}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, false}:
-			return VRSQRTSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VRSQRTSS, []Operand{}
 		case [2]bool{true, true}:
 			panic("Error: Unknown opcode")
 		}
 	case 0x53:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VRCPPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VRCPPS, []Operand{}
 		case [2]bool{false, true}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, false}:
-			return VRCPPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VRCPPS, []Operand{}
 		case [2]bool{true, true}:
 			panic("Error: Unknown opcode")
 		}
 	case 0x54:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VANDPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VANDPS, []Operand{}
 		case [2]bool{false, true}:
-			return VANDPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VANDPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -326,9 +326,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x55:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VANDNPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VANDNPS, []Operand{}
 		case [2]bool{false, true}:
-			return VANDNPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VANDNPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -337,9 +337,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x56:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VORPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VORPS, []Operand{}
 		case [2]bool{false, true}:
-			return VORPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VORPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -348,9 +348,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x57:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VXORPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VXORPS, []Operand{}
 		case [2]bool{false, true}:
-			return VXORPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VXORPD, []Operand{}
 		case [2]bool{true, false}:
 			panic("Error: Unknown opcode")
 		case [2]bool{true, true}:
@@ -359,186 +359,186 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x58:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VADDPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VADDPS, []Operand{}
 		case [2]bool{false, true}:
-			return VADDPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VADDPD, []Operand{}
 		case [2]bool{true, false}:
-			return VADDSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VADDSS, []Operand{}
 		case [2]bool{true, true}:
-			return VADDSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VADDSD, []Operand{}
 		}
 	case 0x59:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMULPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMULPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMULPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMULPD, []Operand{}
 		case [2]bool{true, false}:
-			return VMULSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMULSS, []Operand{}
 		case [2]bool{true, true}:
-			return VMULSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMULSD, []Operand{}
 		}
 	case 0x5A:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VCVTPS2PD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTPS2PD, []Operand{}
 		case [2]bool{false, true}:
-			return VCVTPD2PS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTPD2PS, []Operand{}
 		case [2]bool{true, false}:
-			return VCVTSS2SD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTSS2SD, []Operand{}
 		case [2]bool{true, true}:
-			return VCVTSD2SS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTSD2SS, []Operand{}
 		}
 	case 0x5B:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VCVTPS2PD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTPS2PD, []Operand{}
 		case [2]bool{false, true}:
-			return VCVTPD2PS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTPD2PS, []Operand{}
 		case [2]bool{true, false}:
-			return VCVTSS2SD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTSS2SD, []Operand{}
 		case [2]bool{true, true}:
 			panic("Error: Unknown instruction")
 		}
 	case 0x5C:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VSUBPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSUBPS, []Operand{}
 		case [2]bool{false, true}:
-			return VSUBPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSUBPD, []Operand{}
 		case [2]bool{true, false}:
-			return VSUBSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSUBSS, []Operand{}
 		case [2]bool{true, true}:
-			return VSUBSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSUBSD, []Operand{}
 		}
 	case 0x5D:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMINPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMINPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMINPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMINPD, []Operand{}
 		case [2]bool{true, false}:
-			return VMINSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMINSS, []Operand{}
 		case [2]bool{true, true}:
-			return VMINSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMINSD, []Operand{}
 		}
 	case 0x5E:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VDIVPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VDIVPS, []Operand{}
 		case [2]bool{false, true}:
-			return VDIVPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VDIVPD, []Operand{}
 		case [2]bool{true, false}:
-			return VDIVSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VDIVSS, []Operand{}
 		case [2]bool{true, true}:
-			return VDIVSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VDIVSD, []Operand{}
 		}
 	case 0x5F:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VMAXPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMAXPS, []Operand{}
 		case [2]bool{false, true}:
-			return VMAXPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMAXPD, []Operand{}
 		case [2]bool{true, false}:
-			return VMAXSS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMAXSS, []Operand{}
 		case [2]bool{true, true}:
-			return VMAXSD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMAXSD, []Operand{}
 		}
 	case 0x60:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPUNPCKLBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPUNPCKLBW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x61:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPUNPCKLWD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPUNPCKLWD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x62:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPUNPCKLDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPUNPCKLDQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x63:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPACKSSWB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPACKSSWB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x64:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPCMPGTB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCMPGTB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x65:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPCMPGTW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCMPGTW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x66:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPCMPGTD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCMPGTD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x67:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPACKUSWB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPACKUSWB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x68:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPUNPCKHBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPUNPCKHBW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x69:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPUNPCKHWD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPUNPCKHWD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x6A:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPUNPCKHDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPUNPCKHDQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x6B:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPACKSSDW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPACKSSDW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x6C:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPUNPCKLQDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPUNPCKLQDQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x6D:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPUNPCKHQDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPUNPCKHQDQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -552,80 +552,80 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x6F:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VMOVDQA, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVDQA, []Operand{}
 		case [2]bool{true, false}:
-			return VMOVDQU, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVDQU, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x70:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSHUFD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSHUFD, []Operand{}
 		case [2]bool{true, false}:
-			return VPSHUFHW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSHUFHW, []Operand{}
 		case [2]bool{true, true}:
-			return VPSHUFLW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSHUFLW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x71:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return NoInstruction, false, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return NoInstruction, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x72:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return NoInstruction, false, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return NoInstruction, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x73:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return NoInstruction, false, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return NoInstruction, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x74:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPCMPEQB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCMPEQB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x75:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPCMPEQW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCMPEQW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x76:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPCMPEQD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCMPEQD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x7C:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VHADDPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VHADDPD, []Operand{}
 		case [2]bool{true, true}:
-			return VHADDPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VHADDPS, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x7D:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VHSUBPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VHSUBPD, []Operand{}
 		case [2]bool{true, true}:
-			return VHSUBPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VHSUBPS, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -639,9 +639,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x7F:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VMOVDQA, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVDQA, []Operand{}
 		case [2]bool{true, false}:
-			return VMOVDQU, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVDQU, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -666,9 +666,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x92:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return KMOVW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return KMOVW, []Operand{}
 		case [2]bool{false, true}:
-			return KMOVB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return KMOVB, []Operand{}
 		case [2]bool{true, true}:
 			panic("todo")
 		default:
@@ -677,9 +677,9 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x93:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return KMOVW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return KMOVW, []Operand{}
 		case [2]bool{false, true}:
-			return KMOVB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return KMOVB, []Operand{}
 		case [2]bool{true, true}:
 			panic("todo")
 		default:
@@ -712,369 +712,369 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0xC2:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VCMPPS, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCMPPS, []Operand{}
 		case [2]bool{false, true}:
-			return VCMPPD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCMPPD, []Operand{}
 		case [2]bool{true, false}:
-			return VCMPSS, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCMPSS, []Operand{}
 		case [2]bool{true, true}:
-			return VCMPSD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCMPSD, []Operand{}
 		}
 	case 0xC4:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPINSRW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPINSRW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xC5:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPEXTRW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPEXTRW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xC6:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VSHUFPS, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSHUFPS, []Operand{}
 		case [2]bool{false, true}:
-			return VSHUFPD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VSHUFPD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD0:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VADDSUBPD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VADDSUBPD, []Operand{}
 		case [2]bool{true, true}:
-			return VADDSUBPS, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VADDSUBPS, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD1:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSRLW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSRLW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD2:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSRLD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSRLD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD3:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSRLQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSRLQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD4:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPADDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPADDQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD5:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMULLW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMULLW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD6:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VMOVQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD7:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMOVMSKB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMOVMSKB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD8:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMOVMSKB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMOVMSKB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD9:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSUBUSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSUBUSW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xDA:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMINUB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMINUB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xDB:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPAND, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPAND, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xDC:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPADDUSB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPADDUSB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xDD:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPADDUSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPADDUSW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xDE:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMAXUB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMAXUB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xDF:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPANDN, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPANDN, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE0:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPAVGB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPAVGB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE1:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSRAW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSRAW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE2:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSRAD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSRAD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE3:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPAVGW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPAVGW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE4:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMULHUW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMULHUW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE5:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMULHW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMULHW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE6:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VCVTTPD2DQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTTPD2DQ, []Operand{}
 		case [2]bool{true, false}:
-			return VCVTDQ2PD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTDQ2PD, []Operand{}
 		case [2]bool{true, true}:
-			return VCVTPD2DQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VCVTPD2DQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE7:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VMOVNTDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMOVNTDQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE8:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSUBSB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSUBSB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xE9:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSUBSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSUBSW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xEA:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMINSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMINSW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xEB:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPOR, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPOR, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xEC:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPADDSB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPADDSB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xED:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPADDSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPADDSW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xEE:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMAXSW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMAXSW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xEF:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPXOR, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPXOR, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF0:
 		switch opcodeExt {
 		case [2]bool{true, true}:
-			return VLDDQU, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VLDDQU, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF1:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSLLW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSLLW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF2:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSLLD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSLLD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF3:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSLLQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSLLQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF4:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMULUDQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMULUDQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF5:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPMADDWD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMADDWD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF6:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSADBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSADBW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF7:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VMASKMOVDQU, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VMASKMOVDQU, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF8:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSUBB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSUBB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF9:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSUBW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSUBW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xFA:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSUBD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSUBD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xFB:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPSUBQ, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPSUBQ, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xFC:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPADDB, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPADDB, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xFD:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPADDW, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPADDW, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xFE:
 		switch opcodeExt {
 		case [2]bool{false, true}:
-			return VPADDD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPADDD, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1091,11 +1091,11 @@ func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool, modrmReg [3]bool, is64
 		case [2]bool{false, true}:
 			switch modrmReg {
 			case [3]bool{false, true, false}:
-				return VPSRLW, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSRLW, []Operand{}
 			case [3]bool{true, false, false}:
-				return VPSRAW, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSRAW, []Operand{}
 			case [3]bool{true, true, false}:
-				return VPSLLW, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSLLW, []Operand{}
 			default:
 				panic("Error: Unknown instruction")
 			}
@@ -1107,11 +1107,11 @@ func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool, modrmReg [3]bool, is64
 		case [2]bool{false, true}:
 			switch modrmReg {
 			case [3]bool{false, true, false}:
-				return VPSRLD, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSRLD, []Operand{}
 			case [3]bool{true, false, false}:
-				return VPSRAD, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSRAD, []Operand{}
 			case [3]bool{true, true, false}:
-				return VPSLLD, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSLLD, []Operand{}
 			default:
 				panic("Error: Unknown instruction")
 			}
@@ -1123,13 +1123,13 @@ func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool, modrmReg [3]bool, is64
 		case [2]bool{false, true}:
 			switch modrmReg {
 			case [3]bool{false, true, false}:
-				return VPSRLQ, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSRLQ, []Operand{}
 			case [3]bool{false, true, true}:
-				return VPSRLDQ, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSRLDQ, []Operand{}
 			case [3]bool{true, true, false}:
-				return VPSLLQ, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSLLQ, []Operand{}
 			case [3]bool{true, true, true}:
-				return VPSLLDQ, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VPSLLDQ, []Operand{}
 			default:
 				panic("Error: Unknown instruction")
 			}
@@ -1141,9 +1141,9 @@ func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool, modrmReg [3]bool, is64
 		case [2]bool{false, false}:
 			switch modrmReg {
 			case [3]bool{false, true, false}:
-				return VLDMXCSR, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VLDMXCSR, []Operand{}
 			case [3]bool{false, true, true}:
-				return VSTMXCSR, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return VSTMXCSR, []Operand{}
 			default:
 				panic("Error: Unknown instruction")
 			}
@@ -1155,11 +1155,11 @@ func vexOpcodeMap1ModRMG1(opcode byte, opcodeExt [2]bool, modrmReg [3]bool, is64
 		case [2]bool{false, false}:
 			switch modrmReg {
 			case [3]bool{false, false, true}:
-				return BLSR, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return BLSR, []Operand{}
 			case [3]bool{false, true, false}:
-				return BLSMSK, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return BLSMSK, []Operand{}
 			case [3]bool{false, true, true}:
-				return BLSI, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+				return BLSI, []Operand{}
 			default:
 				panic("Error: Unknown instruction")
 			}

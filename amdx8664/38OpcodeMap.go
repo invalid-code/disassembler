@@ -5,390 +5,390 @@ func opcodeMap38(curByte byte, is64Bit bool, isRep0 bool, isOperandSizeOverride 
 	case 0x0:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSHUFB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PSHUFB, []Operand{}
 		} else {
-			return PSHUFB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PSHUFB, []Operand{}
 		}
 	case 0x1:
 		if isOperandSizeOverride {
 			// 0x66
-			return PHADDW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHADDW, []Operand{}
 		} else {
-			return PHADDW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHADDW, []Operand{}
 		}
 	case 0x2:
 		if isOperandSizeOverride {
 			// 0x66
-			return PHADDD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHADDD, []Operand{}
 		} else {
-			return PHADDD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHADDD, []Operand{}
 		}
 	case 0x3:
 		if isOperandSizeOverride {
 			// 0x66
-			return PHADDSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHADDSW, []Operand{}
 		} else {
-			return PHADDSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHADDSW, []Operand{}
 		}
 	case 0x4:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMADDUBSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMADDUBSW, []Operand{}
 		} else {
-			return PMADDUBSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMADDUBSW, []Operand{}
 		}
 	case 0x5:
 		if isOperandSizeOverride {
 			// 0x66
-			return PHSUBW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHSUBW, []Operand{}
 		} else {
-			return PHSUBW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHSUBW, []Operand{}
 		}
 	case 0x6:
 		if isOperandSizeOverride {
 			// 0x66
-			return PHSUBD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHSUBD, []Operand{}
 		} else {
-			return PHSUBD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHSUBD, []Operand{}
 		}
 	case 0x7:
 		if isOperandSizeOverride {
 			// 0x66
-			return PHSUBSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHSUBSW, []Operand{}
 		} else {
-			return PHSUBSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHSUBSW, []Operand{}
 		}
 	case 0x8:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSIGNB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PSIGNB, []Operand{}
 		} else {
-			return PSIGNB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PSIGNB, []Operand{}
 		}
 	case 0x9:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSIGNW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PSIGNW, []Operand{}
 		} else {
-			return PSIGNW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PSIGNW, []Operand{}
 		}
 	case 0xA:
 		if isOperandSizeOverride {
 			// 0x66
-			return PSIGND, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PSIGND, []Operand{}
 		} else {
-			return PSIGND, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PSIGND, []Operand{}
 		}
 	case 0xB:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMULHRSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMULHRSW, []Operand{}
 		} else {
-			return PMULHRSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMULHRSW, []Operand{}
 		}
 	case 0x10:
 		if isOperandSizeOverride {
 			// 0x66
-			return PBLENDVB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PBLENDVB, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x14:
 		if isOperandSizeOverride {
 			// 0x66
-			return BLENDVPS, true, false, NoSegment, NoRegister, NoRegister, 0
+			return BLENDVPS, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x15:
 		if isOperandSizeOverride {
 			// 0x66
-			return PBLENDVB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PBLENDVB, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x17:
 		if isOperandSizeOverride {
 			// 0x66
-			return PTEST, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PTEST, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x1C:
 		if isOperandSizeOverride {
 			// 0x66
-			return PABSB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PABSB, []Operand{}
 		} else {
-			return PABSB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PABSB, []Operand{}
 		}
 	case 0x1D:
 		if isOperandSizeOverride {
 			// 0x66
-			return PABSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PABSW, []Operand{}
 		} else {
-			return PABSW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PABSW, []Operand{}
 		}
 	case 0x1E:
 		if isOperandSizeOverride {
 			// 0x66
-			return PABSD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PABSD, []Operand{}
 		} else {
-			return PABSD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PABSD, []Operand{}
 		}
 	case 0x20:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVSXBW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVSXBW, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x21:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVSXBD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVSXBD, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x22:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVSXBQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVSXBQ, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x23:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVSXWD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVSXWD, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x24:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVSXWQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVSXWQ, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x25:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVSXDQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVSXDQ, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x28:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMULDQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMULDQ, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x29:
 		if isOperandSizeOverride {
 			// 0x66
-			return PCMPEQQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PCMPEQQ, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x2A:
 		if isOperandSizeOverride {
 			// 0x66
-			return MOVNTDQA, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVNTDQA, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x2B:
 		if isOperandSizeOverride {
 			// 0x66
-			return PACKUSDW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PACKUSDW, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x30:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVZXBW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVZXBW, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x31:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVZXBD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVZXBD, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x32:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVZXBQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVZXBQ, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x33:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVZXWD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVZXWD, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x34:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVZXWQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVZXWQ, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x35:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMOVZXDQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMOVZXDQ, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x37:
 		if isOperandSizeOverride {
 			// 0x66
-			return PCMPGTQ, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PCMPGTQ, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x38:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMINSB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMINSB, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x39:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMINSD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMINSD, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x3A:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMINUW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMINUW, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x3B:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMINUD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMINUD, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x3C:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMAXSB, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMAXSB, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x3D:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMAXSD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMAXSD, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x3E:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMAXUW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMAXUW, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x3F:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMAXUD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMAXUD, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x40:
 		if isOperandSizeOverride {
 			// 0x66
-			return PMULLD, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PMULLD, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0x41:
 		if isOperandSizeOverride {
 			// 0x66
-			return PHMINPOSUW, true, false, NoSegment, NoRegister, NoRegister, 0
+			return PHMINPOSUW, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0xDB:
 		if isOperandSizeOverride {
 			// 0x66
-			return AESIMC, true, false, NoSegment, NoRegister, NoRegister, 0
+			return AESIMC, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0xDC:
 		if isOperandSizeOverride {
 			// 0x66
-			return AESENC, true, false, NoSegment, NoRegister, NoRegister, 0
+			return AESENC, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0xDD:
 		if isOperandSizeOverride {
 			// 0x66
-			return AESENCLAST, true, false, NoSegment, NoRegister, NoRegister, 0
+			return AESENCLAST, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0xDE:
 		if isOperandSizeOverride {
 			// 0x66
-			return AESDEC, true, false, NoSegment, NoRegister, NoRegister, 0
+			return AESDEC, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0xDF:
 		if isOperandSizeOverride {
 			// 0x66
-			return AESDECLAST, true, false, NoSegment, NoRegister, NoRegister, 0
+			return AESDECLAST, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
 	case 0xF0:
 		if isOperandSizeOverride && isRep0 {
 			// 0x66 0xF2
-			return CRC32, true, false, NoSegment, NoRegister, NoRegister, 0
+			return CRC32, []Operand{}
 		} else if isRep0 {
 			// 0xF2
-			return CRC32, true, false, NoSegment, NoRegister, NoRegister, 0
+			return CRC32, []Operand{}
 		} else if isOperandSizeOverride {
 			// 0x66
-			return MOVBE, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVBE, []Operand{}
 		} else {
-			return MOVBE, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVBE, []Operand{}
 		}
 	case 0xF1:
 		if isOperandSizeOverride && isRep0 {
 			// 0x66 0xF2
-			return CRC32, true, false, NoSegment, NoRegister, NoRegister, 0
+			return CRC32, []Operand{}
 		} else if isRep0 {
 			// 0xF2
-			return CRC32, true, false, NoSegment, NoRegister, NoRegister, 0
+			return CRC32, []Operand{}
 		} else if isOperandSizeOverride {
 			// 0x66
-			return MOVBE, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVBE, []Operand{}
 		} else {
-			return MOVBE, true, false, NoSegment, NoRegister, NoRegister, 0
+			return MOVBE, []Operand{}
 		}
 	case 0xF5:
 		if isOperandSizeOverride {
 			// 0x66
-			return WRUSS, true, false, NoSegment, NoRegister, NoRegister, 0
+			return WRUSS, []Operand{}
 		} else {
 			panic("Error: Unknown opcode")
 		}
@@ -396,7 +396,7 @@ func opcodeMap38(curByte byte, is64Bit bool, isRep0 bool, isOperandSizeOverride 
 		if isOperandSizeOverride || isRep0 {
 			panic("Error: Unknown opcode")
 		}
-		return WRSS, true, false, NoSegment, NoRegister, NoRegister, 0
+		return WRSS, []Operand{}
 	default:
 		panic("Error: Unknown opcode")
 	}

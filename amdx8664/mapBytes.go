@@ -33,14 +33,11 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	modrmMod, modrmReg, modrmRM := [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false}
 	sibScale, sibIndex, sibBase := [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false, false}
 	instruction := AAA
-	memSegment := NoSegment
-	regOperand1, regOperand2, regOperand3 := NoRegister, NoRegister, NoRegister
-	instructionEncodedRegOperand := 0
 	isGpr := true
 	opcode := byte(0)
 	isCet := false
-	noDisplacementBytes, displacementBytesI, displacementBytesVal, displacementBytes, wasDisplacement := 0, 1, []byte{}, 0, false
-	noImmediateBytes, immediateBytesI, immediateBytesVal := 0, 1, []byte{}
+	displacementBytesI, displacementBytesVal, displacementBytes, wasDisplacement := 1, []byte{}, 0, false
+	immediateBytesI, immediateBytesVal := 1, []byte{}
 	operands := []Operand{}
 	resetVars := func() {
 		isPrefix, isEscapeSequence, isOpcode, isModRM, isSib, isDisplacement, isImmediate = true, false, false, false, false, false, false
@@ -68,14 +65,11 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		modrmMod, modrmReg, modrmRM = [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false}
 		sibScale, sibIndex, sibBase = [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false, false}
 		instruction = AAA
-		memSegment = NoSegment
-		regOperand1, regOperand2, regOperand3 = NoRegister, NoRegister, NoRegister
-		instructionEncodedRegOperand = 0
 		isGpr = true
 		opcode = byte(0)
 		isCet = false
-		noDisplacementBytes, displacementBytesI, displacementBytesVal, displacementBytes, wasDisplacement = 0, 1, []byte{}, 0, false
-		noImmediateBytes, immediateBytesI, immediateBytesVal = 0, 1, []byte{}
+		displacementBytesI, displacementBytesVal, displacementBytes, wasDisplacement = 1, []byte{}, 0, false
+		immediateBytesI, immediateBytesVal = 1, []byte{}
 		operands = []Operand{}
 	}
 	for _, curByte := range data {
@@ -619,15 +613,19 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				instruction, operands = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
 			}
 			for _, operand := range operands {
-				isModRM = operand.isModRM
-				isDisplacement = operand.isDisplacement
-				isImmediate = operand.isImmediate
+				isModRM = isModRM || operand.isModRM
+				isDisplacement = isDisplacement || operand.isDisplacement
+				isImmediate = isImmediate || operand.isImmediate
+				isGpr = isGpr || operand.isGpr
 			}
 			if instruction == NoInstruction {
 				opcode = curByte
 			}
 			if !isModRM && !isDisplacement && !isImmediate {
-				fmt.Println(instruction)
+				fmt.Print(instruction)
+				for _, operand := range operands {
+					fmt.Println(operand)
+				}
 				resetVars()
 			}
 			isOpcode = false
@@ -668,7 +666,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				curByte -= 1
 			}
 			modrmReg[0] = isRexR || r3B
-			if !(modrmMod[0] && modrmMod[1]) && (modrmRM[1] && !(modrmRM[2] || modrmRM[3])) {
+			if modrmRM != [4]bool{false, true, false, false} {
 				modrmRM[0] = isRexB || b3B
 			}
 			isModRM = false
@@ -764,50 +762,101 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					if modrmRM == [4]bool{false, true, false, true} {
 						// 32 bit - absolute (displacement-only) addressing
 						isDisplacement = true
-						noDisplacementBytes = 4
+						for operandI, operand := range operands {
+							if operand.operandType == MemoryAddressOT {
+								operands[operandI].noDisplacementBytes = 4
+							}
+						}
 					}
 				case [2]bool{false, true}:
 					isDisplacement = true
-					noDisplacementBytes = 1
+					for operandI, operand := range operands {
+						if operand.operandType == MemoryAddressOT {
+							operands[operandI].noDisplacementBytes = 1
+						}
+					}
 				case [2]bool{true, false}:
 					isDisplacement = true
-					noDisplacementBytes = 4
+					for operandI, operand := range operands {
+						if operand.operandType == MemoryAddressOT {
+							operands[operandI].noDisplacementBytes = 4
+						}
+					}
 				case [2]bool{true, true}:
 					for operandI, operand := range operands {
+						if operand.operandType == ImmediateOT {
+							continue
+						}
+						operands[operandI].operandType = RegisterOT
 						if operand.isModRMRegField {
+							switch modrmReg {
+							case [4]bool{false, false, false, false}:
+								operands[operandI].register = RAX
+							case [4]bool{false, false, false, true}:
+								operands[operandI].register = RCX
+							case [4]bool{false, false, true, false}:
+								operands[operandI].register = RDX
+							case [4]bool{false, false, true, true}:
+								operands[operandI].register = RBX
+							case [4]bool{false, true, false, false}:
+								operands[operandI].register = RSP
+							case [4]bool{false, true, false, true}:
+								operands[operandI].register = RBP
+							case [4]bool{false, true, true, false}:
+								operands[operandI].register = RSI
+							case [4]bool{false, true, true, true}:
+								operands[operandI].register = RDI
+							case [4]bool{true, false, false, false}:
+								operands[operandI].register = R8
+							case [4]bool{true, false, false, true}:
+								operands[operandI].register = R9
+							case [4]bool{true, false, true, false}:
+								operands[operandI].register = R10
+							case [4]bool{true, false, true, true}:
+								operands[operandI].register = R11
+							case [4]bool{true, true, false, false}:
+								operands[operandI].register = R12
+							case [4]bool{true, true, false, true}:
+								operands[operandI].register = R13
+							case [4]bool{true, true, true, false}:
+								operands[operandI].register = R14
+							case [4]bool{true, true, true, true}:
+								operands[operandI].register = R15
+							}
+						} else {
 							switch modrmRM {
 							case [4]bool{false, false, false, false}:
-								if !operand.isModRMRegField {
-									operands[operandI].register = RAX
-								}
+								operands[operandI].register = RAX
 							case [4]bool{false, false, false, true}:
-								if !operand.isModRMRegField {
-									operands[operandI].register = RCX
-								}
+								operands[operandI].register = RCX
 							case [4]bool{false, false, true, false}:
-								if !operand.isModRMRegField {
-									operands[operandI].register = RDX
-								}
+								operands[operandI].register = RDX
 							case [4]bool{false, false, true, true}:
-								if !operand.isModRMRegField {
-									operands[operandI].register = RBX
-								}
+								operands[operandI].register = RBX
 							case [4]bool{false, true, false, false}:
-								if !operand.isModRMRegField {
-									operands[operandI].register = RSP
-								}
+								operands[operandI].register = RSP
 							case [4]bool{false, true, false, true}:
-								if !operand.isModRMRegField {
-									operands[operandI].register = RBP
-								}
+								operands[operandI].register = RBP
 							case [4]bool{false, true, true, false}:
-								if !operand.isModRMRegField {
-									operands[operandI].register = RSI
-								}
+								operands[operandI].register = RSI
 							case [4]bool{false, true, true, true}:
-								if !operand.isModRMRegField {
-									operands[operandI].register = RDI
-								}
+								operands[operandI].register = RDI
+							case [4]bool{true, false, false, false}:
+								operands[operandI].register = R8
+							case [4]bool{true, false, false, true}:
+								operands[operandI].register = R9
+							case [4]bool{true, false, true, false}:
+								operands[operandI].register = R10
+							case [4]bool{true, false, true, true}:
+								operands[operandI].register = R11
+							case [4]bool{true, true, false, false}:
+								operands[operandI].register = R12
+							case [4]bool{true, true, false, true}:
+								operands[operandI].register = R13
+							case [4]bool{true, true, true, false}:
+								operands[operandI].register = R14
+							case [4]bool{true, true, true, true}:
+								operands[operandI].register = R15
 							}
 						}
 					}
@@ -816,86 +865,104 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				if isGpr {
 					switch modrmMod {
 					case [2]bool{false, false}:
+						// 32 bit - absolute (displacement-only) addressing
 						if modrmRM == [4]bool{false, true, false, true} {
 							isDisplacement = true
-							noDisplacementBytes = 4
+							for operandI, operand := range operands {
+								if operand.operandType == MemoryAddressOT {
+									operands[operandI].noDisplacementBytes = 4
+								}
+							}
 						}
 					case [2]bool{false, true}:
 						isDisplacement = true
-						noDisplacementBytes = 1
+						for operandI, operand := range operands {
+							if operand.operandType == MemoryAddressOT {
+								operands[operandI].noDisplacementBytes = 1
+							}
+						}
 					case [2]bool{true, false}:
 						isDisplacement = true
-						noDisplacementBytes = 4
+						for operandI, operand := range operands {
+							if operand.operandType == MemoryAddressOT {
+								operands[operandI].noDisplacementBytes = 4
+							}
+						}
 					case [2]bool{true, true}:
 						for operandI, operand := range operands {
+							operands[operandI].operandType = RegisterOT
+							if operand.operandType == ImmediateOT {
+								continue
+							}
 							if operand.isModRMRegField {
 								switch modrmReg {
 								case [4]bool{false, false, false, false}:
-									if operand.isModRMRegField {
-										operands[operandI].register = RAX
-									}
+									operands[operandI].register = RAX
 								case [4]bool{false, false, false, true}:
-									if operand.isModRMRegField {
-										operands[operandI].register = RCX
-									}
+									operands[operandI].register = RCX
 								case [4]bool{false, false, true, false}:
-									if operand.isModRMRegField {
-										operands[operandI].register = RDX
-									}
+									operands[operandI].register = RDX
 								case [4]bool{false, false, true, true}:
-									if operand.isModRMRegField {
-										operands[operandI].register = RBX
-									}
+									operands[operandI].register = RBX
 								case [4]bool{false, true, false, false}:
-									if operand.isModRMRegField {
-										operands[operandI].register = RSP
-									}
+									operands[operandI].register = RSP
 								case [4]bool{false, true, false, true}:
-									if operand.isModRMRegField {
-										operands[operandI].register = RBP
-									}
+									operands[operandI].register = RBP
 								case [4]bool{false, true, true, false}:
-									if operand.isModRMRegField {
-										operands[operandI].register = RSI
-									}
+									operands[operandI].register = RSI
 								case [4]bool{false, true, true, true}:
-									if operand.isModRMRegField {
-										operands[operandI].register = RDI
-									}
+									operands[operandI].register = RDI
+								case [4]bool{true, false, false, false}:
+									operands[operandI].register = R8
+								case [4]bool{true, false, false, true}:
+									operands[operandI].register = R9
+								case [4]bool{true, false, true, false}:
+									operands[operandI].register = R10
+								case [4]bool{true, false, true, true}:
+									operands[operandI].register = R11
+								case [4]bool{true, true, false, false}:
+									operands[operandI].register = R12
+								case [4]bool{true, true, false, true}:
+									operands[operandI].register = R13
+								case [4]bool{true, true, true, false}:
+									operands[operandI].register = R14
+								case [4]bool{true, true, true, true}:
+									operands[operandI].register = R15
 								}
+							} else {
 								switch modrmRM {
 								case [4]bool{false, false, false, false}:
-									if !operand.isModRMRegField {
-										operands[operandI].register = RAX
-									}
+									operands[operandI].register = RAX
 								case [4]bool{false, false, false, true}:
-									if !operand.isModRMRegField {
-										operands[operandI].register = RCX
-									}
+									operands[operandI].register = RCX
 								case [4]bool{false, false, true, false}:
-									if !operand.isModRMRegField {
-										operands[operandI].register = RDX
-									}
+									operands[operandI].register = RDX
 								case [4]bool{false, false, true, true}:
-									if !operand.isModRMRegField {
-										operands[operandI].register = RBX
-									}
+									operands[operandI].register = RBX
 								case [4]bool{false, true, false, false}:
-									if !operand.isModRMRegField {
-										operands[operandI].register = RSP
-									}
+									operands[operandI].register = RSP
 								case [4]bool{false, true, false, true}:
-									if !operand.isModRMRegField {
-										operands[operandI].register = RBP
-									}
+									operands[operandI].register = RBP
 								case [4]bool{false, true, true, false}:
-									if !operand.isModRMRegField {
-										operands[operandI].register = RSI
-									}
+									operands[operandI].register = RSI
 								case [4]bool{false, true, true, true}:
-									if !operand.isModRMRegField {
-										operands[operandI].register = RDI
-									}
+									operands[operandI].register = RDI
+								case [4]bool{true, false, false, false}:
+									operands[operandI].register = R8
+								case [4]bool{true, false, false, true}:
+									operands[operandI].register = R9
+								case [4]bool{true, false, true, false}:
+									operands[operandI].register = R10
+								case [4]bool{true, false, true, true}:
+									operands[operandI].register = R11
+								case [4]bool{true, true, false, false}:
+									operands[operandI].register = R12
+								case [4]bool{true, true, false, true}:
+									operands[operandI].register = R13
+								case [4]bool{true, true, true, false}:
+									operands[operandI].register = R14
+								case [4]bool{true, true, true, true}:
+									operands[operandI].register = R15
 								}
 							}
 						}
@@ -910,7 +977,18 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				}
 			}
 			if !(isSib || isDisplacement || isImmediate) {
-				fmt.Println(instruction, regOperand1, regOperand2)
+				fmt.Printf("%v ", instruction)
+				for _, operand := range operands {
+					switch operand.operandType {
+					case ImmediateOT:
+					case RegisterOT:
+						fmt.Printf("%v ", operand.register)
+					case MemoryAddressOT:
+						fmt.Printf("%v ", operand.memoryAddress)
+					case UnknownOT:
+					}
+				}
+				fmt.Println()
 				resetVars()
 			}
 			continue
@@ -1027,14 +1105,21 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		// displacemet
 		if isDisplacement {
 			displacementBytesVal = append(displacementBytesVal, curByte)
-			if displacementBytesI == noDisplacementBytes {
-				displacementBytes = util.ConvMultiByteToSingleByte(displacementBytesVal, endianness)
-				if !isImmediate {
-					fmt.Printf("%v %v %v %X\n", instruction, regOperand1, regOperand2, displacementBytes)
-					resetVars()
+			finishedDisp := false
+			for _, operand := range operands {
+				if displacementBytesI == operand.noDisplacementBytes {
+					displacementBytes = util.ConvMultiByteToSingleByte(displacementBytesVal, endianness)
+					fmt.Println("hello")
+					if !isImmediate {
+						resetVars()
+					}
+					wasDisplacement = true
+					isDisplacement = false
+					finishedDisp = true
+					break
 				}
-				wasDisplacement = true
-				isDisplacement = false
+			}
+			if finishedDisp {
 				continue
 			}
 			displacementBytesI += 1
@@ -1044,18 +1129,23 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		// immediate
 		if isImmediate {
 			immediateBytesVal = append(immediateBytesVal, curByte)
-			if immediateBytesI == noImmediateBytes {
-				immediateBytes := util.ConvMultiByteToSingleByte(immediateBytesVal, endianness)
-				fmt.Printf("%v %v %v ", instruction, regOperand1, regOperand2)
-				if wasDisplacement {
-					fmt.Printf("%X ", displacementBytes)
+			for _, operand := range operands {
+				if operand.operandType != ImmediateOT {
+					continue
 				}
-				fmt.Printf("%X\n", immediateBytes)
-				resetVars()
-				continue
+				if immediateBytesI == operand.noImmediateBytes {
+					immediateBytes := util.ConvMultiByteToSingleByte(immediateBytesVal, endianness)
+					fmt.Printf("%v ", instruction)
+					if wasDisplacement {
+						fmt.Printf("%X ", displacementBytes)
+					}
+					fmt.Printf("%X\n", immediateBytes)
+					resetVars()
+					continue
+				}
 			}
 			immediateBytesI += 1
 		}
-		fmt.Sprint(memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand)
+		// fmt.Sprint(memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand)
 	}
 }

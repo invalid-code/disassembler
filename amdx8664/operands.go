@@ -1,5 +1,7 @@
 package amdx8664
 
+import "fmt"
+
 type MemSegment int
 
 const (
@@ -226,13 +228,33 @@ const (
 	ImmediateOT OperandType = iota
 	RegisterOT
 	MemoryAddressOT
+	UnknownOT
 )
+
+func (opType OperandType) String() string {
+	switch opType {
+	case ImmediateOT:
+		return "ImmediateOT"
+	case RegisterOT:
+		return "RegisterOT"
+	case MemoryAddressOT:
+		return "MemoryAddressOT"
+	case UnknownOT:
+		return "UnknownOT"
+	default:
+		return ""
+	}
+}
 
 type MemoryAddress struct {
 	scale  int
 	index  int
 	base   Register
 	offset int
+}
+
+func (memAddr MemoryAddress) String() string {
+	return fmt.Sprintf(" scale: %v,\n index: %v,\n base: %v,\n offset: %v\n", memAddr.scale, memAddr.index, memAddr.base, memAddr.offset)
 }
 
 type Operand struct {
@@ -246,11 +268,16 @@ type Operand struct {
 	isDisplacement               bool
 	noDisplacementBytes          int
 	instructionEncodedInt        int
+	operandType                  OperandType
 	register                     Register
 	memoryAddress                MemoryAddress
 }
 
-func modRMOperand(isRegField bool, isGpr bool) Operand {
+func (operand Operand) String() string {
+	return fmt.Sprintf(" isModRM: %v,\n isModRMRegField: %v,\n isGpr: %v,\n isImmediate: %v,\n noImmediateBytes: %v,\n instructionEncodedReg: %v,\n instructionEncodedMemSegment: %v,\n isDisplacement: %v,\n noDisplacementBytes: %v,\n instructionEncodedInt: %v,\n operandType: %v,\n register: %v,\n memoryAddress: %v\n", operand.isModRM, operand.isModRMRegField, operand.isGpr, operand.isImmediate, operand.noImmediateBytes, operand.instructionEncodedReg, operand.instructionEncodedMemSegment, operand.isDisplacement, operand.noDisplacementBytes, operand.instructionEncodedInt, operand.operandType, operand.register, operand.memoryAddress)
+}
+
+func modRMRegOperand(isRegField bool, isGpr bool) Operand {
 	return Operand{
 		isModRM:                      true,
 		isModRMRegField:              isRegField,
@@ -262,6 +289,25 @@ func modRMOperand(isRegField bool, isGpr bool) Operand {
 		isDisplacement:               false,
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        0,
+		operandType:                  RegisterOT,
+		register:                     NoRegister,
+		memoryAddress:                MemoryAddress{},
+	}
+}
+
+func modRMMemOperand(isRegField bool, isGpr bool) Operand {
+	return Operand{
+		isModRM:                      true,
+		isModRMRegField:              isRegField,
+		isGpr:                        isGpr,
+		isImmediate:                  false,
+		noImmediateBytes:             0,
+		instructionEncodedReg:        NoRegister,
+		instructionEncodedMemSegment: NoSegment,
+		isDisplacement:               false,
+		noDisplacementBytes:          0,
+		instructionEncodedInt:        0,
+		operandType:                  MemoryAddressOT,
 		register:                     NoRegister,
 		memoryAddress:                MemoryAddress{},
 	}
@@ -278,6 +324,7 @@ func instructionEncodedRegOperand(reg Register) Operand {
 		isDisplacement:               false,
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        0,
+		operandType:                  RegisterOT,
 		register:                     NoRegister,
 		memoryAddress:                MemoryAddress{},
 	}
@@ -294,6 +341,7 @@ func immediateOperand(noImmediateBytes int) Operand {
 		isDisplacement:               false,
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        0,
+		operandType:                  ImmediateOT,
 		register:                     NoRegister,
 		memoryAddress:                MemoryAddress{},
 	}
@@ -310,6 +358,7 @@ func memSegmentOperand(memSegment MemSegment) Operand {
 		isDisplacement:               false,
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        0,
+		operandType:                  UnknownOT,
 		register:                     NoRegister,
 		memoryAddress:                MemoryAddress{},
 	}
@@ -326,6 +375,7 @@ func displacementOperand(noDisplacementBytes int) Operand {
 		isDisplacement:               true,
 		noDisplacementBytes:          noDisplacementBytes,
 		instructionEncodedInt:        0,
+		operandType:                  UnknownOT,
 		register:                     NoRegister,
 		memoryAddress:                MemoryAddress{},
 	}
@@ -342,6 +392,7 @@ func instructionEncodedIntOperand(instructionEncodedInt int) Operand {
 		isDisplacement:               false,
 		noDisplacementBytes:          0,
 		instructionEncodedInt:        instructionEncodedInt,
+		operandType:                  UnknownOT,
 		register:                     NoRegister,
 		memoryAddress:                MemoryAddress{},
 	}

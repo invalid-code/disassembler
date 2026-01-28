@@ -4,9 +4,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 	noImmediateBytes, noDisplacementBytes := 4, 4
 	switch curByte {
 	case 0x00, 0x01:
-		return ADD, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return ADD, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x02, 0x03:
-		return ADD, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return ADD, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x04:
 		return ADD, []Operand{instructionEncodedRegOperand(AL), immediateOperand(1)}
 	case 0x05:
@@ -29,9 +29,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		}
 		return POP, []Operand{memSegmentOperand(ES)}
 	case 0x08, 0x09:
-		return OR, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return OR, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x0A, 0x0B:
-		return OR, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return OR, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x0C:
 		return OR, []Operand{instructionEncodedRegOperand(AL), immediateOperand(1)}
 	case 0x0D:
@@ -51,9 +51,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 	case 0x0F:
 		panic("Error: 2-byte opcodes")
 	case 0x10, 0x11:
-		return ADC, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return ADC, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x12, 0x13:
-		return ADC, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return ADC, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x14:
 		return ADC, []Operand{instructionEncodedRegOperand(AL), immediateOperand(1)}
 	case 0x15:
@@ -77,9 +77,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		}
 		return POP, []Operand{memSegmentOperand(SS)}
 	case 0x18, 0x19:
-		return SBB, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return SBB, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x1A, 0x1B:
-		return SBB, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return SBB, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x1C:
 		return SBB, []Operand{instructionEncodedRegOperand(AL), immediateOperand(1)}
 	case 0x1D:
@@ -103,9 +103,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		}
 		return POP, []Operand{memSegmentOperand(DS)}
 	case 0x20, 0x21:
-		return AND, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return AND, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x22, 0x23:
-		return AND, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return AND, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x24:
 		return AND, []Operand{instructionEncodedRegOperand(AL), immediateOperand(1)}
 	case 0x25:
@@ -126,9 +126,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		}
 		return DAA, []Operand{}
 	case 0x28, 0x29:
-		return SUB, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return SUB, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x2A, 0x2B:
-		return SUB, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return SUB, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x2C:
 		return SUB, []Operand{instructionEncodedRegOperand(AL), immediateOperand(1)}
 	case 0x2D:
@@ -149,9 +149,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		}
 		return DAS, []Operand{}
 	case 0x30, 0x31:
-		return XOR, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return XOR, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x32, 0x33:
-		return XOR, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return XOR, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x34:
 		return XOR, []Operand{instructionEncodedRegOperand(AL), immediateOperand(1)}
 	case 0x35:
@@ -172,9 +172,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		}
 		return AAA, []Operand{}
 	case 0x38, 0x39:
-		return CMP, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return CMP, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x3A, 0x3B:
-		return CMP, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return CMP, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x3C:
 		return CMP, []Operand{instructionEncodedRegOperand(AL), immediateOperand(1)}
 	case 0x3D:
@@ -486,12 +486,12 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
 		}
-		return BOUND, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return BOUND, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x63:
 		if is64Bit {
-			return MOVSXD, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+			return MOVSXD, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 		}
-		return ARPL, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return ARPL, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x64:
 		panic("Error: this is the FS segment")
 	case 0x65:
@@ -517,11 +517,11 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		} else {
 			// todo need to figure out defaut operand size
 		}
-		return PUSH, []Operand{modRMOperand(true, true), modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+		return PUSH, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 	case 0x6A:
 		return PUSH, []Operand{immediateOperand(1)}
 	case 0x6B:
-		return PUSH, []Operand{modRMOperand(true, true), modRMOperand(false, true), immediateOperand(1)}
+		return PUSH, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true), immediateOperand(1)}
 	case 0x6C:
 		panic("todo dont know how to deal with Y operand syntax notation")
 	case 0x6D:
@@ -563,7 +563,7 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 	case 0x7F:
 		return JNLE, []Operand{displacementOperand(1)}
 	case 0x80, 0x82, 0x83:
-		return NoInstruction, []Operand{modRMOperand(false, true), immediateOperand(1)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 	case 0x81:
 		if is64Bit {
 			if !isRexW && isOperandSizeOveride {
@@ -572,19 +572,19 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		} else {
 			// todo need to figure out defaut operand size
 		}
-		return NoInstruction, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 	case 0x84, 0x85:
-		return TEST, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return TEST, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x86, 0x87:
-		return XCHG, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return XCHG, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x88, 0x89:
-		return MOV, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return MOV, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0x8A, 0x8B:
-		return MOV, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return MOV, []Operand{modRMRegOperand(true, true), modRMRegOperand(false, true)}
 	case 0x8C:
 		panic("todo multiple operand types")
 	case 0x8D:
-		return LEA, []Operand{modRMOperand(true, true), modRMOperand(false, true)}
+		return LEA, []Operand{modRMRegOperand(true, true), modRMMemOperand(false, true)}
 	case 0x8E:
 		panic("Error: todo don't know segment registers")
 	case 0x8F:
@@ -889,7 +889,7 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		}
 		return MOV, []Operand{instructionEncodedRegOperand(RDI), immediateOperand(4)}
 	case 0xC0, 0xC1:
-		return NoInstruction, []Operand{modRMOperand(false, true), immediateOperand(1)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 	case 0xC2:
 		// near
 		return RET, []Operand{immediateOperand(2)}
@@ -900,14 +900,14 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		if is64Bit {
 			panic("Error: this is the vex escape prefix")
 		}
-		return LES, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return LES, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0xC5:
 		if is64Bit {
 			panic("Error: this is the vex escape prefix")
 		}
-		return LDS, []Operand{modRMOperand(false, true), modRMOperand(true, true)}
+		return LDS, []Operand{modRMRegOperand(false, true), modRMRegOperand(true, true)}
 	case 0xC6:
-		return NoInstruction, []Operand{modRMOperand(false, true), immediateOperand(1)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 	case 0xC7:
 		if is64Bit {
 			if !isRexW && isOperandSizeOveride {
@@ -916,7 +916,7 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		} else {
 			// todo need to figure out defaut operand size
 		}
-		return NoInstruction, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 	case 0xC8:
 		// return ENTER, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 0, 0 // todo need to figure out how many immediate bytes
 		panic("todo don't know. This takes 2 immediates")
@@ -950,9 +950,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		// todo need to figure out defaut operand size
 		return IRETD, []Operand{}
 	case 0xD0, 0xD1:
-		return NoInstruction, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 	case 0xD2, 0xD3:
-		return NoInstruction, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 	case 0xD4:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
@@ -1042,9 +1042,9 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 	case 0xF5:
 		return CMC, []Operand{}
 	case 0xF6:
-		return NoInstruction, []Operand{modRMOperand(false, true)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true)}
 	case 0xF7:
-		return NoInstruction, []Operand{modRMOperand(false, true)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true)}
 	case 0xF8:
 		return CLC, []Operand{}
 	case 0xF9:
@@ -1058,7 +1058,7 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 	case 0xFD:
 		return STD, []Operand{}
 	case 0xFE:
-		return NoInstruction, []Operand{modRMOperand(false, true)}
+		return NoInstruction, []Operand{modRMRegOperand(false, true)}
 	case 0xFF:
 		return NoInstruction, []Operand{}
 	default:
@@ -1072,21 +1072,21 @@ func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64Bit bool, isOperand
 	case 0x80:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ADD, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return ADD, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, false, true}:
-			return OR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return OR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, true, false}:
-			return ADC, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return ADC, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, true, true}:
-			return SBB, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return SBB, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, false, false}:
-			return AND, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return AND, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, false, true}:
-			return SUB, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return SUB, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, true, false}:
-			return XOR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return XOR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, true, true}:
-			return CMP, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return CMP, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1100,21 +1100,21 @@ func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64Bit bool, isOperand
 		}
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ADD, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return ADD, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{false, false, true}:
-			return OR, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return OR, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{false, true, false}:
-			return ADC, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return ADC, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{false, true, true}:
-			return SBB, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return SBB, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{true, false, false}:
-			return AND, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return AND, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{true, false, true}:
-			return SUB, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return SUB, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{true, true, false}:
-			return XOR, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return XOR, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{true, true, true}:
-			return CMP, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return CMP, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1123,21 +1123,21 @@ func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64Bit bool, isOperand
 	case 0x83:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ADD, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return ADD, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, false, true}:
-			return OR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return OR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, true, false}:
-			return ADC, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return ADC, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, true, true}:
-			return SBB, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return SBB, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, false, false}:
-			return AND, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return AND, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, false, true}:
-			return SUB, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return SUB, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, true, false}:
-			return XOR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return XOR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, true, true}:
-			return CMP, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return CMP, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1151,7 +1151,7 @@ func primaryOpcodeModRMG1a(opcode byte, modrmReg [3]bool, is64Bit bool, isOperan
 	case 0x8F:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return POP, []Operand{modRMOperand(false, true)}
+			return POP, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{false, false, true}, [3]bool{false, true, false}, [3]bool{false, true, true}, [3]bool{true, false, false}, [3]bool{true, false, true}, [3]bool{true, true, false}, [3]bool{true, true, true}:
 			panic("todo")
 		default:
@@ -1167,126 +1167,126 @@ func primaryOpcodeModRMG2(opcode byte, modrmReg [3]bool, is64Bit bool, isOperand
 	case 0xC0:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return ROL, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, false, true}:
-			return ROR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return ROR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, true, false}:
-			return RCL, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return RCL, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, true, true}:
-			return RCR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return RCR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return SHR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return SAR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xC1:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return ROL, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, false, true}:
-			return ROR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return ROR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, true, false}:
-			return RCL, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return RCL, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{false, true, true}:
-			return RCR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return RCR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return SHR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return SAR, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD0:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return ROL, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{false, false, true}:
-			return ROR, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return ROR, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{false, true, false}:
-			return RCL, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return RCL, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{false, true, true}:
-			return RCR, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return RCR, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return SHR, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return SAR, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD1:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return ROL, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{false, false, true}:
-			return ROR, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return ROR, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{false, true, false}:
-			return RCL, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return RCL, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{false, true, true}:
-			return RCR, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return RCR, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return SHR, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, []Operand{modRMOperand(false, true), instructionEncodedIntOperand(1)}
+			return SAR, []Operand{modRMRegOperand(false, true), instructionEncodedIntOperand(1)}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD2:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return ROL, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{false, false, true}:
-			return ROR, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return ROR, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{false, true, false}:
-			return RCL, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return RCL, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{false, true, true}:
-			return RCR, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return RCR, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return SHR, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return SAR, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD3:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return ROL, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return ROL, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{false, false, true}:
-			return ROR, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return ROR, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{false, true, false}:
-			return RCL, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return RCL, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{false, true, true}:
-			return RCR, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return RCR, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{true, false, false}:
 			panic("todo")
 		case [3]bool{true, false, true}:
-			return SHR, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return SHR, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		case [3]bool{true, true, false}:
 			panic("todo")
 		case [3]bool{true, true, true}:
-			return SAR, []Operand{modRMOperand(false, true), instructionEncodedRegOperand(CL)}
+			return SAR, []Operand{modRMRegOperand(false, true), instructionEncodedRegOperand(CL)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1308,7 +1308,7 @@ func primaryOpcodeModRMG3(opcode byte, modrmReg [3]bool, is64Bit bool, isOperand
 			} else {
 				// todo need to figure out defaut operand size
 			}
-			return TEST, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return TEST, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{false, false, true}:
 			if is64Bit {
 				if !isRexW && isOperandSizeOveride {
@@ -1317,19 +1317,19 @@ func primaryOpcodeModRMG3(opcode byte, modrmReg [3]bool, is64Bit bool, isOperand
 			} else {
 				// todo need to figure out defaut operand size
 			}
-			return TEST, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return TEST, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{false, true, false}:
-			return NOT, []Operand{modRMOperand(false, true)}
+			return NOT, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{false, true, true}:
-			return NEG, []Operand{modRMOperand(false, true)}
+			return NEG, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, false, false}:
-			return MUL, []Operand{modRMOperand(false, true)}
+			return MUL, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, false, true}:
-			return IMUL, []Operand{modRMOperand(false, true)}
+			return IMUL, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, true, false}:
-			return DIV, []Operand{modRMOperand(false, true)}
+			return DIV, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, true, true}:
-			return IDIV, []Operand{modRMOperand(false, true)}
+			return IDIV, []Operand{modRMRegOperand(false, true)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1343,7 +1343,7 @@ func primaryOpcodeModRMG3(opcode byte, modrmReg [3]bool, is64Bit bool, isOperand
 			} else {
 				// todo need to figure out defaut operand size
 			}
-			return TEST, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return TEST, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{false, false, true}:
 			if is64Bit {
 				if !isRexW && isOperandSizeOveride {
@@ -1352,19 +1352,19 @@ func primaryOpcodeModRMG3(opcode byte, modrmReg [3]bool, is64Bit bool, isOperand
 			} else {
 				// todo need to figure out defaut operand size
 			}
-			return TEST, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return TEST, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		case [3]bool{false, true, false}:
-			return NOT, []Operand{modRMOperand(false, true)}
+			return NOT, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{false, true, true}:
-			return NEG, []Operand{modRMOperand(false, true)}
+			return NEG, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, false, false}:
-			return MUL, []Operand{modRMOperand(false, true)}
+			return MUL, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, false, true}:
-			return IMUL, []Operand{modRMOperand(false, true)}
+			return IMUL, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, true, false}:
-			return DIV, []Operand{modRMOperand(false, true)}
+			return DIV, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, true, true}:
-			return IDIV, []Operand{modRMOperand(false, true)}
+			return IDIV, []Operand{modRMRegOperand(false, true)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1378,9 +1378,9 @@ func primaryOpcodeModRMG4(opcode byte, modrmReg [3]bool, is64Bit bool, isOperand
 	case 0xFE:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return INC, []Operand{modRMOperand(false, true)}
+			return INC, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{false, false, true}:
-			return DEC, []Operand{modRMOperand(false, true)}
+			return DEC, []Operand{modRMRegOperand(false, true)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1394,19 +1394,19 @@ func primaryOpcodeModRMG5(opcode byte, modrmReg [3]bool, is64bit bool, isOperand
 	case 0xFF:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return INC, []Operand{modRMOperand(false, true)}
+			return INC, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{false, false, true}:
-			return DEC, []Operand{modRMOperand(false, true)}
+			return DEC, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{false, true, false}:
-			return CALL, []Operand{modRMOperand(false, true)}
+			return CALL, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{false, true, true}:
-			return CALL, []Operand{modRMOperand(false, true)}
+			return CALL, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, false, false}:
-			return JMP, []Operand{modRMOperand(false, true)}
+			return JMP, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, false, true}:
-			return JMP, []Operand{modRMOperand(false, true)}
+			return JMP, []Operand{modRMRegOperand(false, true)}
 		case [3]bool{true, true, false}:
-			return PUSH, []Operand{modRMOperand(false, true)}
+			return PUSH, []Operand{modRMRegOperand(false, true)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1421,7 +1421,7 @@ func primaryOpcodeModRMG11(opcode byte, modrmReg [3]bool, is64Bit bool, isOperan
 	case 0xC6:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return MOV, []Operand{modRMOperand(false, true), immediateOperand(1)}
+			return MOV, []Operand{modRMRegOperand(false, true), immediateOperand(1)}
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1435,7 +1435,7 @@ func primaryOpcodeModRMG11(opcode byte, modrmReg [3]bool, is64Bit bool, isOperan
 			} else {
 				// todo need to figure out defaut operand size
 			}
-			return MOV, []Operand{modRMOperand(false, true), immediateOperand(noImmediateBytes)}
+			return MOV, []Operand{modRMRegOperand(false, true), immediateOperand(noImmediateBytes)}
 		default:
 			panic("Error: Unknown instruction")
 		}

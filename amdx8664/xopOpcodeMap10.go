@@ -5,12 +5,12 @@ func xopOpcodeMap10(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) 
 	case 0x10:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return BEXTR, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return BEXTR, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0x12:
-		return NoInstruction, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		return NoInstruction, []Operand{}
 	default:
 		panic("Error: Unknown instruction")
 	}
@@ -21,9 +21,9 @@ func xopOpcodeMap9ModRMG4(opcode byte, modrmReg [3]bool, is64Bit bool, isRexW bo
 	case 0x12:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return LWPINS, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return LWPINS, []Operand{}
 		case [3]bool{false, false, true}:
-			return LWPVAL, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return LWPVAL, []Operand{}
 		default:
 			panic("Error: Unknown instruction")
 		}

@@ -5,182 +5,182 @@ func xopOpcodeMap8(curByte byte, opcodeExt [2]bool, is64Bit bool, isRexW bool) (
 	case 0x85:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSSWW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSSWW, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0x86:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSSWD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSSWD, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0x87:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSSDQL, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSSDQL, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0x8E:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSSDD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSSDD, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0x8F:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSSDQH, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSSDQH, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0x95:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSWW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSWW, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0x96:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSWD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSWD, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0x97:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSDQL, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSDQL, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0x9E:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSDD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSDD, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0x9F:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMACSDQH, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMACSDQH, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xA2:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPCMOV, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCMOV, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xA3:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPPERM, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPPERM, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xA6:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMADCSSWD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMADCSSWD, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xB6:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPMADCSWD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPMADCSWD, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xC0:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPROTB, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPROTB, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xC1:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPROTW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPROTW, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xC2:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPROTD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPROTD, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xC3:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPROTQ, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPROTQ, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xCC:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPCOMccB, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCOMccB, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xCD:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPCOMccW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCOMccW, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xCE:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPCOMccD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCOMccD, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xCF:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPCOMccQ, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCOMccQ, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xEC:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPCOMccUB, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCOMccUB, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xED:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPCOMccUW, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCOMccUW, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xEE:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPCOMccUD, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCOMccUD, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
 	case 0xEF:
 		switch opcodeExt {
 		case [2]bool{false, false}:
-			return VPCOMccUQ, true, true, NoSegment, NoRegister, NoRegister, NoRegister, 0
+			return VPCOMccUQ, []Operand{}
 		default:
 			panic("Error: Unknown opcode")
 		}
