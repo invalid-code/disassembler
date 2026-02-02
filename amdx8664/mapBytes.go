@@ -32,6 +32,8 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	mapSelect := [5]bool{false, false, false, false, false}
 	modrmMod, modrmReg, modrmRM := [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false}
 	sibScale, sibIndex, sibBase := [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false, false}
+	sibScaleVal, sibIndexVal, sibBaseVal := 0, NoRegister, NoRegister
+	wasSib := false
 	instruction := AAA
 	memSegment := NoSegment
 	regOperand1, regOperand2, regOperand3 := NoRegister, NoRegister, NoRegister
@@ -67,6 +69,8 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		mapSelect = [5]bool{false, false, false, false, false}
 		modrmMod, modrmReg, modrmRM = [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false}
 		sibScale, sibIndex, sibBase = [2]bool{false, false}, [4]bool{false, false, false, false}, [4]bool{false, false, false, false}
+		sibScaleVal, sibIndexVal, sibBaseVal = 0, NoRegister, NoRegister
+		wasSib = false
 		instruction = AAA
 		memSegment = NoSegment
 		regOperand1, regOperand2, regOperand3 = NoRegister, NoRegister, NoRegister
@@ -99,31 +103,31 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				//				isAddressSizeOverride = true
+				// isAddressSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x2E:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				//				isCSSegmentSizeOverride = true
+				// isCSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x3E:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				//				isDSSegmentSizeOverride = true
+				// isDSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x26:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				//				isESSegmentSizeOverride = true
+				// isESSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x64:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				//				isFSSegmentSizeOverride = true
+				// isFSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x65:
 				if legacePrefixCnt == 4 {
@@ -336,15 +340,18 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				isVex3Byte = false
 				isPrefix = false
 				isEscapeSequence = true
+				continue
 			case 0xC4:
 				isVex = true
 				isVex3Byte = true
 				isPrefix = false
 				isEscapeSequence = true
+				continue
 			case 0x8F:
 				isXop = true
 				isPrefix = false
 				isEscapeSequence = true
+				continue
 			default:
 				isPrefix = false
 				isEscapeSequence = true
@@ -614,7 +621,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					isCet = true
 					continue
 				}
-				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
+				instruction, isModRM, isDisplacement, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, regOperand1ModRMReg, noImmediateBytes, noDisplacementBytes = secondaryOpcodeMap(curByte, bitFormat, isRep0, isRep1, isOperandSizeOverride, isRexW)
 			} else {
 				instruction, isModRM, isDisplacement, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, regOperand1ModRMReg, noImmediateBytes, noDisplacementBytes = primaryOpcode(curByte, bitFormat, isOperandSizeOverride, isRexW)
 			}
@@ -739,7 +746,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					case 0xC0, 0xC1, 0xD0, 0xD1, 0xD2, 0xD3:
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG2(opcode, opcodeSel)
 					case 0xF6, 0xF7:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG3(opcode, opcodeSel, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG3(opcode, opcodeSel, isOperandSizeOverride, isRexW)
 					case 0xFE:
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG4(opcode, opcodeSel, bitFormat)
 					case 0xFF:
@@ -752,19 +759,11 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				}
 				switch modrmMod {
 				case [2]bool{false, false}:
-					switch modrmRM {
-					case [4]bool{false, false, false, false}:
-					case [4]bool{false, false, false, true}:
-					case [4]bool{false, false, true, false}:
-					case [4]bool{false, false, true, true}:
-					case [4]bool{false, true, false, false}:
-					case [4]bool{false, true, false, true}:
+					if modrmRM == [4]bool{false, true, false, true} {
 						// 64 bit - rip addressing
 						// 32 bit - absolute (displacement-only) addressing
 						isDisplacement = true
 						noDisplacementBytes = 4
-					case [4]bool{false, true, true, false}:
-					case [4]bool{false, true, true, true}:
 					}
 				case [2]bool{false, true}:
 					isDisplacement = true
@@ -791,85 +790,17 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					case [4]bool{false, true, true, true}:
 						regOperand1 = RDI
 					}
-					if !isImmediate {
-						fmt.Println(instruction, regOperand1)
-						resetVars()
-						continue
-					}
 				}
 			} else {
 				if isGpr {
 					// figure out operand size
 					switch modrmMod {
 					case [2]bool{false, false}:
-						switch modrmReg {
-						case [4]bool{false, false, false, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RAX
-							} else {
-								regOperand2 = RAX
-							}
-						case [4]bool{false, false, false, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RCX
-							} else {
-								regOperand2 = RCX
-							}
-						case [4]bool{false, false, true, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RDX
-							} else {
-								regOperand2 = RDX
-							}
-						case [4]bool{false, false, true, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RBX
-							} else {
-								regOperand2 = RBX
-							}
-						case [4]bool{false, true, false, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RSP
-							} else {
-								regOperand2 = RSP
-							}
-						case [4]bool{false, true, false, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RBP
-							} else {
-								regOperand2 = RBP
-							}
-						case [4]bool{false, true, true, false}:
-							if regOperand1ModRMReg {
-								regOperand1 = RSI
-							} else {
-								regOperand2 = RSI
-							}
-						case [4]bool{false, true, true, true}:
-							if regOperand1ModRMReg {
-								regOperand1 = RDI
-							} else {
-								regOperand2 = RDI
-							}
-						}
-						switch modrmRM {
-						case [4]bool{false, false, false, false}:
-						case [4]bool{false, false, false, true}:
-							if bitFormat {
-								// 64 bit - rip addressing
-								isDisplacement = true
-								noDisplacementBytes = 4
-							}
-						case [4]bool{false, false, true, false}:
-						case [4]bool{false, false, true, true}:
-						case [4]bool{false, true, false, false}:
-						case [4]bool{false, true, false, true}:
+						if modrmRM == [4]bool{false, true, false, true} {
 							// 64 bit - rip addressing
 							// 32 bit - absolute (displacement-only) addressing
 							isDisplacement = true
 							noDisplacementBytes = 4
-						case [4]bool{false, true, true, false}:
-						case [4]bool{false, true, true, true}:
 						}
 					case [2]bool{false, true}:
 						isDisplacement = true
@@ -1006,33 +937,31 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				sibByte -= 64
 			}
 			sibIndex[1] = sibByte/32 == 1
-			if sibIndex[0] {
+			if sibIndex[1] {
 				sibByte -= 32
 			}
 			sibIndex[2] = sibByte/16 == 1
-			if sibIndex[1] {
+			if sibIndex[2] {
 				sibByte -= 16
 			}
 			sibIndex[3] = sibByte/8 == 1
-			if sibIndex[2] {
+			if sibIndex[3] {
 				sibByte -= 8
 			}
 			sibBase[1] = sibByte/4 == 1
-			if sibBase[0] {
-				sibByte -= 4
-			}
-			sibBase[2] = sibByte/2 == 1
 			if sibBase[1] {
 				sibByte -= 4
 			}
-			sibBase[3] = sibByte == 1
+			sibBase[2] = sibByte/2 == 1
 			if sibBase[2] {
+				sibByte -= 2
+			}
+			sibBase[3] = sibByte == 1
+			if sibBase[3] {
 				sibByte -= 1
 			}
 			sibIndex[0] = isRexX || x3B
 			sibBase[0] = isRexB || b3B
-
-			sibScaleVal := 0
 			switch sibScale {
 			case [2]bool{false, false}:
 				sibScaleVal = 1
@@ -1043,7 +972,6 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 			case [2]bool{true, true}:
 				sibScaleVal = 8
 			}
-			sibIndexVal := NoRegister
 			switch sibIndex {
 			case [4]bool{false, false, false, false}:
 				sibIndexVal = RAX
@@ -1061,46 +989,44 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 			case [4]bool{false, true, true, true}:
 				sibIndexVal = RDI
 			}
-			sibBaseVal := NoRegister
-			// `switch modrmRM {
-			// case [4]bool{false, false, false, false}:
-			// case [4]bool{false, false, true, false}:
-			// case [4]bool{false, true, false, false}:
-			// case [4]bool{false, false, true, false}:
-			// case [4]bool{false, true, true, false}:
-			// case [4]bool{true, false, false, false}:
-			// 	if modrmMod != [2]bool{true, true} {
-			// 		switch sibBase {
-			// 		case [3]bool{false, false, false}:
-			// 			sibBaseVal = RAX
-			// 		case [3]bool{false, false, true}:
-			// 			sibBaseVal = RCX
-			// 		case [3]bool{false, true, false}:
-			// 			sibBaseVal = RDX
-			// 		case [3]bool{false, true, true}:
-			// 			sibBaseVal = RBX
-			// 		case [3]bool{true, false, false}:
-			// 			sibBaseVal = RSP
-			// 		case [3]bool{true, false, true}:
-			// 			isDisplacement = true
-			// 			switch modrmMod {
-			// 			case [2]bool{false, true}:
-			// 				// todo need to specify how many displacement bytes
-			// 			case [2]bool{true, false}:
-			// 			}
-			// 		case [3]bool{true, true, false}:
-			// 			sibBaseVal = RSI
-			// 		case [3]bool{true, true, true}:
-			// 			sibBaseVal = RDI
-			// 		}
-			// 	}
-
-			// case [4]bool{true, false, true, false}:
-			// case [4]bool{true, true, false, false}:
-			// case [4]bool{true, true, true, false}:
-			// }`
+			switch sibBase {
+			case [4]bool{false, false, false, false}:
+				sibBaseVal = RAX
+			case [4]bool{false, false, false, true}:
+				sibBaseVal = RCX
+			case [4]bool{false, false, true, false}:
+				sibBaseVal = RDX
+			case [4]bool{false, false, true, true}:
+				sibBaseVal = RBX
+			case [4]bool{false, true, false, false}:
+				sibBaseVal = RSP
+			case [4]bool{false, true, false, true}:
+				isDisplacement = true
+				sibBaseVal = RBP
+				switch modrmMod {
+				case [2]bool{false, false}:
+					noDisplacementBytes = 4
+					sibBaseVal = NoRegister
+				case [2]bool{false, true}:
+					noDisplacementBytes = 1
+				case [2]bool{true, false}:
+					noDisplacementBytes = 4
+				case [2]bool{true, true}:
+					isDisplacement = false
+					sibBaseVal = NoRegister
+				}
+			case [4]bool{false, true, true, false}:
+				sibBaseVal = RSI
+			case [4]bool{false, true, true, true}:
+				sibBaseVal = RDI
+			}
+			if !isDisplacement || !isImmediate {
+				fmt.Println(instruction, regOperand1, regOperand2, fmt.Sprintf("%v * %v + %v", sibScaleVal, sibIndexVal, sibBaseVal))
+				resetVars()
+				continue
+			}
 			isSib = false
-			fmt.Sprint(sibScaleVal, sibIndexVal, sibBaseVal)
+			wasSib = true
 			continue
 		}
 		// displacemet
@@ -1109,7 +1035,15 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 			if displacementBytesI == noDisplacementBytes {
 				displacementBytes = util.ConvMultiByteToSingleByte(displacementBytesVal, endianness)
 				if !isImmediate {
-					fmt.Printf("%v %v %v %X\n", instruction, regOperand1, regOperand2, displacementBytes)
+					fmt.Printf("%v %v %v ", instruction, regOperand1, regOperand2)
+					if wasSib {
+						fmt.Printf("[%v * %v + %v + ", sibScaleVal, sibIndexVal, sibBaseVal)
+					}
+					fmt.Printf("%X", displacementBytes)
+					if wasSib {
+						fmt.Print("]")
+					}
+					fmt.Println()
 					resetVars()
 					continue
 				}

@@ -52,6 +52,8 @@ const (
 	BTR
 	BTS
 	CALL
+	CBW
+	CDQ
 	CLC
 	CLD
 	CLI
@@ -84,6 +86,8 @@ const (
 	COMISD
 	COMISS
 	CPUID
+	CQDE
+	CQO
 	CRC32
 	CVTDQ2PD
 	CVTDQ2PS
@@ -107,6 +111,8 @@ const (
 	CVTTPS2PI
 	CVTTSD2SI
 	CVTTSS2SI
+	CWD
+	CWDE
 	DAA
 	DAS
 	DEC
@@ -939,6 +945,10 @@ func (instruction Instruction) String() string {
 		return "BTS"
 	case CALL:
 		return "CALL"
+	case CBW:
+		return "CBW"
+	case CDQ:
+		return "CDQ"
 	case CLC:
 		return "CLC"
 	case CLD:
@@ -1003,6 +1013,10 @@ func (instruction Instruction) String() string {
 		return "COMISS"
 	case CPUID:
 		return "CPUID"
+	case CQDE:
+		return "CQDE"
+	case CQO:
+		return "CQO"
 	case CRC32:
 		return "CRC32"
 	case CVTDQ2PD:
@@ -1049,6 +1063,10 @@ func (instruction Instruction) String() string {
 		return "CVTTSD2SI"
 	case CVTTSS2SI:
 		return "CVTTSS2SI"
+	case CWD:
+		return "CWD"
+	case CWDE:
+		return "CWDE"
 	case DAA:
 		return "DAA"
 	case DAS:

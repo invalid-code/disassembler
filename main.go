@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	data, err := os.ReadFile("hello2")
+	data, err := os.ReadFile("hello3")
 	if err != nil {
 		panic("Error: Couldn't read file")
 	}

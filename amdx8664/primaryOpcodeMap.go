@@ -572,7 +572,7 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 	case 0x8F:
 		panic("Error: todo don't know")
 	case 0x90:
-		panic("todo could be XCHG or NOP instruction")
+		return NOP, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0, 0
 	case 0x91:
 		if is64Bit {
 			if isOperandSizeOveride {
@@ -631,9 +631,21 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 		}
 		panic("todo possibly a different operand size if 32 bit")
 	case 0x98:
-		panic("todo multiple instructions in 1 byte")
+		if isRexW {
+			return CQDE, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0, 0
+		}
+		if isOperandSizeOveride {
+			return CBW, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0, 0
+		}
+		return CWDE, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0, 0
 	case 0x99:
-		panic("todo multiple instructions in 1 byte")
+		if isRexW {
+			return CQO, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0, 0
+		}
+		if isOperandSizeOveride {
+			return CWD, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0, 0
+		}
+		return CDQ, false, false, false, NoSegment, NoRegister, NoRegister, 0, false, 0, 0
 	case 0x9A:
 		if is64Bit {
 			panic("Error: Invalid in 64-bit mode")
@@ -1221,47 +1233,54 @@ func primaryOpcodeModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, Mem
 	}
 }
 
-func primaryOpcodeModRMG3(opcode byte, modrmReg [3]bool, is64bit bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func primaryOpcodeModRMG3(opcode byte, modrmReg [3]bool, isOperandSizeOveride bool, isRexW bool) (Instruction, bool, MemSegment, Register, Register, int, int) {
+	noImmediateBytes := 4
 	switch opcode {
 	case 0xF6:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return TEST, true, NoSegment, NoRegister, NoRegister, 0
+			return TEST, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, false, true}:
-			return TEST, true, NoSegment, NoRegister, NoRegister, 0
+			return TEST, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{false, true, false}:
-			return NOT, true, NoSegment, NoRegister, NoRegister, 0
+			return NOT, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{false, true, true}:
-			return NEG, true, NoSegment, NoRegister, NoRegister, 0
+			return NEG, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, false, false}:
-			return MUL, true, NoSegment, NoRegister, NoRegister, 0
+			return MUL, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, false, true}:
-			return IMUL, true, NoSegment, NoRegister, NoRegister, 0
+			return IMUL, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, true, false}:
-			return DIV, true, NoSegment, NoRegister, NoRegister, 0
+			return DIV, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, true, true}:
-			return IDIV, true, NoSegment, NoRegister, NoRegister, 0
+			return IDIV, false, NoSegment, NoRegister, NoRegister, 0, 0
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xF7:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return TEST, true, NoSegment, NoRegister, NoRegister, 0
+			if isOperandSizeOveride && !isRexW {
+				noImmediateBytes = 2
+			}
+			return TEST, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		case [3]bool{false, false, true}:
-			return TEST, true, NoSegment, NoRegister, NoRegister, 0
+			if isOperandSizeOveride && !isRexW {
+				noImmediateBytes = 2
+			}
+			return TEST, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		case [3]bool{false, true, false}:
-			return NOT, true, NoSegment, NoRegister, NoRegister, 0
+			return NOT, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{false, true, true}:
-			return NEG, true, NoSegment, NoRegister, NoRegister, 0
+			return NEG, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, false, false}:
-			return MUL, true, NoSegment, NoRegister, NoRegister, 0
+			return MUL, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, false, true}:
-			return IMUL, true, NoSegment, NoRegister, NoRegister, 0
+			return IMUL, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, true, false}:
-			return DIV, true, NoSegment, NoRegister, NoRegister, 0
+			return DIV, false, NoSegment, NoRegister, NoRegister, 0, 0
 		case [3]bool{true, true, true}:
-			return IDIV, true, NoSegment, NoRegister, NoRegister, 0
+			return IDIV, false, NoSegment, NoRegister, NoRegister, 0, 0
 		default:
 			panic("Error: Unknown instruction")
 		}
