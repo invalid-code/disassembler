@@ -1312,19 +1312,23 @@ func primaryOpcodeModRMG5(opcode byte, modrmReg [3]bool, is64bit bool) (Instruct
 	}
 }
 
-func primaryOpcodeModRMG11(opcode byte, modrmReg [3]bool, is64bit bool) (Instruction, bool, MemSegment, Register, Register, int) {
+func primaryOpcodeModRMG11(opcode byte, modrmReg [3]bool, is64bit bool, isRexW bool, isOperandSizeOveride bool) (Instruction, bool, MemSegment, Register, Register, int, int) {
 	switch opcode {
 	case 0xC6:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return MOV, true, NoSegment, NoRegister, NoRegister, 0
+			return MOV, true, NoSegment, NoRegister, NoRegister, 0, 1
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xC7:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			return MOV, true, NoSegment, NoRegister, NoRegister, 0
+			noImmediateBytes := 4
+			if isOperandSizeOveride && !isRexW {
+				noImmediateBytes = 2
+			}
+			return MOV, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		default:
 			panic("Error: Unknown instruction")
 		}

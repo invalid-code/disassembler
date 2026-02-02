@@ -745,7 +745,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					case 0xFF:
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG5(opcode, opcodeSel, bitFormat)
 					case 0xC6, 0xC7:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG11(opcode, opcodeSel, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG11(opcode, opcodeSel, bitFormat, isRexW, isOperandSizeOverride)
 					default:
 						panic("Error: Unknown opcode modrm extension group")
 					}
@@ -767,7 +767,11 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					case [4]bool{false, true, true, true}:
 					}
 				case [2]bool{false, true}:
+					isDisplacement = true
+					noDisplacementBytes = 1
 				case [2]bool{true, false}:
+					isDisplacement = true
+					noDisplacementBytes = 4
 				case [2]bool{true, true}:
 					switch modrmRM {
 					case [4]bool{false, false, false, false}:
@@ -854,6 +858,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 							if bitFormat {
 								// 64 bit - rip addressing
 								isDisplacement = true
+								noDisplacementBytes = 4
 							}
 						case [4]bool{false, false, true, false}:
 						case [4]bool{false, false, true, true}:
@@ -1106,6 +1111,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				if !isImmediate {
 					fmt.Printf("%v %v %v %X\n", instruction, regOperand1, regOperand2, displacementBytes)
 					resetVars()
+					continue
 				}
 				wasDisplacement = true
 				isDisplacement = false
