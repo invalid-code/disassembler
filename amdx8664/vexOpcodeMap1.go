@@ -1,5 +1,7 @@
 package amdx8664
 
+import "fmt"
+
 func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, bool, bool, MemSegment, Register, Register, Register, int) {
 	switch curByte {
 	case 0x10:
@@ -611,6 +613,8 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, b
 		default:
 			panic("Error: Unknown instruction")
 		}
+	case 0x77:
+		return VZEROUPPER, false, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
 	case 0x7C:
 		switch opcodeExt {
 		case [2]bool{false, true}:
@@ -1044,9 +1048,12 @@ func vexOpcodeMap1(curByte byte, opcodeExt [2]bool, isRexW bool) (Instruction, b
 			panic("Error: Unknown instruction")
 		}
 	case 0xFA:
+		fmt.Println(opcodeExt)
 		switch opcodeExt {
 		case [2]bool{false, true}:
 			return VPSUBD, true, false, NoSegment, NoRegister, NoRegister, NoRegister, 0
+		case [2]bool{true, false}:
+			return VCVTSI2SS, 
 		default:
 			panic("Error: Unknown instruction")
 		}

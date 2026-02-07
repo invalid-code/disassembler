@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	data, err := os.ReadFile("hello3")
+	data, err := os.ReadFile("avx_example")
 	if err != nil {
 		panic("Error: Couldn't read file")
 	}

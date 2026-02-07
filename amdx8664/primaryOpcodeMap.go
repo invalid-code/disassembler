@@ -509,10 +509,19 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 			// todo need to figure out defaut operand size
 		}
 		return PUSH, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, noImmediateBytes, 0
-	case 0x69, 0x6B:
-		panic("Error: todo has 3 operands")
+	case 0x69:
+		if is64Bit {
+			if !isRexW && isOperandSizeOveride {
+				noImmediateBytes = 2
+			}
+		} else {
+			// todo need to figure out defaut operand size
+		}
+		return IMUL, true, false, true, NoSegment, NoRegister, NoRegister, 0, false, noImmediateBytes, 0
 	case 0x6A:
 		return PUSH, false, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1, 0
+	case 0x6B:
+		return IMUL, true, false, true, NoSegment, NoRegister, NoRegister, 0, false, 1, 0
 	case 0x6C:
 		panic("todo dont know how to deal with Y operand syntax notation")
 	case 0x6D:
@@ -1042,7 +1051,8 @@ func primaryOpcode(curByte byte, is64Bit bool, isOperandSizeOveride bool, isRexW
 	}
 }
 
-func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64bit bool) (Instruction, bool, MemSegment, Register, Register, int, int) {
+func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64Bit bool, isOperandSizeOveride bool, isRexW bool) (Instruction, bool, MemSegment, Register, Register, int, int) {
+	noImmediateBytes := 4
 	switch opcode {
 	case 0x80:
 		switch modrmReg {
@@ -1068,29 +1078,78 @@ func primaryOpcodeModRMG1(opcode byte, modrmReg [3]bool, is64bit bool) (Instruct
 	case 0x81:
 		switch modrmReg {
 		case [3]bool{false, false, false}:
-			// todo need to figure out how many immediate bytes
-			return ADD, true, NoSegment, NoRegister, NoRegister, 0, 0
+			if is64Bit {
+				if !isRexW && isOperandSizeOveride {
+					noImmediateBytes = 2
+				}
+			} else {
+				// todo need to figure out defaut operand size
+			}
+			return ADD, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		case [3]bool{false, false, true}:
-			// todo need to figure out how many immediate bytes
-			return OR, true, NoSegment, NoRegister, NoRegister, 0, 0
+			if is64Bit {
+				if !isRexW && isOperandSizeOveride {
+					noImmediateBytes = 2
+				}
+			} else {
+				// todo need to figure out defaut operand size
+			}
+			return OR, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		case [3]bool{false, true, false}:
-			// todo need to figure out how many immediate bytes
-			return ADC, true, NoSegment, NoRegister, NoRegister, 0, 0
+			if is64Bit {
+				if !isRexW && isOperandSizeOveride {
+					noImmediateBytes = 2
+				}
+			} else {
+				// todo need to figure out defaut operand size
+			}
+			return ADC, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		case [3]bool{false, true, true}:
-			// todo need to figure out how many immediate bytes
-			return SBB, true, NoSegment, NoRegister, NoRegister, 0, 0
+			if is64Bit {
+				if !isRexW && isOperandSizeOveride {
+					noImmediateBytes = 2
+				}
+			} else {
+				// todo need to figure out defaut operand size
+			}
+			return SBB, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		case [3]bool{true, false, false}:
-			// todo need to figure out how many immediate bytes
-			return AND, true, NoSegment, NoRegister, NoRegister, 0, 0
+			if is64Bit {
+				if !isRexW && isOperandSizeOveride {
+					noImmediateBytes = 2
+				}
+			} else {
+				// todo need to figure out defaut operand size
+			}
+			return AND, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		case [3]bool{true, false, true}:
-			// todo need to figure out how many immediate bytes
-			return SUB, true, NoSegment, NoRegister, NoRegister, 0, 0
+			if is64Bit {
+				if !isRexW && isOperandSizeOveride {
+					noImmediateBytes = 2
+				}
+			} else {
+				// todo need to figure out defaut operand size
+			}
+			return SUB, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		case [3]bool{true, true, false}:
-			// todo need to figure out how many immediate bytes
-			return XOR, true, NoSegment, NoRegister, NoRegister, 0, 0
+			if is64Bit {
+				if !isRexW && isOperandSizeOveride {
+					noImmediateBytes = 2
+				}
+			} else {
+				// todo need to figure out defaut operand size
+			}
+			return XOR, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		case [3]bool{true, true, true}:
 			// todo need to figure out how many immediate bytes
-			return CMP, true, NoSegment, NoRegister, NoRegister, 0, 0
+			if is64Bit {
+				if !isRexW && isOperandSizeOveride {
+					noImmediateBytes = 2
+				}
+			} else {
+				// todo need to figure out defaut operand size
+			}
+			return CMP, true, NoSegment, NoRegister, NoRegister, 0, noImmediateBytes
 		default:
 			panic("Error: Unknown instruction")
 		}
@@ -1151,11 +1210,11 @@ func primaryOpcodeModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, Mem
 		case [3]bool{false, true, true}:
 			return RCR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, false}:
-			panic("todo")
+			return SHL, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, true}:
 			return SHR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, false}:
-			panic("todo")
+			return SHL, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, true}:
 			return SAR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		default:
@@ -1172,11 +1231,11 @@ func primaryOpcodeModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, Mem
 		case [3]bool{false, true, true}:
 			return RCR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, false}:
-			panic("todo")
+			return SHL, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, false, true}:
 			return SHR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, false}:
-			panic("todo")
+			return SHL, true, NoSegment, NoRegister, NoRegister, 0, 1
 		case [3]bool{true, true, true}:
 			return SAR, true, NoSegment, NoRegister, NoRegister, 0, 1
 		default:
@@ -1193,11 +1252,11 @@ func primaryOpcodeModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, Mem
 		case [3]bool{false, true, true}:
 			return RCR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, false, false}:
-			panic("todo")
+			return SHL, true, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, false, true}:
 			return SHR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, true, false}:
-			panic("todo")
+			return SHL, true, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, true, true}:
 			return SAR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		default:
@@ -1214,20 +1273,58 @@ func primaryOpcodeModRMG2(opcode byte, modrmReg [3]bool) (Instruction, bool, Mem
 		case [3]bool{false, true, true}:
 			return RCR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, false, false}:
-			panic("todo")
+			return SHL, true, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, false, true}:
 			return SHR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, true, false}:
-			panic("todo")
+			return SHL, true, NoSegment, NoRegister, NoRegister, 1, 0
 		case [3]bool{true, true, true}:
 			return SAR, false, NoSegment, NoRegister, NoRegister, 1, 0
 		default:
 			panic("Error: Unknown instruction")
 		}
 	case 0xD2:
-		panic("todo")
+		switch modrmReg {
+		case [3]bool{false, false, false}:
+			return ROL, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{false, false, true}:
+			return ROR, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{false, true, false}:
+			return RCL, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{false, true, true}:
+			return RCR, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{true, false, false}:
+			return SHL, true, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{true, false, true}:
+			return SHR, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{true, true, false}:
+			return SHL, true, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{true, true, true}:
+			return SAR, false, NoSegment, CL, NoRegister, 0, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	case 0xD3:
-		panic("todo")
+		switch modrmReg {
+		case [3]bool{false, false, false}:
+			return ROL, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{false, false, true}:
+			return ROR, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{false, true, false}:
+			return RCL, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{false, true, true}:
+			return RCR, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{true, false, false}:
+			return SHL, true, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{true, false, true}:
+			return SHR, false, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{true, true, false}:
+			return SHL, true, NoSegment, CL, NoRegister, 0, 0
+		case [3]bool{true, true, true}:
+			return SAR, false, NoSegment, CL, NoRegister, 0, 0
+		default:
+			panic("Error: Unknown instruction")
+		}
 	default:
 		panic("Error: Unknown instruction")
 	}

@@ -12,12 +12,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 	legacePrefixCnt := 0
 	isOperandSizeOverride, isRep1, isRep0 := false, false, false
 	//	isAddressSizeOverride := false
-	//	isCSSegmentSizeOverride := false
-	//	isDSSegmentSizeOverride := false
-	//	isESSegmentSizeOverride := false
-	//	isFSSegmentSizeOverride := false
-	//	isGSSegmentSizeOverride := false
-	//	isSSSegmentSizeOverride := false
+	isCSSegmentSizeOverride, isDSSegmentSizeOverride, isESSegmentSizeOverride, isFSSegmentSizeOverride, isGSSegmentSizeOverride, isSSSegmentSizeOverride := false, false, false, false, false, false
 	isRexW, isRexR, isRexX, isRexB := false, false, false, false
 	isVex := false
 	isXop := false
@@ -49,12 +44,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		legacePrefixCnt = 0
 		isOperandSizeOverride, isRep1, isRep0 = false, false, false
 		//	isAddressSizeOverride := false
-		//	isCSSegmentSizeOverride := false
-		//	isDSSegmentSizeOverride := false
-		//	isESSegmentSizeOverride := false
-		//	isFSSegmentSizeOverride := false
-		//	isGSSegmentSizeOverride := false
-		//	isSSSegmentSizeOverride := false
+		isCSSegmentSizeOverride, isDSSegmentSizeOverride, isESSegmentSizeOverride, isFSSegmentSizeOverride, isGSSegmentSizeOverride, isSSSegmentSizeOverride = false, false, false, false, false, false
 		isRexW, isRexR, isRexX, isRexB = false, false, false, false
 		isVex = false
 		isXop = false
@@ -109,37 +99,37 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				// isCSSegmentSizeOverride = true
+				isCSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x3E:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				// isDSSegmentSizeOverride = true
+				isDSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x26:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				// isESSegmentSizeOverride = true
+				isESSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x64:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				// isFSSegmentSizeOverride = true
+				isFSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x65:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				//				isGSSegmentSizeOverride = true
+				isGSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			case 0x36:
 				if legacePrefixCnt == 4 {
 					panic("Error: There can only be 4 legacy prefixes in 1 instruction")
 				}
-				//				isSSSegmentSizeOverride = true
+				isSSSegmentSizeOverride = true
 				legacePrefixCnt += 1
 			// case 0xF0:
 			// 	if legacePrefixCnt == 4 {
@@ -576,11 +566,11 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 		if isOpcode {
 			if isVex {
 				if isVex3Byte {
-					if mapSelect[3] == false && mapSelect[4] == true {
+					if !mapSelect[3] && mapSelect[4] {
 						instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap1(curByte, fieldPp, isRexW)
-					} else if mapSelect[3] == true && mapSelect[4] == false {
+					} else if mapSelect[3] && !mapSelect[4] {
 						instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap2(curByte, fieldPp, isRexW)
-					} else if mapSelect[3] == true && mapSelect[4] == true {
+					} else if mapSelect[3] && mapSelect[4] {
 						instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = vexOpcodeMap3(curByte, fieldPp, isRexW)
 					}
 				} else {
@@ -588,11 +578,11 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				}
 				isGpr = false
 			} else if isXop {
-				if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == false {
+				if mapSelect[1] && !mapSelect[2] && !mapSelect[3] && !mapSelect[4] {
 					instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap8(curByte, fieldPp, isRexW)
-				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == false && mapSelect[4] == true {
+				} else if mapSelect[1] && !mapSelect[2] && !mapSelect[3] && mapSelect[4] {
 					instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap9(curByte, fieldPp, isRexW)
-				} else if mapSelect[1] == true && mapSelect[2] == false && mapSelect[3] == true && mapSelect[4] == false {
+				} else if mapSelect[1] && !mapSelect[2] && !mapSelect[3] && !mapSelect[4] {
 					instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, regOperand3, instructionEncodedRegOperand = xopOpcodeMap10(curByte, fieldPp, isRexW)
 				}
 				isGpr = false
@@ -605,8 +595,9 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				instruction, isModRM, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = opcodeMap38(curByte, bitFormat, isRep0, isOperandSizeOverride, isRexB)
 			} else if isSecondaryMap {
 				if isCet {
-					switch execFeatures {
-					case executableFeatures.IBT, executableFeatures.Both:
+					// switch execFeatures {
+					// case executableFeatures.IBT, executableFeatures.Both:
+					if curByte == 0xFA {
 						if bitFormat {
 							instruction = ENDBR64
 						} else {
@@ -616,8 +607,9 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 						resetVars()
 						continue
 					}
+					// }
 				}
-				if isRep1 {
+				if isRep1 && curByte == 0x1E {
 					isCet = true
 					continue
 				}
@@ -629,7 +621,26 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				opcode = curByte
 			}
 			if !(isModRM || isImmediate || isDisplacement) {
-				fmt.Println(instruction, regOperand1, regOperand2)
+				fmt.Printf("%v %v %v ", instruction, regOperand1, regOperand2)
+				if isCSSegmentSizeOverride {
+					fmt.Printf("%v ", CS)
+				}
+				if isDSSegmentSizeOverride {
+					fmt.Printf("%v ", DS)
+				}
+				if isESSegmentSizeOverride {
+					fmt.Printf("%v ", ES)
+				}
+				if isFSSegmentSizeOverride {
+					fmt.Printf("%v ", FS)
+				}
+				if isGSSegmentSizeOverride {
+					fmt.Printf("%v ", GS)
+				}
+				if isSSSegmentSizeOverride {
+					fmt.Printf("%v ", SS)
+				}
+				fmt.Println()
 				resetVars()
 			}
 			isOpcode = false
@@ -740,7 +751,7 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				} else {
 					switch opcode {
 					case 0x80, 0x81, 0x82, 0x83:
-						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG1(opcode, opcodeSel, bitFormat)
+						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand, noImmediateBytes = primaryOpcodeModRMG1(opcode, opcodeSel, bitFormat, isOperandSizeOverride, isRexW)
 					case 0x8F:
 						instruction, isImmediate, memSegment, regOperand1, regOperand2, instructionEncodedRegOperand = primaryOpcodeModRMG1a(opcode, opcodeSel)
 					case 0xC0, 0xC1, 0xD0, 0xD1, 0xD2, 0xD3:
@@ -920,7 +931,26 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				}
 			}
 			if !(isSib || isDisplacement || isImmediate) {
-				fmt.Println(instruction, regOperand1, regOperand2)
+				fmt.Printf("%v %v %v ", instruction, regOperand1, regOperand2)
+				if isCSSegmentSizeOverride {
+					fmt.Printf("%v ", CS)
+				}
+				if isDSSegmentSizeOverride {
+					fmt.Printf("%v ", DS)
+				}
+				if isESSegmentSizeOverride {
+					fmt.Printf("%v ", ES)
+				}
+				if isFSSegmentSizeOverride {
+					fmt.Printf("%v ", FS)
+				}
+				if isGSSegmentSizeOverride {
+					fmt.Printf("%v ", GS)
+				}
+				if isSSSegmentSizeOverride {
+					fmt.Printf("%v ", SS)
+				}
+				fmt.Println()
 				resetVars()
 			}
 			continue
@@ -1020,8 +1050,27 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 			case [4]bool{false, true, true, true}:
 				sibBaseVal = RDI
 			}
-			if !isDisplacement || !isImmediate {
-				fmt.Println(instruction, regOperand1, regOperand2, fmt.Sprintf("%v * %v + %v", sibScaleVal, sibIndexVal, sibBaseVal))
+			if !(isDisplacement || isImmediate) {
+				fmt.Printf("%v %v %v %v ", instruction, regOperand1, regOperand2, fmt.Sprintf("%v * %v + %v", sibScaleVal, sibIndexVal, sibBaseVal))
+				if isCSSegmentSizeOverride {
+					fmt.Printf("%v ", CS)
+				}
+				if isDSSegmentSizeOverride {
+					fmt.Printf("%v ", DS)
+				}
+				if isESSegmentSizeOverride {
+					fmt.Printf("%v ", ES)
+				}
+				if isFSSegmentSizeOverride {
+					fmt.Printf("%v ", FS)
+				}
+				if isGSSegmentSizeOverride {
+					fmt.Printf("%v ", GS)
+				}
+				if isSSSegmentSizeOverride {
+					fmt.Printf("%v ", SS)
+				}
+				fmt.Println()
 				resetVars()
 				continue
 			}
@@ -1041,7 +1090,25 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 					}
 					fmt.Printf("%X", displacementBytes)
 					if wasSib {
-						fmt.Print("]")
+						fmt.Print("] ")
+					}
+					if isCSSegmentSizeOverride {
+						fmt.Printf("%v ", CS)
+					}
+					if isDSSegmentSizeOverride {
+						fmt.Printf("%v ", DS)
+					}
+					if isESSegmentSizeOverride {
+						fmt.Printf("%v ", ES)
+					}
+					if isFSSegmentSizeOverride {
+						fmt.Printf("%v ", FS)
+					}
+					if isGSSegmentSizeOverride {
+						fmt.Printf("%v ", GS)
+					}
+					if isSSSegmentSizeOverride {
+						fmt.Printf("%v ", SS)
 					}
 					fmt.Println()
 					resetVars()
@@ -1064,7 +1131,26 @@ func DisassembleBytes(data []byte, bitFormat bool, endianness bool, execFeatures
 				if wasDisplacement {
 					fmt.Printf("%X ", displacementBytes)
 				}
-				fmt.Printf("%X\n", immediateBytes)
+				fmt.Printf("%X ", immediateBytes)
+				if isCSSegmentSizeOverride {
+					fmt.Printf("%v ", CS)
+				}
+				if isDSSegmentSizeOverride {
+					fmt.Printf("%v ", DS)
+				}
+				if isESSegmentSizeOverride {
+					fmt.Printf("%v ", ES)
+				}
+				if isFSSegmentSizeOverride {
+					fmt.Printf("%v ", FS)
+				}
+				if isGSSegmentSizeOverride {
+					fmt.Printf("%v ", GS)
+				}
+				if isSSSegmentSizeOverride {
+					fmt.Printf("%v ", SS)
+				}
+				fmt.Println()
 				resetVars()
 				continue
 			}

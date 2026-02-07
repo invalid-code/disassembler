@@ -461,6 +461,7 @@ const (
 	SETS
 	SETZ
 	SGDT
+	SHL
 	SHLD
 	SHR
 	SHRD
@@ -832,6 +833,7 @@ const (
 	VUNPCKLPS
 	VXORPD
 	VXORPS
+	VZEROUPPER
 	WRFSBASE
 	WRMSR
 	WRSS
@@ -1763,6 +1765,8 @@ func (instruction Instruction) String() string {
 		return "SETZ"
 	case SGDT:
 		return "SGDT"
+	case SHL:
+		return "SHL"
 	case SHLD:
 		return "SHLD"
 	case SHR:
@@ -2505,6 +2509,8 @@ func (instruction Instruction) String() string {
 		return "VXORPD"
 	case VXORPS:
 		return "VXORPS"
+	case VZEROUPPER:
+		return "VZEROUPPER"
 	case WRFSBASE:
 		return "WRFSBASE"
 	case WRMSR:
